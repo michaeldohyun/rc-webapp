@@ -439,6 +439,21 @@
         </div>
       </div>
 
+      <div class="chip-group">
+        <label>따르는 훈련법</label>
+        <div class="chip-options" id="method-chips">
+          <div class="chip" data-value="80_20" onclick="selectSingleChip(this, 'method-chips')">80/20 러닝</div>
+          <div class="chip" data-value="jack_daniels" onclick="selectSingleChip(this, 'method-chips')">잭 다니엘스</div>
+          <div class="chip" data-value="maf" onclick="selectSingleChip(this, 'method-chips')">MAF 저심박</div>
+          <div class="chip" data-value="pfitzinger" onclick="selectSingleChip(this, 'method-chips')">피치진저</div>
+          <div class="chip" data-value="hansons" onclick="selectSingleChip(this, 'method-chips')">한슨</div>
+          <div class="chip" data-value="galloway" onclick="selectSingleChip(this, 'method-chips')">갤러웨이</div>
+          <div class="chip" data-value="hal_higdon" onclick="selectSingleChip(this, 'method-chips')">할 히든</div>
+          <div class="chip" data-value="lydiard" onclick="selectSingleChip(this, 'method-chips')">리디어드</div>
+          <div class="chip" data-value="none" onclick="selectSingleChip(this, 'method-chips')">아직 없어요</div>
+        </div>
+      </div>
+
       <div class="input-group">
         <label>메모 (선택)</label>
         <textarea id="run-pattern-note" placeholder="예: 주말에만 장거리, 존2 위주로 훈련 중" rows="2"></textarea>
@@ -552,10 +567,18 @@
       el.classList.add('selected');
     }
 
-    // --- Toggle chips ---
+    // --- Toggle chips (multi-select) ---
 
     function toggleChip(el) {
       el.classList.toggle('selected');
+    }
+
+    // --- Single-select chips ---
+
+    function selectSingleChip(el, groupId) {
+      const group = document.getElementById(groupId);
+      group.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
     }
 
     // --- Card selector ---
@@ -586,6 +609,9 @@
       if (selectedChips.length > 0) {
         data.run_times = Array.from(selectedChips).map(c => c.dataset.value);
       }
+
+      const methodChip = document.querySelector('#method-chips .chip.selected');
+      if (methodChip) data.training_method = methodChip.dataset.value;
 
       const patternNote = document.getElementById('run-pattern-note').value.trim();
       if (patternNote) data.run_pattern_note = patternNote;
@@ -712,6 +738,12 @@
             const chip = document.querySelector(`.chip[data-value="${v}"]`);
             if (chip) chip.classList.add('selected');
           });
+        }
+
+        // Step 2: single-select chip (training_method)
+        if (s.training_method) {
+          const chip = document.querySelector(`#method-chips .chip[data-value="${s.training_method}"]`);
+          if (chip) chip.classList.add('selected');
         }
 
         // Step 2: textarea

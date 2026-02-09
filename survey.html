@@ -666,6 +666,70 @@
         btnSubmit.textContent = '완료';
       }
     }
+
+    // --- Prefill existing data ---
+
+    async function loadExistingData() {
+      const user = tg?.initDataUnsafe?.user;
+      if (!user?.id || !tg?.initData) return;
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'get_survey',
+            telegram_user_id: user.id,
+            init_data: tg.initData,
+          }),
+        });
+
+        const result = await response.json();
+        if (!result.success || !result.survey) return;
+
+        const s = result.survey;
+
+        // Step 1: text inputs
+        if (s.goal_text) document.getElementById('goal-text').value = s.goal_text;
+        if (s.target_date) document.getElementById('target-date').value = s.target_date;
+
+        // Step 2: tab selector (weekly_frequency)
+        if (s.weekly_frequency) {
+          const tab = document.querySelector(`.tab-option[data-value="${s.weekly_frequency}"]`);
+          if (tab) tab.classList.add('selected');
+        }
+
+        // Step 2: chips (run_times)
+        if (Array.isArray(s.run_times)) {
+          s.run_times.forEach(v => {
+            const chip = document.querySelector(`.chip[data-value="${v}"]`);
+            if (chip) chip.classList.add('selected');
+          });
+        }
+
+        // Step 2: textarea
+        if (s.run_pattern_note) document.getElementById('run-pattern-note').value = s.run_pattern_note;
+
+        // Step 3: card selectors
+        if (s.priority) {
+          const card = document.querySelector(`#priority-cards .card-option[data-value="${s.priority}"]`);
+          if (card) card.classList.add('selected');
+        }
+
+        if (s.plan_style) {
+          const card = document.querySelector(`#style-cards .card-option[data-value="${s.plan_style}"]`);
+          if (card) card.classList.add('selected');
+        }
+
+        // Step 3: textarea
+        if (s.additional_note) document.getElementById('additional-note').value = s.additional_note;
+      } catch (err) {
+        console.error('Failed to load existing data:', err);
+      }
+    }
+
+    // Load on page init
+    loadExistingData();
   </script>
 </body>
 </html>

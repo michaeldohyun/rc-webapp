@@ -529,6 +529,9 @@
       <button class="btn btn-secondary" onclick="goToStep(3)">
         복사 완료! 다음으로
       </button>
+      <button class="btn btn-ghost" onclick="goToStep(1)">
+        ← 이전 단계
+      </button>
       <button class="btn btn-ghost" onclick="closeLater()">
         나중에 이어서 할게요
       </button>
@@ -548,6 +551,9 @@
         연동하기
       </button>
       <div class="error-text" id="error-msg" style="display:none"></div>
+      <button class="btn btn-ghost" onclick="goToStep(2)">
+        ← 이전 단계
+      </button>
       <button class="btn btn-ghost" onclick="closeLater()">
         나중에 이어서 할게요
       </button>
@@ -579,9 +585,19 @@
     let currentStep = 1;
 
     function goToStep(step) {
-      document.getElementById('step-' + currentStep)?.classList.remove('active');
-      document.getElementById('dot-' + currentStep)?.classList.remove('active');
-      document.getElementById('dot-' + currentStep)?.classList.add('done');
+      const prev = currentStep;
+      document.getElementById('step-' + prev)?.classList.remove('active');
+      document.getElementById('dot-' + prev)?.classList.remove('active');
+
+      // 앞으로 가면 done, 뒤로 가면 done 해제
+      if (typeof step === 'number' && typeof prev === 'number' && step < prev) {
+        document.getElementById('dot-' + prev)?.classList.remove('done');
+        for (let i = step; i <= prev; i++) {
+          document.getElementById('dot-' + i)?.classList.remove('done');
+        }
+      } else {
+        document.getElementById('dot-' + prev)?.classList.add('done');
+      }
 
       currentStep = step;
       document.getElementById('step-' + step)?.classList.add('active');

@@ -208,6 +208,7 @@
       border-radius: 10px;
       text-align: center;
       font-size: 14px;
+      white-space: nowrap;
       cursor: pointer;
       transition: all 0.2s;
       color: var(--tg-theme-text-color);
@@ -257,6 +258,28 @@
       font-weight: 600;
     }
 
+    /* Suggestion chips (fills text input on click) */
+    .suggestion-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .suggestion-chip {
+      padding: 6px 12px;
+      border: 1px solid var(--tg-theme-hint-color);
+      border-radius: 16px;
+      font-size: 13px;
+      color: var(--tg-theme-hint-color);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .suggestion-chip:active {
+      opacity: 0.6;
+    }
+
     /* Card selector */
     .card-group {
       margin-bottom: 20px;
@@ -276,34 +299,20 @@
     }
 
     .card-option {
-      display: flex;
-      align-items: center;
-      gap: 12px;
       padding: 14px;
       border: 1.5px solid var(--tg-theme-hint-color);
       border-radius: 12px;
       cursor: pointer;
       transition: all 0.2s;
       opacity: 0.7;
+      font-size: 14px;
+      font-weight: 500;
     }
 
     .card-option.selected {
       border-color: var(--tg-theme-button-color);
       background: rgba(38, 120, 182, 0.08);
       opacity: 1;
-    }
-
-    .card-option .card-icon {
-      font-size: 22px;
-      flex-shrink: 0;
-    }
-
-    .card-option .card-label {
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .card-option.selected .card-label {
       font-weight: 600;
     }
 
@@ -381,7 +390,15 @@
 
       <div class="input-group">
         <label>러닝 목표</label>
-        <input type="text" id="goal-text" placeholder="예: 풀마라톤 완주, 5K 25분, 꾸준히 건강하게">
+        <input type="text" id="goal-text" placeholder="직접 입력하거나 아래에서 선택">
+        <div class="suggestion-chips">
+          <span class="suggestion-chip" onclick="fillGoal(this)">풀마라톤 완주</span>
+          <span class="suggestion-chip" onclick="fillGoal(this)">하프마라톤 완주</span>
+          <span class="suggestion-chip" onclick="fillGoal(this)">10K 기록 단축</span>
+          <span class="suggestion-chip" onclick="fillGoal(this)">5K 기록 단축</span>
+          <span class="suggestion-chip" onclick="fillGoal(this)">꾸준히 건강하게</span>
+          <span class="suggestion-chip" onclick="fillGoal(this)">다이어트</span>
+        </div>
       </div>
 
       <div class="input-group">
@@ -413,8 +430,10 @@
       <div class="chip-group">
         <label>주로 뛰는 시간대</label>
         <div class="chip-options">
+          <div class="chip" data-value="weekday_dawn" onclick="toggleChip(this)">평일 새벽</div>
           <div class="chip" data-value="weekday_morning" onclick="toggleChip(this)">평일 아침</div>
           <div class="chip" data-value="weekday_evening" onclick="toggleChip(this)">평일 저녁</div>
+          <div class="chip" data-value="weekend_dawn" onclick="toggleChip(this)">주말 새벽</div>
           <div class="chip" data-value="weekend_morning" onclick="toggleChip(this)">주말 아침</div>
           <div class="chip" data-value="weekend_afternoon" onclick="toggleChip(this)">주말 오후</div>
         </div>
@@ -440,36 +459,18 @@
       <div class="card-group">
         <label>가장 중요한 것</label>
         <div class="card-options" id="priority-cards">
-          <div class="card-option" data-value="injury_prevention" onclick="selectCard(this, 'priority-cards')">
-            <span class="card-icon">&#x1F6E1;&#xFE0F;</span>
-            <span class="card-label">부상 없이 안전하게</span>
-          </div>
-          <div class="card-option" data-value="performance" onclick="selectCard(this, 'priority-cards')">
-            <span class="card-icon">&#x26A1;</span>
-            <span class="card-label">기록/페이스 향상</span>
-          </div>
-          <div class="card-option" data-value="consistency" onclick="selectCard(this, 'priority-cards')">
-            <span class="card-icon">&#x1F504;</span>
-            <span class="card-label">꾸준한 습관 만들기</span>
-          </div>
-          <div class="card-option" data-value="race_prep" onclick="selectCard(this, 'priority-cards')">
-            <span class="card-icon">&#x1F3AF;</span>
-            <span class="card-label">대회 준비</span>
-          </div>
+          <div class="card-option" data-value="injury_prevention" onclick="selectCard(this, 'priority-cards')">부상 없이 안전하게</div>
+          <div class="card-option" data-value="performance" onclick="selectCard(this, 'priority-cards')">기록/페이스 향상</div>
+          <div class="card-option" data-value="consistency" onclick="selectCard(this, 'priority-cards')">꾸준한 습관 만들기</div>
+          <div class="card-option" data-value="race_prep" onclick="selectCard(this, 'priority-cards')">대회 준비</div>
         </div>
       </div>
 
       <div class="card-group">
         <label>훈련 계획 스타일</label>
         <div class="card-options" id="style-cards">
-          <div class="card-option" data-value="structured" onclick="selectCard(this, 'style-cards')">
-            <span class="card-icon">&#x1F4CB;</span>
-            <span class="card-label">계획을 세우고 지키는 편</span>
-          </div>
-          <div class="card-option" data-value="flexible" onclick="selectCard(this, 'style-cards')">
-            <span class="card-icon">&#x1F30A;</span>
-            <span class="card-label">그때그때 유연하게</span>
-          </div>
+          <div class="card-option" data-value="structured" onclick="selectCard(this, 'style-cards')">계획을 세우고 지키는 편</div>
+          <div class="card-option" data-value="flexible" onclick="selectCard(this, 'style-cards')">그때그때 유연하게</div>
         </div>
       </div>
 
@@ -535,6 +536,12 @@
 
     function skipToEnd() {
       submitSurvey();
+    }
+
+    // --- Goal suggestion ---
+
+    function fillGoal(el) {
+      document.getElementById('goal-text').value = el.textContent;
     }
 
     // --- Tab selector ---

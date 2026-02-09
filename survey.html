@@ -413,7 +413,7 @@
 
       <div class="chip-group">
         <label>주로 뛰는 시간대</label>
-        <div class="chip-options">
+        <div class="chip-options" id="run-time-chips">
           <div class="chip" data-value="weekday_morning" onclick="toggleChip(this)">평일 아침</div>
           <div class="chip" data-value="weekday_evening" onclick="toggleChip(this)">평일 저녁</div>
           <div class="chip" data-value="weekend_morning" onclick="toggleChip(this)">주말 아침</div>
@@ -539,6 +539,82 @@
 
     let currentStep = 1;
 
+    // --- Prefill ---
+
+    async function loadExistingSurvey() {
+      const user = tg?.initDataUnsafe?.user;
+      if (!user?.id || !tg?.initData) return;
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'get_survey',
+            telegram_user_id: user.id,
+            init_data: tg.initData,
+          }),
+        });
+        const result = await res.json();
+        if (!result.success || !result.survey) return;
+
+        const s = result.survey;
+
+        // Step 1
+        if (s.goal_text) document.getElementById('goal-text').value = s.goal_text;
+        if (s.target_date) document.getElementById('target-date').value = s.target_date;
+
+        // Step 2: weekly frequency tab
+        if (s.weekly_frequency) {
+          const tab = document.querySelector(`.tab-option[data-value="${s.weekly_frequency}"]`);
+          if (tab) tab.classList.add('selected');
+        }
+
+        // Step 2: run times chips
+        if (Array.isArray(s.run_times)) {
+          s.run_times.forEach(v => {
+            const chip = document.querySelector(`#run-time-chips .chip[data-value="${v}"]`);
+            if (chip) chip.classList.add('selected');
+          });
+        }
+
+        // Step 2: pattern note
+        if (s.run_pattern_note) document.getElementById('run-pattern-note').value = s.run_pattern_note;
+
+        // Step 3: training method
+        if (s.training_method && s.training_method !== 'none') {
+          const methodChip = document.querySelector(`#method-chips .chip[data-value="${s.training_method}"]`);
+          if (methodChip) {
+            methodChip.classList.add('selected');
+            const descEl = document.getElementById('method-desc');
+            if (descEl && METHOD_DESCS[s.training_method]) {
+              descEl.textContent = METHOD_DESCS[s.training_method];
+            }
+          }
+        }
+
+        // Step 4: priority
+        if (s.priority) {
+          const card = document.querySelector(`#priority-cards .card-option[data-value="${s.priority}"]`);
+          if (card) card.classList.add('selected');
+        }
+
+        // Step 4: plan style
+        if (s.plan_style) {
+          const card = document.querySelector(`#style-cards .card-option[data-value="${s.plan_style}"]`);
+          if (card) card.classList.add('selected');
+        }
+
+        // Step 4: additional note
+        if (s.additional_note) document.getElementById('additional-note').value = s.additional_note;
+
+      } catch (e) {
+        console.error('Prefill error:', e);
+      }
+    }
+
+    loadExistingSurvey();
+
     // --- Navigation ---
 
     function goToStep(step) {
@@ -632,9 +708,9 @@
       const freqTab = document.querySelector('.tab-option.selected');
       if (freqTab) data.weekly_frequency = freqTab.dataset.value;
 
-      const selectedChips = document.querySelectorAll('.chip.selected');
-      if (selectedChips.length > 0) {
-        data.run_times = Array.from(selectedChips).map(c => c.dataset.value);
+      const selectedTimeChips = document.querySelectorAll('#run-time-chips .chip.selected');
+      if (selectedTimeChips.length > 0) {
+        data.run_times = Array.from(selectedTimeChips).map(c => c.dataset.value);
       }
 
       const patternNote = document.getElementById('run-pattern-note').value.trim();

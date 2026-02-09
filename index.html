@@ -538,15 +538,11 @@
     <div class="step" id="step-3">
       <div class="step-title">3. API 키 연동</div>
       <div class="step-desc">
-        복사한 API 키를 붙여넣어 주세요.
+        아래 입력란을 길게 눌러 <b>붙여넣기</b> 해주세요.
       </div>
-      <button class="btn btn-primary" id="btn-paste" onclick="pasteFromClipboard()">
-        클립보드에서 가져오기
-      </button>
-      <div class="divider"><span>또는 직접 입력</span></div>
       <div class="input-group">
         <label>API Key</label>
-        <input type="text" id="api-key-input" placeholder="API 키를 붙여넣기 하세요" autocomplete="off">
+        <input type="text" id="api-key-input" placeholder="여기를 길게 눌러 붙여넣기" autocomplete="off">
       </div>
       <button class="btn btn-primary" id="btn-submit" onclick="submitApiKey()">
         연동하기
@@ -600,21 +596,6 @@
       }
     }
 
-    async function pasteFromClipboard() {
-      try {
-        const text = await navigator.clipboard.readText();
-        if (text && text.trim()) {
-          document.getElementById('api-key-input').value = text.trim();
-          await submitApiKey();
-        } else {
-          showError('클립보드가 비어있습니다. API 키를 먼저 복사해주세요.');
-        }
-      } catch (err) {
-        console.warn('Clipboard API not available:', err);
-        showError('클립보드 접근이 불가합니다. 아래 입력란에 직접 붙여넣기 해주세요.');
-      }
-    }
-
     async function submitApiKey() {
       const apiKey = document.getElementById('api-key-input').value.trim();
       if (!apiKey) {
@@ -628,9 +609,7 @@
       }
 
       const btnSubmit = document.getElementById('btn-submit');
-      const btnPaste = document.getElementById('btn-paste');
       btnSubmit.disabled = true;
-      btnPaste.disabled = true;
       btnSubmit.innerHTML = '<span class="spinner"></span>검증 중...';
       hideError();
 
@@ -685,9 +664,7 @@
 
     function resetButtons() {
       const btnSubmit = document.getElementById('btn-submit');
-      const btnPaste = document.getElementById('btn-paste');
       btnSubmit.disabled = false;
-      btnPaste.disabled = false;
       btnSubmit.textContent = '연동하기';
     }
   </script>

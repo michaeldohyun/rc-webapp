@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Running Coach 연동</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --tg-theme-bg-color: #ffffff;
+      --tg-theme-text-color: #000000;
+      --tg-theme-hint-color: #999999;
+      --tg-theme-link-color: #2678b6;
+      --tg-theme-button-color: #2678b6;
+      --tg-theme-button-text-color: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--tg-theme-bg-color);
+      color: var(--tg-theme-text-color);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: var(--tg-theme-hint-color);
+      font-size: 14px;
+    }
+
+    .step {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .step-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--tg-theme-hint-color);
+      opacity: 0.3;
+      transition: all 0.3s;
+    }
+
+    .step-dot.active {
+      opacity: 1;
+      background: var(--tg-theme-button-color);
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    .step-dot.done {
+      opacity: 1;
+      background: #4CAF50;
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .step-desc {
+      color: var(--tg-theme-hint-color);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .btn:active {
+      opacity: 0.7;
+    }
+
+    .btn-primary {
+      background: var(--tg-theme-button-color);
+      color: var(--tg-theme-button-text-color);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--tg-theme-link-color);
+      border: 1px solid var(--tg-theme-link-color);
+    }
+
+    .btn + .btn {
+      margin-top: 12px;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .instruction-box {
+      background: var(--tg-theme-secondary-bg-color, #f5f5f5);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .instruction-box ol {
+      padding-left: 20px;
+    }
+
+    .instruction-box li {
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 4px;
+    }
+
+    .instruction-box code {
+      background: rgba(0,0,0,0.06);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      color: var(--tg-theme-hint-color);
+      margin-bottom: 6px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--tg-theme-hint-color);
+      border-radius: 8px;
+      font-size: 15px;
+      background: var(--tg-theme-bg-color);
+      color: var(--tg-theme-text-color);
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--tg-theme-button-color);
+    }
+
+    .status {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .status .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .status .message {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .error-text {
+      color: #e74c3c;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 16px 0;
+      color: var(--tg-theme-hint-color);
+      font-size: 13px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--tg-theme-hint-color);
+      opacity: 0.3;
+    }
+
+    .divider span {
+      padding: 0 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Running Coach</h1>
+      <p>intervals.icu 연동 설정</p>
+    </div>
+
+    <div class="step-indicator">
+      <div class="step-dot active" id="dot-1"></div>
+      <div class="step-dot" id="dot-2"></div>
+      <div class="step-dot" id="dot-3"></div>
+    </div>
+
+    <!-- Step 1: intervals.icu 가입/로그인 -->
+    <div class="step active" id="step-1">
+      <div class="step-title">1. intervals.icu 계정 준비</div>
+      <div class="step-desc">
+        intervals.icu는 무료 러닝 데이터 분석 플랫폼입니다.
+        이미 계정이 있다면 바로 다음 단계로 이동하세요.
+      </div>
+      <a href="https://intervals.icu" target="_blank" class="btn btn-primary">
+        intervals.icu 열기
+      </a>
+      <button class="btn btn-secondary" onclick="goToStep(2)">
+        이미 계정이 있어요 →
+      </button>
+    </div>
+
+    <!-- Step 2: API 키 복사 안내 -->
+    <div class="step" id="step-2">
+      <div class="step-title">2. API 키 복사</div>
+      <div class="step-desc">
+        intervals.icu에서 API 키를 복사해주세요.
+      </div>
+      <div class="instruction-box">
+        <ol>
+          <li>intervals.icu에 로그인</li>
+          <li>우측 상단 프로필 아이콘 클릭</li>
+          <li><code>Settings</code> 선택</li>
+          <li><code>Developer</code> 탭 클릭</li>
+          <li><code>API Key</code> 옆 복사 버튼 클릭</li>
+        </ol>
+      </div>
+      <a href="https://intervals.icu/settings" target="_blank" class="btn btn-primary">
+        Settings 페이지 열기
+      </a>
+      <button class="btn btn-secondary" onclick="goToStep(3)">
+        복사했어요 →
+      </button>
+    </div>
+
+    <!-- Step 3: API 키 입력 -->
+    <div class="step" id="step-3">
+      <div class="step-title">3. API 키 연동</div>
+      <div class="step-desc">
+        복사한 API 키를 가져와주세요.
+      </div>
+      <button class="btn btn-primary" id="btn-paste" onclick="pasteFromClipboard()">
+        클립보드에서 가져오기
+      </button>
+      <div class="divider"><span>또는 직접 입력</span></div>
+      <div class="input-group">
+        <label>API Key</label>
+        <input type="text" id="api-key-input" placeholder="API 키를 붙여넣기 하세요" autocomplete="off">
+      </div>
+      <button class="btn btn-primary" id="btn-submit" onclick="submitApiKey()">
+        연동하기
+      </button>
+      <div class="error-text" id="error-msg" style="display:none"></div>
+    </div>
+
+    <!-- Success State -->
+    <div class="step" id="step-success">
+      <div class="status">
+        <div class="icon">🎉</div>
+        <div class="step-title">연동 완료!</div>
+        <div class="message" id="success-msg">
+          intervals.icu 연동이 완료되었습니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Edge Function POST endpoint
+    const API_URL = 'https://dotsosqsftympgdescvz.supabase.co/functions/v1/rc-onboarding';
+
+    // Telegram WebApp 초기화
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    let currentStep = 1;
+
+    function goToStep(step) {
+      document.getElementById('step-' + currentStep)?.classList.remove('active');
+      document.getElementById('dot-' + currentStep)?.classList.remove('active');
+      document.getElementById('dot-' + currentStep)?.classList.add('done');
+
+      currentStep = step;
+      document.getElementById('step-' + step)?.classList.add('active');
+      document.getElementById('dot-' + step)?.classList.add('active');
+    }
+
+    async function pasteFromClipboard() {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text && text.trim()) {
+          document.getElementById('api-key-input').value = text.trim();
+          await submitApiKey();
+        } else {
+          showError('클립보드가 비어있습니다. API 키를 먼저 복사해주세요.');
+        }
+      } catch (err) {
+        console.warn('Clipboard API not available:', err);
+        showError('클립보드 접근이 불가합니다. 아래 입력란에 직접 붙여넣기 해주세요.');
+      }
+    }
+
+    async function submitApiKey() {
+      const apiKey = document.getElementById('api-key-input').value.trim();
+      if (!apiKey) {
+        showError('API 키를 입력해주세요.');
+        return;
+      }
+
+      if (apiKey.length < 10) {
+        showError('API 키가 너무 짧습니다. 올바른 키인지 확인해주세요.');
+        return;
+      }
+
+      const btnSubmit = document.getElementById('btn-submit');
+      const btnPaste = document.getElementById('btn-paste');
+      btnSubmit.disabled = true;
+      btnPaste.disabled = true;
+      btnSubmit.innerHTML = '<span class="spinner"></span>검증 중...';
+      hideError();
+
+      try {
+        const user = tg?.initDataUnsafe?.user;
+        if (!user?.id) {
+          showError('Telegram 인증 정보를 가져올 수 없습니다. Telegram에서 다시 열어주세요.');
+          resetButtons();
+          return;
+        }
+
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            telegram_user_id: user.id,
+            api_key: apiKey,
+            init_data: tg.initData,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          document.getElementById('success-msg').textContent =
+            '선수: ' + (result.athlete_name || result.athlete_id) + '\n연동이 완료되었습니다!';
+          goToStep('success');
+
+          setTimeout(() => {
+            if (tg) tg.close();
+          }, 1500);
+        } else {
+          showError(result.error || '연동에 실패했습니다. 다시 시도해주세요.');
+          resetButtons();
+        }
+      } catch (err) {
+        console.error('Submit error:', err);
+        showError('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+        resetButtons();
+      }
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error-msg');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function hideError() {
+      document.getElementById('error-msg').style.display = 'none';
+    }
+
+    function resetButtons() {
+      const btnSubmit = document.getElementById('btn-submit');
+      const btnPaste = document.getElementById('btn-paste');
+      btnSubmit.disabled = false;
+      btnPaste.disabled = false;
+      btnSubmit.textContent = '연동하기';
+    }
+  </script>
+</body>
+</html>

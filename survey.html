@@ -371,6 +371,12 @@
       border-color: var(--tg-theme-button-color);
       color: var(--tg-theme-button-color);
     }
+
+    .chip-recommend {
+      border-color: var(--tg-theme-button-color);
+      color: var(--tg-theme-button-color);
+      opacity: 0.85;
+    }
   </style>
 </head>
 <body>
@@ -412,7 +418,6 @@
       </div>
 
       <button class="btn btn-primary" onclick="goToStep(2)">다음</button>
-      <button class="btn btn-ghost" onclick="skipToEnd()">건너뛰기</button>
     </div>
 
     <!-- Step 2: 현재 러닝 -->
@@ -451,7 +456,6 @@
       <button class="btn btn-primary" onclick="goToStep(3)">다음</button>
       <div class="nav-row">
         <button class="btn btn-ghost" onclick="goToStep(1)">이전</button>
-        <button class="btn btn-ghost" onclick="skipToEnd()">건너뛰기</button>
       </div>
     </div>
 
@@ -471,6 +475,7 @@
           <div class="chip" data-value="galloway" onclick="selectSingleChip(this, 'method-chips')">갤러웨이</div>
           <div class="chip" data-value="hal_higdon" onclick="selectSingleChip(this, 'method-chips')">할 히든</div>
           <div class="chip" data-value="lydiard" onclick="selectSingleChip(this, 'method-chips')">리디어드</div>
+          <div class="chip chip-recommend" data-value="coach_recommend" onclick="selectSingleChip(this, 'method-chips')">코치에게 추천받기</div>
         </div>
       </div>
 
@@ -479,7 +484,6 @@
       <button class="btn btn-primary" onclick="goToStep(4)">다음</button>
       <div class="nav-row">
         <button class="btn btn-ghost" onclick="goToStep(2)">이전</button>
-        <button class="btn btn-ghost" onclick="skipToEnd()">건너뛰기</button>
       </div>
     </div>
 
@@ -515,7 +519,7 @@
       <div class="error-text" id="error-msg" style="display:none"></div>
       <div class="nav-row">
         <button class="btn btn-ghost" onclick="goToStep(3)">이전</button>
-        <button class="btn btn-ghost" onclick="skipToEnd()">건너뛰기</button>
+        <button class="btn btn-ghost" onclick="skipToEnd()">건너뛰고 완료</button>
       </div>
     </div>
 
@@ -586,13 +590,17 @@
         if (s.run_pattern_note) document.getElementById('run-pattern-note').value = s.run_pattern_note;
 
         // Step 3: training method
-        if (s.training_method && s.training_method !== 'none') {
+        if (s.training_method && s.training_method !== 'none' && s.training_method !== 'pending_recommend') {
           const methodChip = document.querySelector(`#method-chips .chip[data-value="${s.training_method}"]`);
           if (methodChip) {
             methodChip.classList.add('selected');
             const descEl = document.getElementById('method-desc');
-            if (descEl && METHOD_DESCS[s.training_method]) {
-              descEl.textContent = METHOD_DESCS[s.training_method];
+            if (descEl) {
+              if (s.training_method === 'coach_recommend') {
+                descEl.textContent = '프로필 완성 후 코치가 맞춤 훈련법을 추천해드려요.';
+              } else if (METHOD_DESCS[s.training_method]) {
+                descEl.textContent = METHOD_DESCS[s.training_method];
+              }
             }
           }
         }
@@ -690,7 +698,11 @@
       const descEl = document.getElementById('method-desc');
       if (descEl) {
         const val = el.classList.contains('selected') ? el.dataset.value : null;
-        descEl.textContent = val ? METHOD_DESCS[val] || '' : '';
+        if (val === 'coach_recommend') {
+          descEl.textContent = '프로필 완성 후 코치가 맞춤 훈련법을 추천해드려요.';
+        } else {
+          descEl.textContent = val ? METHOD_DESCS[val] || '' : '';
+        }
       }
     }
 

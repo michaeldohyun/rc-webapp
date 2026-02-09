@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Running Coach 프로필</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --tg-theme-bg-color: #ffffff;
+      --tg-theme-text-color: #000000;
+      --tg-theme-hint-color: #999999;
+      --tg-theme-link-color: #2678b6;
+      --tg-theme-button-color: #2678b6;
+      --tg-theme-button-text-color: #ffffff;
+      --tg-theme-secondary-bg-color: #f0f0f0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--tg-theme-bg-color);
+      color: var(--tg-theme-text-color);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      color: var(--tg-theme-hint-color);
+      font-size: 14px;
+    }
+
+    /* Steps */
+    .step {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Step indicator */
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .step-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--tg-theme-hint-color);
+      opacity: 0.3;
+      transition: all 0.3s;
+    }
+
+    .step-dot.active {
+      opacity: 1;
+      background: var(--tg-theme-button-color);
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    .step-dot.done {
+      opacity: 1;
+      background: #4CAF50;
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .step-desc {
+      color: var(--tg-theme-hint-color);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: opacity 0.2s;
+    }
+
+    .btn:active { opacity: 0.7; }
+
+    .btn-primary {
+      background: var(--tg-theme-button-color);
+      color: var(--tg-theme-button-text-color);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--tg-theme-hint-color);
+      font-size: 14px;
+      font-weight: 400;
+      padding: 10px;
+    }
+
+    .btn + .btn { margin-top: 10px; }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Input group */
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .input-group input,
+    .input-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--tg-theme-hint-color);
+      border-radius: 10px;
+      font-size: 15px;
+      background: var(--tg-theme-bg-color);
+      color: var(--tg-theme-text-color);
+      font-family: inherit;
+    }
+
+    .input-group textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .input-group input:focus,
+    .input-group textarea:focus {
+      outline: none;
+      border-color: var(--tg-theme-button-color);
+    }
+
+    .input-group .hint {
+      font-size: 12px;
+      color: var(--tg-theme-hint-color);
+      margin-top: 4px;
+    }
+
+    /* Tab selector */
+    .tab-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .tab-selector label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      width: 100%;
+    }
+
+    .tab-options {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .tab-option {
+      flex: 1;
+      padding: 10px 4px;
+      border: 1.5px solid var(--tg-theme-hint-color);
+      border-radius: 10px;
+      text-align: center;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--tg-theme-text-color);
+      opacity: 0.7;
+    }
+
+    .tab-option.selected {
+      border-color: var(--tg-theme-button-color);
+      background: rgba(38, 120, 182, 0.08);
+      opacity: 1;
+      font-weight: 600;
+    }
+
+    /* Toggle chips */
+    .chip-group {
+      margin-bottom: 20px;
+    }
+
+    .chip-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .chip-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 8px 14px;
+      border: 1.5px solid var(--tg-theme-hint-color);
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--tg-theme-text-color);
+      opacity: 0.7;
+    }
+
+    .chip.selected {
+      border-color: var(--tg-theme-button-color);
+      background: rgba(38, 120, 182, 0.08);
+      opacity: 1;
+      font-weight: 600;
+    }
+
+    /* Card selector */
+    .card-group {
+      margin-bottom: 20px;
+    }
+
+    .card-group > label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .card-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border: 1.5px solid var(--tg-theme-hint-color);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      opacity: 0.7;
+    }
+
+    .card-option.selected {
+      border-color: var(--tg-theme-button-color);
+      background: rgba(38, 120, 182, 0.08);
+      opacity: 1;
+    }
+
+    .card-option .card-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .card-option .card-label {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .card-option.selected .card-label {
+      font-weight: 600;
+    }
+
+    /* Navigation row */
+    .nav-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .nav-row .btn {
+      flex: 1;
+    }
+
+    /* Status / complete */
+    .status {
+      text-align: center;
+      padding: 32px 0;
+    }
+
+    .status .icon {
+      font-size: 56px;
+      margin-bottom: 16px;
+    }
+
+    .status .message {
+      font-size: 14px;
+      color: var(--tg-theme-hint-color);
+      line-height: 1.6;
+      margin-top: 12px;
+    }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .error-text {
+      color: #e74c3c;
+      font-size: 13px;
+      margin-top: 8px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>러닝 프로필</h1>
+      <p>코치가 당신에게 맞는 조언을 드릴 수 있도록</p>
+    </div>
+
+    <div class="step-indicator">
+      <div class="step-dot active" id="dot-1"></div>
+      <div class="step-dot" id="dot-2"></div>
+      <div class="step-dot" id="dot-3"></div>
+    </div>
+
+    <!-- Step 1: 목표 -->
+    <div class="step active" id="step-1">
+      <div class="step-title">어떤 목표를 가지고 계세요?</div>
+      <div class="step-desc">자유롭게 적어주세요. 구체적일수록 좋아요.</div>
+
+      <div class="input-group">
+        <label>러닝 목표</label>
+        <input type="text" id="goal-text" placeholder="예: 풀마라톤 완주, 5K 25분, 꾸준히 건강하게">
+      </div>
+
+      <div class="input-group">
+        <label>목표 시점</label>
+        <input type="text" id="target-date" placeholder="예: 2025년 3월, 올해 안에, 아직 미정">
+        <div class="hint">비워도 괜찮아요</div>
+      </div>
+
+      <button class="btn btn-primary" onclick="goToStep(2)">다음</button>
+      <button class="btn btn-ghost" onclick="skipToEnd()">건너뛰기</button>
+    </div>
+
+    <!-- Step 2: 현재 러닝 -->
+    <div class="step" id="step-2">
+      <div class="step-title">지금 러닝은 어떻게 하고 계세요?</div>
+      <div class="step-desc">대략적으로만 알려주셔도 돼요.</div>
+
+      <div class="tab-selector">
+        <div>
+          <label>주간 러닝 횟수</label>
+          <div class="tab-options">
+            <div class="tab-option" data-value="1-2" onclick="selectTab(this)">1~2회</div>
+            <div class="tab-option" data-value="3-4" onclick="selectTab(this)">3~4회</div>
+            <div class="tab-option" data-value="5+" onclick="selectTab(this)">5회+</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chip-group">
+        <label>주로 뛰는 시간대</label>
+        <div class="chip-options">
+          <div class="chip" data-value="weekday_morning" onclick="toggleChip(this)">평일 아침</div>
+          <div class="chip" data-value="weekday_evening" onclick="toggleChip(this)">평일 저녁</div>
+          <div class="chip" data-value="weekend_morning" onclick="toggleChip(this)">주말 아침</div>
+          <div class="chip" data-value="weekend_afternoon" onclick="toggleChip(this)">주말 오후</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>메모 (선택)</label>
+        <textarea id="run-pattern-note" placeholder="예: 주말에만 장거리, 존2 위주로 훈련 중" rows="2"></textarea>
+      </div>
+
+      <button class="btn btn-primary" onclick="goToStep(3)">다음</button>
+      <div class="nav-row">
+        <button class="btn btn-ghost" onclick="goToStep(1)">이전</button>
+        <button class="btn btn-ghost" onclick="skipToEnd()">건너뛰기</button>
+      </div>
+    </div>
+
+    <!-- Step 3: 코칭 선호 -->
+    <div class="step" id="step-3">
+      <div class="step-title">어떤 코칭을 원하시나요?</div>
+      <div class="step-desc">코칭 방향을 맞추는 데 참고할게요.</div>
+
+      <div class="card-group">
+        <label>가장 중요한 것</label>
+        <div class="card-options" id="priority-cards">
+          <div class="card-option" data-value="injury_prevention" onclick="selectCard(this, 'priority-cards')">
+            <span class="card-icon">&#x1F6E1;&#xFE0F;</span>
+            <span class="card-label">부상 없이 안전하게</span>
+          </div>
+          <div class="card-option" data-value="performance" onclick="selectCard(this, 'priority-cards')">
+            <span class="card-icon">&#x26A1;</span>
+            <span class="card-label">기록/페이스 향상</span>
+          </div>
+          <div class="card-option" data-value="consistency" onclick="selectCard(this, 'priority-cards')">
+            <span class="card-icon">&#x1F504;</span>
+            <span class="card-label">꾸준한 습관 만들기</span>
+          </div>
+          <div class="card-option" data-value="race_prep" onclick="selectCard(this, 'priority-cards')">
+            <span class="card-icon">&#x1F3AF;</span>
+            <span class="card-label">대회 준비</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-group">
+        <label>훈련 계획 스타일</label>
+        <div class="card-options" id="style-cards">
+          <div class="card-option" data-value="structured" onclick="selectCard(this, 'style-cards')">
+            <span class="card-icon">&#x1F4CB;</span>
+            <span class="card-label">계획을 세우고 지키는 편</span>
+          </div>
+          <div class="card-option" data-value="flexible" onclick="selectCard(this, 'style-cards')">
+            <span class="card-icon">&#x1F30A;</span>
+            <span class="card-label">그때그때 유연하게</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>추가 요청 (선택)</label>
+        <textarea id="additional-note" placeholder="코치에게 미리 알려주고 싶은 것이 있다면" rows="2"></textarea>
+      </div>
+
+      <button class="btn btn-primary" id="btn-submit" onclick="submitSurvey()">완료</button>
+      <div class="error-text" id="error-msg" style="display:none"></div>
+      <div class="nav-row">
+        <button class="btn btn-ghost" onclick="goToStep(2)">이전</button>
+        <button class="btn btn-ghost" onclick="skipToEnd()">건너뛰기</button>
+      </div>
+    </div>
+
+    <!-- Complete -->
+    <div class="step" id="step-complete">
+      <div class="status">
+        <div class="icon">&#x1F3C3;</div>
+        <div class="step-title">프로필 설정 완료!</div>
+        <div class="message">
+          이제 봇에게 자유롭게 말을 걸어보세요.<br>
+          당신에게 맞는 코칭을 시작할게요.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'https://dotsosqsftympgdescvz.supabase.co/functions/v1/rc-onboarding';
+
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    let currentStep = 1;
+
+    // --- Navigation ---
+
+    function goToStep(step) {
+      const prev = currentStep;
+      document.getElementById('step-' + prev)?.classList.remove('active');
+      document.getElementById('dot-' + prev)?.classList.remove('active');
+
+      if (typeof step === 'number' && typeof prev === 'number' && step < prev) {
+        document.getElementById('dot-' + prev)?.classList.remove('done');
+        for (let i = step; i <= prev; i++) {
+          document.getElementById('dot-' + i)?.classList.remove('done');
+        }
+      } else if (typeof prev === 'number') {
+        document.getElementById('dot-' + prev)?.classList.add('done');
+      }
+
+      currentStep = step;
+      document.getElementById('step-' + step)?.classList.add('active');
+      if (typeof step === 'number') {
+        document.getElementById('dot-' + step)?.classList.add('active');
+      }
+    }
+
+    function skipToEnd() {
+      submitSurvey();
+    }
+
+    // --- Tab selector ---
+
+    function selectTab(el) {
+      const siblings = el.parentElement.querySelectorAll('.tab-option');
+      siblings.forEach(s => s.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    // --- Toggle chips ---
+
+    function toggleChip(el) {
+      el.classList.toggle('selected');
+    }
+
+    // --- Card selector ---
+
+    function selectCard(el, groupId) {
+      const group = document.getElementById(groupId);
+      group.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    // --- Collect data ---
+
+    function collectSurveyData() {
+      const data = { survey_version: '1' };
+
+      // Step 1
+      const goalText = document.getElementById('goal-text').value.trim();
+      if (goalText) data.goal_text = goalText;
+
+      const targetDate = document.getElementById('target-date').value.trim();
+      if (targetDate) data.target_date = targetDate;
+
+      // Step 2
+      const freqTab = document.querySelector('.tab-option.selected');
+      if (freqTab) data.weekly_frequency = freqTab.dataset.value;
+
+      const selectedChips = document.querySelectorAll('.chip.selected');
+      if (selectedChips.length > 0) {
+        data.run_times = Array.from(selectedChips).map(c => c.dataset.value);
+      }
+
+      const patternNote = document.getElementById('run-pattern-note').value.trim();
+      if (patternNote) data.run_pattern_note = patternNote;
+
+      // Step 3
+      const priorityCard = document.querySelector('#priority-cards .card-option.selected');
+      if (priorityCard) data.priority = priorityCard.dataset.value;
+
+      const styleCard = document.querySelector('#style-cards .card-option.selected');
+      if (styleCard) data.plan_style = styleCard.dataset.value;
+
+      const additionalNote = document.getElementById('additional-note').value.trim();
+      if (additionalNote) data.additional_note = additionalNote;
+
+      return data;
+    }
+
+    // --- Submit ---
+
+    async function submitSurvey() {
+      const surveyData = collectSurveyData();
+
+      const user = tg?.initDataUnsafe?.user;
+      if (!user?.id) {
+        showComplete();
+        return;
+      }
+
+      const btnSubmit = document.getElementById('btn-submit');
+      if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<span class="spinner"></span>저장 중...';
+      }
+      hideError();
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'save_survey',
+            telegram_user_id: user.id,
+            init_data: tg.initData,
+            survey: surveyData,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          showComplete();
+        } else {
+          showError(result.error || '저장에 실패했습니다.');
+          resetSubmitBtn();
+        }
+      } catch (err) {
+        console.error('Survey submit error:', err);
+        // 네트워크 오류 시에도 완료 처리 (설문은 필수가 아님)
+        showComplete();
+      }
+    }
+
+    function showComplete() {
+      goToStep('complete');
+      setTimeout(() => {
+        if (tg) tg.close();
+      }, 2000);
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error-msg');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function hideError() {
+      const el = document.getElementById('error-msg');
+      if (el) el.style.display = 'none';
+    }
+
+    function resetSubmitBtn() {
+      const btnSubmit = document.getElementById('btn-submit');
+      if (btnSubmit) {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = '완료';
+      }
+    }
+  </script>
+</body>
+</html>

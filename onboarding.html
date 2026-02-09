@@ -420,19 +420,10 @@
       margin-top: 16px;
       line-height: 1.5;
     }
-
-    .back-link {
-      display: inline-block;
-      color: var(--tg-theme-hint-color);
-      font-size: 13px;
-      text-decoration: none;
-      margin-bottom: 16px;
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <a href="index.html" class="back-link">← 소개 페이지로</a>
     <div class="header">
       <h1>Running Coach</h1>
       <p>intervals.icu 연동 설정</p>
@@ -664,8 +655,8 @@
           goToStep('success');
 
           setTimeout(() => {
-            window.location.href = 'survey.html';
-          }, 1500);
+            if (tg) tg.close();
+          }, 2000);
         } else {
           showError(result.error || '연동에 실패했습니다. 다시 시도해주세요.');
           resetButtons();

@@ -244,7 +244,7 @@
 <body>
   <div class="container">
     <!-- Back -->
-    <a class="back-btn animate" onclick="window.location.href='index.html'">&larr; 돌아가기</a>
+    <a class="back-btn animate" onclick="closeFaq()">&larr; 돌아가기</a>
 
     <!-- Header -->
     <div class="page-header animate">
@@ -323,10 +323,27 @@
       <div class="category-title"><span class="icon">🤖</span> 봇 사용</div>
       <div class="faq-list">
         <details>
-          <summary>리포트는 언제 오나요?</summary>
+          <summary>어떤 명령어가 있나요?</summary>
           <div class="answer">
-            <p>러닝 기록이 있는 날, <span class="highlight">매일 밤 자동으로</span> 분석 리포트를 보내드립니다.</p>
-            <p>러닝이 없는 날에는 리포트가 발송되지 않아요.</p>
+            <p>3가지 명령어를 사용할 수 있어요.</p>
+            <ol class="step-list">
+              <li><span class="highlight">/rec</span> — AI 훈련법 추천 (프로필 + 러닝 데이터 기반 맞춤 추천)</li>
+              <li><span class="highlight">/p</span> — 러닝 프로필 조회 및 수정</li>
+              <li><span class="highlight">/h</span> — 도움말 + 자주 묻는 질문</li>
+            </ol>
+            <p>명령어 외에 자유롭게 메시지를 보내면 <span class="highlight">Q&A</span>로 답변해드려요.</p>
+          </div>
+        </details>
+        <details>
+          <summary>훈련법 추천은 어떻게 받나요?</summary>
+          <div class="answer">
+            <p><span class="highlight">/rec</span> 명령어를 입력하면 AI가 분석을 시작합니다.</p>
+            <ol class="step-list">
+              <li>러닝 프로필 (목표, 빈도, 우선순위 등)을 분석</li>
+              <li>최근 러닝 기록 (페이스, 심박수, 거리 등)을 분석</li>
+              <li>맞춤 훈련법을 추천하고 이유를 설명</li>
+            </ol>
+            <p>추천 결과에 "프로필에 반영하기" 버튼이 나타나면, 탭하여 바로 적용할 수 있어요.</p>
           </div>
         </details>
         <details>
@@ -337,7 +354,6 @@
               <li>"지난주 총 거리가 얼마야?"</li>
               <li>"최근 페이스 변화 추이 알려줘"</li>
               <li>"다음 하프마라톤 대비 훈련 계획 짜줘"</li>
-              <li>"오늘 날씨에 러닝해도 될까?"</li>
               <li>"심박수가 너무 높은데 괜찮아?"</li>
             </ol>
             <p>러닝에 관한 질문이면 무엇이든 답변해드려요.</p>
@@ -358,7 +374,7 @@
   <!-- Fixed CTA -->
   <div class="cta animate animate-d3">
     <div class="cta-inner">
-      <button class="btn-cta" onclick="window.location.href='connect.html'">시작하기</button>
+      <button class="btn-cta" onclick="closeFaq()">닫기</button>
     </div>
   </div>
 
@@ -367,6 +383,14 @@
     if (tg) {
       tg.ready();
       tg.expand();
+    }
+
+    function closeFaq() {
+      if (tg) {
+        tg.close();
+      } else {
+        window.history.back();
+      }
     }
   </script>
 </body>

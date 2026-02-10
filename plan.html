@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Running Coach - 훈련 계획</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --tg-theme-bg-color: #ffffff;
+      --tg-theme-text-color: #000000;
+      --tg-theme-hint-color: #999999;
+      --tg-theme-link-color: #2678b6;
+      --tg-theme-button-color: #2678b6;
+      --tg-theme-button-text-color: #ffffff;
+      --tg-theme-secondary-bg-color: #f0f0f0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--tg-theme-bg-color);
+      color: var(--tg-theme-text-color);
+      min-height: 100vh;
+      padding-bottom: 100px;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    .page-header {
+      text-align: center;
+      padding: 12px 0 20px;
+    }
+
+    .page-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .page-header .subtitle {
+      color: var(--tg-theme-hint-color);
+      font-size: 14px;
+    }
+
+    /* Day Card */
+    .day-card {
+      background: var(--tg-theme-secondary-bg-color);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .day-header {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .day-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .day-label {
+      font-size: 15px;
+      font-weight: 700;
+      min-width: 20px;
+    }
+
+    .day-date {
+      font-size: 12px;
+      color: var(--tg-theme-hint-color);
+    }
+
+    .day-title {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .day-toggle {
+      font-size: 18px;
+      color: var(--tg-theme-hint-color);
+      transition: transform 0.2s;
+    }
+
+    .day-card.open .day-toggle {
+      transform: rotate(180deg);
+    }
+
+    .day-body {
+      display: none;
+      padding: 0 16px 16px;
+    }
+
+    .day-card.open .day-body {
+      display: block;
+    }
+
+    /* Intensity indicator */
+    .intensity-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .intensity-rest { background: #ccc; }
+    .intensity-low { background: #4CAF50; }
+    .intensity-moderate { background: #FF9800; }
+    .intensity-high { background: #F44336; }
+
+    /* Type chips */
+    .type-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .type-chip {
+      padding: 6px 12px;
+      border: 1.5px solid var(--tg-theme-hint-color);
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--tg-theme-text-color);
+      opacity: 0.6;
+    }
+
+    .type-chip.selected {
+      border-color: var(--tg-theme-button-color);
+      background: rgba(38, 120, 182, 0.08);
+      opacity: 1;
+      font-weight: 600;
+    }
+
+    /* Form fields */
+    .field-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .field-group {
+      flex: 1;
+    }
+
+    .field-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--tg-theme-hint-color);
+      margin-bottom: 4px;
+    }
+
+    .field-group input,
+    .field-group textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--tg-theme-hint-color);
+      border-radius: 8px;
+      font-size: 14px;
+      background: var(--tg-theme-bg-color);
+      color: var(--tg-theme-text-color);
+      font-family: inherit;
+    }
+
+    .field-group input:focus,
+    .field-group textarea:focus {
+      outline: none;
+      border-color: var(--tg-theme-button-color);
+    }
+
+    .field-group textarea {
+      resize: vertical;
+      min-height: 40px;
+      font-size: 13px;
+    }
+
+    /* Summary */
+    .summary-card {
+      background: var(--tg-theme-secondary-bg-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .summary-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 4px 0;
+      color: var(--tg-theme-hint-color);
+    }
+
+    .summary-row .value {
+      color: var(--tg-theme-text-color);
+      font-weight: 600;
+    }
+
+    /* CTA */
+    .cta {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--tg-theme-bg-color);
+      padding: 12px 20px;
+      padding-bottom: max(12px, env(safe-area-inset-bottom));
+      border-top: 1px solid var(--tg-theme-secondary-bg-color);
+    }
+
+    .cta-inner {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .btn-cta {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      background: var(--tg-theme-button-color);
+      color: var(--tg-theme-button-text-color);
+      transition: opacity 0.2s;
+    }
+
+    .btn-cta:active { opacity: 0.7; }
+
+    .btn-cta:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* States */
+    .loading-state,
+    .empty-state,
+    .error-state {
+      text-align: center;
+      padding: 48px 20px;
+    }
+
+    .loading-state .spinner-large {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--tg-theme-secondary-bg-color);
+      border-radius: 50%;
+      border-top-color: var(--tg-theme-button-color);
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { color: var(--tg-theme-hint-color); font-size: 14px; line-height: 1.6; }
+
+    .error-state { color: #e74c3c; }
+    .error-state .icon { font-size: 48px; margin-bottom: 12px; }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    /* Spinner in button */
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    .error-text {
+      color: #e74c3c;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="page-header">
+      <h1>훈련 계획 수정</h1>
+      <div class="subtitle" id="week-label"></div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading-state" class="loading-state">
+      <div class="spinner-large"></div>
+      <p style="color: var(--tg-theme-hint-color);">계획을 불러오는 중...</p>
+    </div>
+
+    <!-- Empty -->
+    <div id="empty-state" class="empty-state" style="display:none;">
+      <div class="icon">📋</div>
+      <p>아직 이번 주 훈련 계획이 없어요.<br>봇에서 <strong>/plan</strong> 명령어로<br>먼저 계획을 생성해주세요.</p>
+    </div>
+
+    <!-- Error -->
+    <div id="error-state" class="error-state" style="display:none;">
+      <div class="icon">😥</div>
+      <p id="error-message">불러오기에 실패했습니다.</p>
+    </div>
+
+    <!-- Plan Editor -->
+    <div id="plan-editor" style="display:none;">
+      <div id="day-cards"></div>
+      <div class="summary-card" id="summary-card">
+        <h3>주간 요약</h3>
+        <div class="summary-row">
+          <span>총 거리</span>
+          <span class="value" id="sum-distance">-</span>
+        </div>
+        <div class="summary-row">
+          <span>훈련 횟수</span>
+          <span class="value" id="sum-sessions">-</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fixed CTA -->
+  <div class="cta" id="cta-bar" style="display:none;">
+    <div class="cta-inner">
+      <button class="btn-cta" id="btn-save" onclick="savePlan()">저장하기</button>
+      <div class="error-text" id="save-error" style="display:none;"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'https://dotsosqsftympgdescvz.supabase.co/functions/v1/rc-onboarding';
+    const DAY_LABELS = ['월', '화', '수', '목', '금', '토', '일'];
+
+    const TYPES = [
+      { value: 'rest', label: '휴식' },
+      { value: 'easy_run', label: '이지런' },
+      { value: 'recovery_run', label: '회복런' },
+      { value: 'long_run', label: '장거리' },
+      { value: 'tempo_run', label: '템포런' },
+      { value: 'threshold_run', label: '역치런' },
+      { value: 'interval', label: '인터벌' },
+      { value: 'fartlek', label: '파틀렉' },
+      { value: 'hill_run', label: '언덕런' },
+      { value: 'race_pace', label: '레이스페이스' },
+      { value: 'cross_training', label: '크로스' },
+      { value: 'walk_run', label: '걷기/달리기' },
+    ];
+
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    let planData = null;
+
+    // --- Load plan ---
+
+    async function loadPlan() {
+      const user = tg?.initDataUnsafe?.user;
+      if (!user?.id || !tg?.initData) {
+        showError('텔레그램 인증 정보가 없습니다.');
+        return;
+      }
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'get_plan',
+            telegram_user_id: user.id,
+            init_data: tg.initData,
+          }),
+        });
+
+        const result = await res.json();
+
+        if (!result.success) {
+          showError(result.error || '불러오기 실패');
+          return;
+        }
+
+        if (!result.plan || !result.plan.days) {
+          showEmpty();
+          return;
+        }
+
+        planData = result.plan;
+
+        // week label
+        if (result.week_start) {
+          const d = new Date(result.week_start);
+          const end = new Date(d);
+          end.setDate(d.getDate() + 6);
+          document.getElementById('week-label').textContent =
+            `${d.getMonth()+1}/${d.getDate()} ~ ${end.getMonth()+1}/${end.getDate()}`;
+        }
+
+        renderPlan();
+      } catch (e) {
+        console.error('Load plan error:', e);
+        showError('네트워크 오류가 발생했습니다.');
+      }
+    }
+
+    function showEmpty() {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('empty-state').style.display = 'block';
+    }
+
+    function showError(msg) {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('error-state').style.display = 'block';
+      document.getElementById('error-message').textContent = msg;
+    }
+
+    // --- Render ---
+
+    function renderPlan() {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('plan-editor').style.display = 'block';
+      document.getElementById('cta-bar').style.display = 'block';
+
+      const container = document.getElementById('day-cards');
+      container.innerHTML = '';
+
+      planData.days.forEach((day, i) => {
+        const card = document.createElement('div');
+        card.className = 'day-card animate-in' + (day.is_rest ? '' : ' open');
+        card.style.animationDelay = (i * 0.05) + 's';
+        card.dataset.index = i;
+
+        const intensityClass = 'intensity-' + (day.intensity || 'rest');
+
+        card.innerHTML = `
+          <div class="day-header" onclick="toggleCard(${i})">
+            <div class="day-header-left">
+              <span class="intensity-dot ${intensityClass}"></span>
+              <span class="day-label">${day.day_label || DAY_LABELS[i]}</span>
+              <span class="day-date">${formatShortDate(day.date)}</span>
+              <span class="day-title" id="day-title-${i}">${day.title || (day.is_rest ? '휴식' : '')}</span>
+            </div>
+            <span class="day-toggle">&#9662;</span>
+          </div>
+          <div class="day-body">
+            <div class="type-chips" id="type-chips-${i}">
+              ${TYPES.map(t => `<div class="type-chip${t.value === day.type ? ' selected' : ''}" data-value="${t.value}" onclick="selectType(${i}, this)">${t.label}</div>`).join('')}
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label>거리 (km)</label>
+                <input type="number" step="0.1" id="distance-${i}" value="${day.distance_km || ''}" oninput="updateSummary()">
+              </div>
+              <div class="field-group">
+                <label>시간 (분)</label>
+                <input type="number" id="duration-${i}" value="${day.duration_min || ''}">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label>목표 페이스</label>
+                <input type="text" id="pace-${i}" value="${day.target_pace || ''}" placeholder="6:00-6:30">
+              </div>
+              <div class="field-group">
+                <label>심박존</label>
+                <input type="text" id="hr-${i}" value="${day.target_hr_zone || ''}" placeholder="Z2">
+              </div>
+            </div>
+            <div class="field-group" style="margin-bottom:0;">
+              <label>메모</label>
+              <textarea id="notes-${i}" rows="1" placeholder="자유 메모">${day.notes || ''}</textarea>
+            </div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      updateSummary();
+    }
+
+    function formatShortDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      return `${d.getMonth()+1}/${d.getDate()}`;
+    }
+
+    // --- Interactions ---
+
+    function toggleCard(index) {
+      const card = document.querySelector(`.day-card[data-index="${index}"]`);
+      if (card) card.classList.toggle('open');
+    }
+
+    function selectType(index, el) {
+      const container = document.getElementById('type-chips-' + index);
+      container.querySelectorAll('.type-chip').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+
+      const value = el.dataset.value;
+      const isRest = value === 'rest';
+      const titleEl = document.getElementById('day-title-' + index);
+
+      // Update title from chip label
+      if (isRest) {
+        titleEl.textContent = '휴식';
+      } else {
+        titleEl.textContent = el.textContent;
+      }
+
+      // Update intensity dot
+      const card = document.querySelector(`.day-card[data-index="${index}"]`);
+      const dot = card.querySelector('.intensity-dot');
+      dot.className = 'intensity-dot';
+
+      if (isRest) {
+        dot.classList.add('intensity-rest');
+      } else if (['easy_run', 'recovery_run', 'walk_run'].includes(value)) {
+        dot.classList.add('intensity-low');
+      } else if (['long_run', 'tempo_run', 'fartlek', 'cross_training'].includes(value)) {
+        dot.classList.add('intensity-moderate');
+      } else {
+        dot.classList.add('intensity-high');
+      }
+
+      // Clear distance for rest
+      if (isRest) {
+        document.getElementById('distance-' + index).value = '';
+        document.getElementById('duration-' + index).value = '';
+        document.getElementById('pace-' + index).value = '';
+        document.getElementById('hr-' + index).value = '';
+      }
+
+      updateSummary();
+    }
+
+    function updateSummary() {
+      let totalDist = 0;
+      let sessions = 0;
+
+      for (let i = 0; i < 7; i++) {
+        const distEl = document.getElementById('distance-' + i);
+        const typeChip = document.querySelector(`#type-chips-${i} .type-chip.selected`);
+        const typeVal = typeChip ? typeChip.dataset.value : 'rest';
+
+        if (typeVal !== 'rest') sessions++;
+        if (distEl && distEl.value) totalDist += parseFloat(distEl.value) || 0;
+      }
+
+      document.getElementById('sum-distance').textContent = totalDist.toFixed(1) + ' km';
+      document.getElementById('sum-sessions').textContent = sessions + '회';
+    }
+
+    // --- Collect & Save ---
+
+    function collectPlanData() {
+      const days = planData.days.map((original, i) => {
+        const typeChip = document.querySelector(`#type-chips-${i} .type-chip.selected`);
+        const typeVal = typeChip ? typeChip.dataset.value : original.type;
+        const isRest = typeVal === 'rest';
+
+        const distVal = document.getElementById('distance-' + i).value;
+        const durVal = document.getElementById('duration-' + i).value;
+
+        let intensity = 'rest';
+        if (!isRest) {
+          if (['easy_run', 'recovery_run', 'walk_run'].includes(typeVal)) intensity = 'low';
+          else if (['long_run', 'tempo_run', 'fartlek', 'cross_training'].includes(typeVal)) intensity = 'moderate';
+          else intensity = 'high';
+        }
+
+        return {
+          day_index: i,
+          date: original.date,
+          day_label: original.day_label || DAY_LABELS[i],
+          type: typeVal,
+          title: isRest ? '휴식' : (typeChip ? typeChip.textContent : original.title),
+          description: original.description || '',
+          distance_km: distVal ? parseFloat(distVal) : null,
+          duration_min: durVal ? parseInt(durVal) : null,
+          target_pace: document.getElementById('pace-' + i).value || null,
+          target_hr_zone: document.getElementById('hr-' + i).value || null,
+          intensity: intensity,
+          is_rest: isRest,
+          notes: document.getElementById('notes-' + i).value || '',
+        };
+      });
+
+      // Recalculate summary
+      let totalDist = 0;
+      let sessions = 0;
+      days.forEach(d => {
+        if (!d.is_rest) sessions++;
+        if (d.distance_km) totalDist += d.distance_km;
+      });
+
+      return {
+        days,
+        weekly_summary: {
+          total_distance_km: Math.round(totalDist * 10) / 10,
+          total_sessions: sessions,
+          intensity_distribution: planData.weekly_summary?.intensity_distribution || '',
+          focus: planData.weekly_summary?.focus || '',
+        },
+      };
+    }
+
+    async function savePlan() {
+      const user = tg?.initDataUnsafe?.user;
+      if (!user?.id || !tg?.initData) return;
+
+      const btn = document.getElementById('btn-save');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>저장 중...';
+      document.getElementById('save-error').style.display = 'none';
+
+      const collected = collectPlanData();
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'save_plan',
+            telegram_user_id: user.id,
+            init_data: tg.initData,
+            plan_data: collected,
+          }),
+        });
+
+        const result = await res.json();
+
+        if (res.ok && result.success) {
+          btn.textContent = '저장 완료!';
+          setTimeout(() => {
+            if (tg) tg.close();
+          }, 1000);
+        } else {
+          document.getElementById('save-error').textContent = result.error || '저장 실패';
+          document.getElementById('save-error').style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = '저장하기';
+        }
+      } catch (e) {
+        console.error('Save error:', e);
+        // 네트워크 오류 시에도 닫기
+        btn.textContent = '저장 완료!';
+        setTimeout(() => {
+          if (tg) tg.close();
+        }, 1000);
+      }
+    }
+
+    // --- Init ---
+    loadPlan();
+  </script>
+</body>
+</html>

@@ -372,11 +372,6 @@
       color: var(--tg-theme-button-color);
     }
 
-    .chip-recommend {
-      border-color: var(--tg-theme-button-color);
-      color: var(--tg-theme-button-color);
-      opacity: 0.85;
-    }
   </style>
 </head>
 <body>
@@ -390,7 +385,6 @@
       <div class="step-dot active" id="dot-1"></div>
       <div class="step-dot" id="dot-2"></div>
       <div class="step-dot" id="dot-3"></div>
-      <div class="step-dot" id="dot-4"></div>
     </div>
 
     <!-- Step 1: 목표 -->
@@ -459,36 +453,8 @@
       </div>
     </div>
 
-    <!-- Step 3: 훈련법 -->
+    <!-- Step 3: 코칭 선호 -->
     <div class="step" id="step-3">
-      <div class="step-title">적용하고 싶은 훈련법이 있나요?</div>
-      <div class="step-desc">잘 모르겠다면 선택하지 않고 넘어가도 괜찮아요.</div>
-
-      <div class="chip-group">
-        <label>훈련법</label>
-        <div class="chip-options" id="method-chips">
-          <div class="chip" data-value="80_20" onclick="selectSingleChip(this, 'method-chips')">80/20 러닝</div>
-          <div class="chip" data-value="jack_daniels" onclick="selectSingleChip(this, 'method-chips')">잭 다니엘스</div>
-          <div class="chip" data-value="maf" onclick="selectSingleChip(this, 'method-chips')">MAF 저심박</div>
-          <div class="chip" data-value="pfitzinger" onclick="selectSingleChip(this, 'method-chips')">피치진저</div>
-          <div class="chip" data-value="hansons" onclick="selectSingleChip(this, 'method-chips')">한슨</div>
-          <div class="chip" data-value="galloway" onclick="selectSingleChip(this, 'method-chips')">갤러웨이</div>
-          <div class="chip" data-value="hal_higdon" onclick="selectSingleChip(this, 'method-chips')">할 히든</div>
-          <div class="chip" data-value="lydiard" onclick="selectSingleChip(this, 'method-chips')">리디어드</div>
-          <div class="chip chip-recommend" data-value="coach_recommend" onclick="selectSingleChip(this, 'method-chips')">코치에게 추천받기</div>
-        </div>
-      </div>
-
-      <div id="method-desc" style="font-size:13px; color:var(--tg-theme-hint-color); line-height:1.5; margin-bottom:20px; min-height:40px;"></div>
-
-      <button class="btn btn-primary" onclick="goToStep(4)">다음</button>
-      <div class="nav-row">
-        <button class="btn btn-ghost" onclick="goToStep(2)">이전</button>
-      </div>
-    </div>
-
-    <!-- Step 4: 코칭 선호 -->
-    <div class="step" id="step-4">
       <div class="step-title">어떤 코칭을 원하시나요?</div>
       <div class="step-desc">코칭 방향을 맞추는 데 참고할게요.</div>
 
@@ -518,8 +484,7 @@
       <button class="btn btn-primary" id="btn-submit" onclick="submitSurvey()">완료</button>
       <div class="error-text" id="error-msg" style="display:none"></div>
       <div class="nav-row">
-        <button class="btn btn-ghost" onclick="goToStep(3)">이전</button>
-        <button class="btn btn-ghost" onclick="skipToEnd()">건너뛰고 완료</button>
+        <button class="btn btn-ghost" onclick="goToStep(2)">이전</button>
       </div>
     </div>
 
@@ -529,8 +494,8 @@
         <div class="icon">&#x1F3C3;</div>
         <div class="step-title">프로필 설정 완료!</div>
         <div class="message">
-          이제 봇에게 자유롭게 말을 걸어보세요.<br>
-          당신에게 맞는 코칭을 시작할게요.
+          데이터를 분석해서 맞춤 훈련법을 추천해드릴게요.<br>
+          잠시 후 채팅을 확인해주세요!
         </div>
       </div>
     </div>
@@ -589,35 +554,19 @@
         // Step 2: pattern note
         if (s.run_pattern_note) document.getElementById('run-pattern-note').value = s.run_pattern_note;
 
-        // Step 3: training method
-        if (s.training_method && s.training_method !== 'none' && s.training_method !== 'pending_recommend') {
-          const methodChip = document.querySelector(`#method-chips .chip[data-value="${s.training_method}"]`);
-          if (methodChip) {
-            methodChip.classList.add('selected');
-            const descEl = document.getElementById('method-desc');
-            if (descEl) {
-              if (s.training_method === 'coach_recommend') {
-                descEl.textContent = '프로필 완성 후 코치가 맞춤 훈련법을 추천해드려요.';
-              } else if (METHOD_DESCS[s.training_method]) {
-                descEl.textContent = METHOD_DESCS[s.training_method];
-              }
-            }
-          }
-        }
-
-        // Step 4: priority
+        // Step 3: priority
         if (s.priority) {
           const card = document.querySelector(`#priority-cards .card-option[data-value="${s.priority}"]`);
           if (card) card.classList.add('selected');
         }
 
-        // Step 4: plan style
+        // Step 3: plan style
         if (s.plan_style) {
           const card = document.querySelector(`#style-cards .card-option[data-value="${s.plan_style}"]`);
           if (card) card.classList.add('selected');
         }
 
-        // Step 4: additional note
+        // Step 3: additional note
         if (s.additional_note) document.getElementById('additional-note').value = s.additional_note;
 
       } catch (e) {
@@ -650,10 +599,6 @@
       }
     }
 
-    function skipToEnd() {
-      submitSurvey();
-    }
-
     // --- Tab selector ---
 
     function selectTab(el) {
@@ -672,38 +617,6 @@
 
     function toggleChip(el) {
       el.classList.toggle('selected');
-    }
-
-    // --- Single chip selector ---
-
-    const METHOD_DESCS = {
-      '80_20': '80% 저강도 + 20% 고강도. 부상 없이 꾸준한 기록 향상.',
-      'jack_daniels': 'VDOT 기반 5단계 페이스. 과학적이고 체계적인 훈련.',
-      'maf': '180-나이 심박수 이하로만 훈련. 유산소 기초 체력 구축.',
-      'pfitzinger': '고볼륨 + 역주기화. 마라톤 기록 향상에 집중.',
-      'hansons': '누적 피로 철학. 주 6일, 롱런 26km 상한.',
-      'galloway': '달리기/걷기 교대. 부상 위험 최소화, 초보 친화.',
-      'hal_higdon': '단계별 프로그램. 전통적이고 따라하기 쉬움.',
-      'lydiard': '유산소 베이스 → 스피드 주기화. 엘리트/준엘리트용.',
-    };
-
-    function selectSingleChip(el, groupId) {
-      const group = document.getElementById(groupId);
-      const wasSelected = el.classList.contains('selected');
-      group.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-      if (!wasSelected) {
-        el.classList.add('selected');
-      }
-      // 훈련법 설명 표시
-      const descEl = document.getElementById('method-desc');
-      if (descEl) {
-        const val = el.classList.contains('selected') ? el.dataset.value : null;
-        if (val === 'coach_recommend') {
-          descEl.textContent = '프로필 완성 후 코치가 맞춤 훈련법을 추천해드려요.';
-        } else {
-          descEl.textContent = val ? METHOD_DESCS[val] || '' : '';
-        }
-      }
     }
 
     // --- Card selector ---
@@ -739,10 +652,6 @@
       if (patternNote) data.run_pattern_note = patternNote;
 
       // Step 3
-      const methodChip = document.querySelector('#method-chips .chip.selected');
-      if (methodChip) data.training_method = methodChip.dataset.value;
-
-      // Step 4
       const priorityCard = document.querySelector('#priority-cards .card-option.selected');
       if (priorityCard) data.priority = priorityCard.dataset.value;
 

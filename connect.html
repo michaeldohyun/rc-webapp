@@ -429,15 +429,107 @@
       to { transform: rotate(360deg); }
     }
 
-    .info-box {
-      background: #f0f7ff;
-      border: 1px solid #d0e3f7;
-      border-radius: 10px;
-      padding: 14px;
+    /* intervals.icu Connections 목업 */
+    .mock-conn {
       margin-bottom: 20px;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
       font-size: 13px;
-      line-height: 1.6;
-      color: var(--tg-theme-text-color);
+    }
+
+    .mock-conn-tabs {
+      display: flex;
+      border-bottom: 1px solid #e0e0e0;
+      background: #fafafa;
+    }
+
+    .mock-conn-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #888;
+      letter-spacing: 0.5px;
+    }
+
+    .mock-conn-tab.active {
+      color: #1976d2;
+      border-bottom: 2px solid #1976d2;
+    }
+
+    .mock-conn-card {
+      padding: 14px;
+    }
+
+    .mock-conn-logo {
+      text-align: center;
+      padding: 8px 0 14px;
+      border-bottom: 1px solid #f0f0f0;
+      margin-bottom: 12px;
+    }
+
+    .mock-conn-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .mock-conn-check {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ccc;
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .mock-conn-check.checked {
+      background: #1976d2;
+      border-color: #1976d2;
+      position: relative;
+    }
+
+    .mock-conn-check.checked::after {
+      content: '✓';
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .mock-conn-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      color: #333;
+    }
+
+    .mock-conn-sub {
+      font-size: 11px;
+      color: #888;
+    }
+
+    .mock-conn-link {
+      font-size: 11px;
+      color: #1976d2;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .mock-conn-hint {
+      background: #e8f5e9;
+      color: #2e7d32;
+      text-align: center;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 600;
     }
   </style>
 </head>
@@ -485,10 +577,36 @@
         워치/앱을 연결해주세요.
       </div>
 
-      <div class="info-box">
-        Garmin, Strava, Apple Health(HealthFit) 등<br>
-        사용 중인 서비스를 intervals.icu에 연결하면<br>
-        러닝 데이터가 자동으로 동기화됩니다.
+      <!-- intervals.icu Connections 실제 화면 목업 -->
+      <div class="mock-conn">
+        <div class="mock-conn-tabs">
+          <span class="mock-conn-tab">SETTINGS</span>
+          <span class="mock-conn-tab active">CONNECTIONS</span>
+          <span class="mock-conn-tab">APPS &rsaquo;</span>
+        </div>
+        <div class="mock-conn-card">
+          <div class="mock-conn-logo">
+            <span style="color:#4a9bd9;font-weight:300;font-size:18px;font-style:italic;">connect</span><br>
+            <span style="font-size:10px;color:#999;">powered by Garmin</span>
+          </div>
+          <div class="mock-conn-row">
+            <div class="mock-conn-check checked"></div>
+            <div class="mock-conn-text">
+              <span>Download activities</span>
+              <span class="mock-conn-sub">All activities</span>
+              <span class="mock-conn-link">DOWNLOAD OLD DATA</span>
+            </div>
+          </div>
+          <div class="mock-conn-row">
+            <div class="mock-conn-check checked"></div>
+            <div class="mock-conn-text">
+              <span>Download wellness data</span>
+              <span class="mock-conn-sub">Weight, Body Fat, Resting HR, Sleep, VO2 Max, HRV, Steps</span>
+              <span class="mock-conn-link">DOWNLOAD OLD DATA</span>
+            </div>
+          </div>
+        </div>
+        <div class="mock-conn-hint">이런 화면이 보이면 연동 완료!</div>
       </div>
 
       <a href="https://intervals.icu/settings/connections" target="_blank" class="btn btn-primary">

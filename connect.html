@@ -555,7 +555,7 @@
         intervals.icu는 무료 러닝 데이터 분석 플랫폼입니다.<br>
         가입 후 운동 기기를 연결하고 API 키를 연동합니다.
       </div>
-      <a href="https://intervals.icu/signup" target="_blank" class="btn btn-primary" onclick="goToStep(2)">
+      <a href="https://intervals.icu/signup" target="_blank" class="btn btn-primary" onclick="pendingStep=2">
         intervals.icu 가입하기
       </a>
       <button class="btn btn-secondary" onclick="goToStep(2)">
@@ -613,7 +613,7 @@
         Connections 설정 열기
       </a>
       <button class="btn btn-secondary" onclick="goToStep(3)">
-        이미 연동 돼 있어요
+        연동을 완료했어요
       </button>
       <button class="btn btn-ghost" onclick="goToStep(1)">
         ← 이전 단계
@@ -750,6 +750,15 @@
     }
 
     let currentStep = 1;
+    let pendingStep = 0;
+
+    // 외부 링크에서 돌아왔을 때 다음 스텝으로 이동
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && pendingStep) {
+        goToStep(pendingStep);
+        pendingStep = 0;
+      }
+    });
 
     function goToStep(step) {
       const prev = currentStep;

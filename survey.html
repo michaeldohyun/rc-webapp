@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Running Coach 프로필</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --tg-theme-bg-color: #ffffff;
@@ -19,8 +21,8 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--tg-theme-bg-color);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
       color: var(--tg-theme-text-color);
       padding: 20px;
       min-height: 100vh;
@@ -49,44 +51,89 @@
     /* Steps */
     .step {
       display: none;
-      animation: fadeIn 0.3s ease;
     }
 
     .step.active {
       display: block;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+    /* Step card */
+    .step-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
+    }
+
+    /* fadeInUp animation */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step.active .step-title {
+      animation: fadeInUp 0.3s ease forwards;
+    }
+
+    .step.active .step-desc {
+      animation: fadeInUp 0.3s 0.05s ease forwards;
+      opacity: 0;
+    }
+
+    .step.active .step-card {
+      animation: fadeInUp 0.35s 0.08s ease forwards;
+      opacity: 0;
+    }
+
+    .step.active .step-actions {
+      animation: fadeInUp 0.3s 0.15s ease forwards;
+      opacity: 0;
     }
 
     /* Step indicator */
     .step-indicator {
       display: flex;
       justify-content: center;
-      gap: 8px;
-      margin-bottom: 24px;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 28px;
+      padding: 0 40px;
     }
 
     .step-dot {
-      width: 8px;
-      height: 8px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      background: var(--tg-theme-hint-color);
-      opacity: 0.3;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--tg-theme-secondary-bg-color);
+      color: var(--tg-theme-hint-color);
       transition: all 0.3s;
+      flex-shrink: 0;
     }
 
     .step-dot.active {
-      opacity: 1;
       background: var(--tg-theme-button-color);
-      width: 24px;
-      border-radius: 4px;
+      color: #fff;
     }
 
     .step-dot.done {
-      opacity: 1;
+      background: #4CAF50;
+      color: #fff;
+    }
+
+    .step-connector {
+      height: 2px;
+      flex: 1;
+      background: var(--tg-theme-secondary-bg-color);
+      transition: background 0.3s;
+    }
+
+    .step-connector.done {
       background: #4CAF50;
     }
 
@@ -114,14 +161,21 @@
       font-weight: 600;
       cursor: pointer;
       text-align: center;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.1s;
     }
-
-    .btn:active { opacity: 0.7; }
 
     .btn-primary {
       background: var(--tg-theme-button-color);
       color: var(--tg-theme-button-text-color);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.92;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+      opacity: 0.85;
     }
 
     .btn-ghost {
@@ -130,6 +184,10 @@
       font-size: 14px;
       font-weight: 400;
       padding: 10px;
+    }
+
+    .btn-ghost:active {
+      opacity: 0.6;
     }
 
     .btn + .btn { margin-top: 10px; }
@@ -144,6 +202,10 @@
       margin-bottom: 20px;
     }
 
+    .input-group:last-child {
+      margin-bottom: 0;
+    }
+
     .input-group label {
       display: block;
       font-size: 14px;
@@ -155,12 +217,13 @@
     .input-group textarea {
       width: 100%;
       padding: 12px;
-      border: 1px solid var(--tg-theme-hint-color);
+      border: 1.5px solid var(--tg-theme-secondary-bg-color);
       border-radius: 10px;
       font-size: 15px;
       background: var(--tg-theme-bg-color);
       color: var(--tg-theme-text-color);
       font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     .input-group textarea {
@@ -172,6 +235,7 @@
     .input-group textarea:focus {
       outline: none;
       border-color: var(--tg-theme-button-color);
+      box-shadow: 0 0 0 3px rgba(38, 120, 182, 0.15);
     }
 
     .input-group .hint {
@@ -204,7 +268,7 @@
     .tab-option {
       flex: 1;
       padding: 10px 4px;
-      border: 1.5px solid var(--tg-theme-hint-color);
+      border: 1.5px solid var(--tg-theme-secondary-bg-color);
       border-radius: 10px;
       text-align: center;
       font-size: 14px;
@@ -218,6 +282,7 @@
     .tab-option.selected {
       border-color: var(--tg-theme-button-color);
       background: rgba(38, 120, 182, 0.08);
+      box-shadow: 0 1px 3px rgba(38, 120, 182, 0.1);
       opacity: 1;
       font-weight: 600;
     }
@@ -242,7 +307,7 @@
 
     .chip {
       padding: 8px 14px;
-      border: 1.5px solid var(--tg-theme-hint-color);
+      border: 1.5px solid var(--tg-theme-secondary-bg-color);
       border-radius: 20px;
       font-size: 13px;
       cursor: pointer;
@@ -254,6 +319,7 @@
     .chip.selected {
       border-color: var(--tg-theme-button-color);
       background: rgba(38, 120, 182, 0.08);
+      box-shadow: 0 1px 3px rgba(38, 120, 182, 0.1);
       opacity: 1;
       font-weight: 600;
     }
@@ -261,6 +327,10 @@
     /* Card selector */
     .card-group {
       margin-bottom: 20px;
+    }
+
+    .card-group:last-child {
+      margin-bottom: 0;
     }
 
     .card-group > label {
@@ -278,7 +348,7 @@
 
     .card-option {
       padding: 14px;
-      border: 1.5px solid var(--tg-theme-hint-color);
+      border: 1.5px solid var(--tg-theme-secondary-bg-color);
       border-radius: 12px;
       cursor: pointer;
       transition: all 0.2s;
@@ -290,8 +360,14 @@
     .card-option.selected {
       border-color: var(--tg-theme-button-color);
       background: rgba(38, 120, 182, 0.08);
+      box-shadow: 0 1px 3px rgba(38, 120, 182, 0.1);
       opacity: 1;
       font-weight: 600;
+    }
+
+    /* Step actions (buttons outside card) */
+    .step-actions {
+      margin-top: 0;
     }
 
     /* Navigation row */
@@ -311,9 +387,36 @@
       padding: 32px 0;
     }
 
-    .status .icon {
-      font-size: 56px;
-      margin-bottom: 16px;
+    .check-circle {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      animation: scaleIn 0.4s ease forwards;
+    }
+
+    .check-circle circle {
+      fill: #4CAF50;
+    }
+
+    .check-circle path {
+      stroke: #fff;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      stroke-dasharray: 50;
+      stroke-dashoffset: 50;
+      animation: checkDraw 0.4s 0.3s ease forwards;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes checkDraw {
+      from { stroke-dashoffset: 50; }
+      to { stroke-dashoffset: 0; }
     }
 
     .status .message {
@@ -358,7 +461,7 @@
 
     .suggestion-chip {
       padding: 6px 12px;
-      border: 1px solid var(--tg-theme-hint-color);
+      border: 1px solid var(--tg-theme-secondary-bg-color);
       border-radius: 16px;
       font-size: 13px;
       color: var(--tg-theme-hint-color);
@@ -382,9 +485,11 @@
     </div>
 
     <div class="step-indicator">
-      <div class="step-dot active" id="dot-1"></div>
-      <div class="step-dot" id="dot-2"></div>
-      <div class="step-dot" id="dot-3"></div>
+      <div class="step-dot active" id="dot-1">1</div>
+      <div class="step-connector" id="conn-1-2"></div>
+      <div class="step-dot" id="dot-2">2</div>
+      <div class="step-connector" id="conn-2-3"></div>
+      <div class="step-dot" id="dot-3">3</div>
     </div>
 
     <!-- Step 1: 목표 -->
@@ -392,26 +497,30 @@
       <div class="step-title">어떤 목표를 가지고 계세요?</div>
       <div class="step-desc">자유롭게 적어주세요. 구체적일수록 좋아요.</div>
 
-      <div class="input-group">
-        <label>러닝 목표</label>
-        <input type="text" id="goal-text" placeholder="직접 입력하거나 아래에서 선택">
-        <div class="suggestion-chips">
-          <span class="suggestion-chip" onclick="fillGoal(this)">풀마라톤 완주</span>
-          <span class="suggestion-chip" onclick="fillGoal(this)">하프마라톤 완주</span>
-          <span class="suggestion-chip" onclick="fillGoal(this)">10K 기록 단축</span>
-          <span class="suggestion-chip" onclick="fillGoal(this)">5K 기록 단축</span>
-          <span class="suggestion-chip" onclick="fillGoal(this)">꾸준히 건강하게</span>
-          <span class="suggestion-chip" onclick="fillGoal(this)">다이어트</span>
+      <div class="step-card">
+        <div class="input-group">
+          <label>러닝 목표</label>
+          <input type="text" id="goal-text" placeholder="직접 입력하거나 아래에서 선택">
+          <div class="suggestion-chips">
+            <span class="suggestion-chip" onclick="fillGoal(this)">풀마라톤 완주</span>
+            <span class="suggestion-chip" onclick="fillGoal(this)">하프마라톤 완주</span>
+            <span class="suggestion-chip" onclick="fillGoal(this)">10K 기록 단축</span>
+            <span class="suggestion-chip" onclick="fillGoal(this)">5K 기록 단축</span>
+            <span class="suggestion-chip" onclick="fillGoal(this)">꾸준히 건강하게</span>
+            <span class="suggestion-chip" onclick="fillGoal(this)">다이어트</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>목표 시점</label>
+          <input type="text" id="target-date" placeholder="예: 2025년 3월, 올해 안에, 아직 미정">
+          <div class="hint">비워도 괜찮아요</div>
         </div>
       </div>
 
-      <div class="input-group">
-        <label>목표 시점</label>
-        <input type="text" id="target-date" placeholder="예: 2025년 3월, 올해 안에, 아직 미정">
-        <div class="hint">비워도 괜찮아요</div>
+      <div class="step-actions">
+        <button class="btn btn-primary" onclick="goToStep(2)">다음</button>
       </div>
-
-      <button class="btn btn-primary" onclick="goToStep(2)">다음</button>
     </div>
 
     <!-- Step 2: 현재 러닝 -->
@@ -419,37 +528,41 @@
       <div class="step-title">지금 러닝은 어떻게 하고 계세요?</div>
       <div class="step-desc">대략적으로만 알려주셔도 돼요.</div>
 
-      <div class="tab-selector">
-        <div>
-          <label>주간 러닝 횟수</label>
-          <div class="tab-options">
-            <div class="tab-option" data-value="1-2" onclick="selectTab(this)">1~2회</div>
-            <div class="tab-option" data-value="3-4" onclick="selectTab(this)">3~4회</div>
-            <div class="tab-option" data-value="5+" onclick="selectTab(this)">5회+</div>
+      <div class="step-card">
+        <div class="tab-selector">
+          <div>
+            <label>주간 러닝 횟수</label>
+            <div class="tab-options">
+              <div class="tab-option" data-value="1-2" onclick="selectTab(this)">1~2회</div>
+              <div class="tab-option" data-value="3-4" onclick="selectTab(this)">3~4회</div>
+              <div class="tab-option" data-value="5+" onclick="selectTab(this)">5회+</div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="chip-group">
-        <label>주로 뛰는 시간대</label>
-        <div class="chip-options" id="run-time-chips">
-          <div class="chip" data-value="weekday_dawn" onclick="toggleChip(this)">평일 새벽</div>
-          <div class="chip" data-value="weekday_morning" onclick="toggleChip(this)">평일 아침</div>
-          <div class="chip" data-value="weekday_evening" onclick="toggleChip(this)">평일 저녁</div>
-          <div class="chip" data-value="weekend_dawn" onclick="toggleChip(this)">주말 새벽</div>
-          <div class="chip" data-value="weekend_morning" onclick="toggleChip(this)">주말 아침</div>
-          <div class="chip" data-value="weekend_afternoon" onclick="toggleChip(this)">주말 오후</div>
+        <div class="chip-group">
+          <label>주로 뛰는 시간대</label>
+          <div class="chip-options" id="run-time-chips">
+            <div class="chip" data-value="weekday_dawn" onclick="toggleChip(this)">평일 새벽</div>
+            <div class="chip" data-value="weekday_morning" onclick="toggleChip(this)">평일 아침</div>
+            <div class="chip" data-value="weekday_evening" onclick="toggleChip(this)">평일 저녁</div>
+            <div class="chip" data-value="weekend_dawn" onclick="toggleChip(this)">주말 새벽</div>
+            <div class="chip" data-value="weekend_morning" onclick="toggleChip(this)">주말 아침</div>
+            <div class="chip" data-value="weekend_afternoon" onclick="toggleChip(this)">주말 오후</div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>메모 (선택)</label>
+          <textarea id="run-pattern-note" placeholder="예: 주말에만 장거리, 존2 위주로 훈련 중" rows="2"></textarea>
         </div>
       </div>
 
-      <div class="input-group">
-        <label>메모 (선택)</label>
-        <textarea id="run-pattern-note" placeholder="예: 주말에만 장거리, 존2 위주로 훈련 중" rows="2"></textarea>
-      </div>
-
-      <button class="btn btn-primary" onclick="goToStep(3)">다음</button>
-      <div class="nav-row">
-        <button class="btn btn-ghost" onclick="goToStep(1)">이전</button>
+      <div class="step-actions">
+        <button class="btn btn-primary" onclick="goToStep(3)">다음</button>
+        <div class="nav-row">
+          <button class="btn btn-ghost" onclick="goToStep(1)">이전</button>
+        </div>
       </div>
     </div>
 
@@ -458,40 +571,47 @@
       <div class="step-title">어떤 코칭을 원하시나요?</div>
       <div class="step-desc">코칭 방향을 맞추는 데 참고할게요.</div>
 
-      <div class="card-group">
-        <label>가장 중요한 것</label>
-        <div class="card-options" id="priority-cards">
-          <div class="card-option" data-value="injury_prevention" onclick="selectCard(this, 'priority-cards')">부상 없이 안전하게</div>
-          <div class="card-option" data-value="performance" onclick="selectCard(this, 'priority-cards')">기록/페이스 향상</div>
-          <div class="card-option" data-value="consistency" onclick="selectCard(this, 'priority-cards')">꾸준한 습관 만들기</div>
-          <div class="card-option" data-value="race_prep" onclick="selectCard(this, 'priority-cards')">대회 준비</div>
+      <div class="step-card">
+        <div class="card-group">
+          <label>가장 중요한 것</label>
+          <div class="card-options" id="priority-cards">
+            <div class="card-option" data-value="injury_prevention" onclick="selectCard(this, 'priority-cards')">부상 없이 안전하게</div>
+            <div class="card-option" data-value="performance" onclick="selectCard(this, 'priority-cards')">기록/페이스 향상</div>
+            <div class="card-option" data-value="consistency" onclick="selectCard(this, 'priority-cards')">꾸준한 습관 만들기</div>
+            <div class="card-option" data-value="race_prep" onclick="selectCard(this, 'priority-cards')">대회 준비</div>
+          </div>
+        </div>
+
+        <div class="card-group">
+          <label>훈련 계획 스타일</label>
+          <div class="card-options" id="style-cards">
+            <div class="card-option" data-value="structured" onclick="selectCard(this, 'style-cards')">계획을 세우고 지키는 편</div>
+            <div class="card-option" data-value="flexible" onclick="selectCard(this, 'style-cards')">그때그때 유연하게</div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>추가 요청 (선택)</label>
+          <textarea id="additional-note" placeholder="코치에게 미리 알려주고 싶은 것이 있다면" rows="2"></textarea>
         </div>
       </div>
 
-      <div class="card-group">
-        <label>훈련 계획 스타일</label>
-        <div class="card-options" id="style-cards">
-          <div class="card-option" data-value="structured" onclick="selectCard(this, 'style-cards')">계획을 세우고 지키는 편</div>
-          <div class="card-option" data-value="flexible" onclick="selectCard(this, 'style-cards')">그때그때 유연하게</div>
+      <div class="step-actions">
+        <button class="btn btn-primary" id="btn-submit" onclick="submitSurvey()">완료</button>
+        <div class="error-text" id="error-msg" style="display:none"></div>
+        <div class="nav-row">
+          <button class="btn btn-ghost" onclick="goToStep(2)">이전</button>
         </div>
-      </div>
-
-      <div class="input-group">
-        <label>추가 요청 (선택)</label>
-        <textarea id="additional-note" placeholder="코치에게 미리 알려주고 싶은 것이 있다면" rows="2"></textarea>
-      </div>
-
-      <button class="btn btn-primary" id="btn-submit" onclick="submitSurvey()">완료</button>
-      <div class="error-text" id="error-msg" style="display:none"></div>
-      <div class="nav-row">
-        <button class="btn btn-ghost" onclick="goToStep(2)">이전</button>
       </div>
     </div>
 
     <!-- Complete -->
     <div class="step" id="step-complete">
       <div class="status">
-        <div class="icon">&#x1F3C3;</div>
+        <svg class="check-circle" viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="32"/>
+          <path d="M20 33 L28 41 L44 25"/>
+        </svg>
         <div class="step-title">프로필 설정 완료!</div>
         <div class="message">
           데이터를 분석해서 맞춤 훈련법을 추천해드릴게요.<br>
@@ -578,25 +698,44 @@
 
     // --- Navigation ---
 
+    function updateIndicator(fromStep, toStep) {
+      // Update dots
+      const fromDot = document.getElementById('dot-' + fromStep);
+      const toDot = document.getElementById('dot-' + toStep);
+
+      if (fromDot) fromDot.classList.remove('active');
+      if (toDot) toDot.classList.add('active');
+
+      if (typeof toStep === 'number' && typeof fromStep === 'number') {
+        if (toStep > fromStep) {
+          // Moving forward: mark previous as done
+          if (fromDot) fromDot.classList.add('done');
+          // Mark connector as done
+          const conn = document.getElementById('conn-' + fromStep + '-' + toStep);
+          if (conn) conn.classList.add('done');
+        } else {
+          // Moving backward: remove done from steps after target
+          for (let i = toStep; i <= fromStep; i++) {
+            const dot = document.getElementById('dot-' + i);
+            if (dot && i !== toStep) dot.classList.remove('done');
+          }
+          // Remove done from connectors
+          for (let i = toStep; i < fromStep; i++) {
+            const conn = document.getElementById('conn-' + i + '-' + (i + 1));
+            if (conn) conn.classList.remove('done');
+          }
+        }
+      }
+    }
+
     function goToStep(step) {
       const prev = currentStep;
       document.getElementById('step-' + prev)?.classList.remove('active');
-      document.getElementById('dot-' + prev)?.classList.remove('active');
 
-      if (typeof step === 'number' && typeof prev === 'number' && step < prev) {
-        document.getElementById('dot-' + prev)?.classList.remove('done');
-        for (let i = step; i <= prev; i++) {
-          document.getElementById('dot-' + i)?.classList.remove('done');
-        }
-      } else if (typeof prev === 'number') {
-        document.getElementById('dot-' + prev)?.classList.add('done');
-      }
+      updateIndicator(prev, step);
 
       currentStep = step;
       document.getElementById('step-' + step)?.classList.add('active');
-      if (typeof step === 'number') {
-        document.getElementById('dot-' + step)?.classList.add('active');
-      }
     }
 
     // --- Tab selector ---

@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Running Coach - FAQ</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --tg-theme-bg-color: #ffffff;
@@ -19,8 +21,8 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--tg-theme-bg-color);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--tg-theme-secondary-bg-color);
       color: var(--tg-theme-text-color);
       min-height: 100vh;
       padding-bottom: 100px;
@@ -93,7 +95,8 @@
     }
 
     details {
-      background: var(--tg-theme-secondary-bg-color);
+      background: var(--tg-theme-bg-color);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
       border-radius: 12px;
       overflow: hidden;
     }
@@ -168,7 +171,7 @@
     }
 
     .answer .tag {
-      background: var(--tg-theme-bg-color);
+      background: var(--tg-theme-secondary-bg-color);
       border: 1px solid var(--tg-theme-hint-color);
       border-radius: 12px;
       padding: 2px 8px;
@@ -198,7 +201,7 @@
       background: var(--tg-theme-bg-color);
       padding: 12px 20px;
       padding-bottom: max(12px, env(safe-area-inset-bottom));
-      border-top: 1px solid var(--tg-theme-secondary-bg-color);
+      border-top: 1px solid rgba(0,0,0,0.06);
     }
 
     .cta-inner {
@@ -218,11 +221,16 @@
       text-align: center;
       background: var(--tg-theme-button-color);
       color: var(--tg-theme-button-text-color);
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .btn-cta:hover {
+      opacity: 0.92;
     }
 
     .btn-cta:active {
-      opacity: 0.7;
+      transform: scale(0.98);
+      opacity: 0.85;
     }
 
     /* Animation */

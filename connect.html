@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Running Coach 연동</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --tg-theme-bg-color: #ffffff;
@@ -13,13 +15,14 @@
       --tg-theme-link-color: #2678b6;
       --tg-theme-button-color: #2678b6;
       --tg-theme-button-text-color: #ffffff;
+      --tg-theme-secondary-bg-color: #f0f0f0;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--tg-theme-bg-color);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--tg-theme-secondary-bg-color);
       color: var(--tg-theme-text-color);
       padding: 20px;
       min-height: 100vh;
@@ -47,44 +50,73 @@
 
     .step {
       display: none;
-      animation: fadeIn 0.3s ease;
     }
 
     .step.active {
       display: block;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    .step.active .step-title { animation: fadeInUp 0.3s ease forwards; }
+    .step.active .step-desc { animation: fadeInUp 0.3s 0.05s ease forwards; opacity: 0; }
+    .step.active .step-card { animation: fadeInUp 0.35s 0.08s ease forwards; opacity: 0; }
+    .step.active .step-actions { animation: fadeInUp 0.3s 0.15s ease forwards; opacity: 0; }
 
     .step-indicator {
       display: flex;
       justify-content: center;
-      gap: 8px;
-      margin-bottom: 24px;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 28px;
+      padding: 0 40px;
     }
 
     .step-dot {
-      width: 8px;
-      height: 8px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      background: var(--tg-theme-hint-color);
-      opacity: 0.3;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--tg-theme-secondary-bg-color);
+      color: var(--tg-theme-hint-color);
       transition: all 0.3s;
+      flex-shrink: 0;
     }
 
     .step-dot.active {
-      opacity: 1;
       background: var(--tg-theme-button-color);
-      width: 24px;
-      border-radius: 4px;
+      color: #fff;
     }
 
     .step-dot.done {
-      opacity: 1;
       background: #4CAF50;
+      color: #fff;
+    }
+
+    .step-connector {
+      height: 2px;
+      flex: 1;
+      background: var(--tg-theme-secondary-bg-color);
+      transition: background 0.3s;
+    }
+
+    .step-connector.done {
+      background: #4CAF50;
+    }
+
+    .step-card {
+      background: var(--tg-theme-bg-color);
+      border-radius: 16px;
+      padding: 24px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
     }
 
     .step-title {
@@ -111,17 +143,16 @@
       cursor: pointer;
       text-align: center;
       text-decoration: none;
-      transition: opacity 0.2s;
-    }
-
-    .btn:active {
-      opacity: 0.7;
+      transition: opacity 0.2s, transform 0.1s;
     }
 
     .btn-primary {
       background: var(--tg-theme-button-color);
       color: var(--tg-theme-button-text-color);
     }
+
+    .btn-primary:hover { opacity: 0.92; }
+    .btn-primary:active { transform: scale(0.98); opacity: 0.85; }
 
     .btn-secondary {
       background: transparent;
@@ -136,6 +167,8 @@
       font-weight: 400;
       padding: 10px;
     }
+
+    .btn-ghost:active { opacity: 0.6; }
 
     .btn + .btn {
       margin-top: 12px;
@@ -385,11 +418,13 @@
       font-size: 15px;
       background: var(--tg-theme-bg-color);
       color: var(--tg-theme-text-color);
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     .input-group input:focus {
       outline: none;
       border-color: var(--tg-theme-button-color);
+      box-shadow: 0 0 0 3px rgba(38, 120, 182, 0.15);
     }
 
     .status {
@@ -397,9 +432,30 @@
       padding: 20px;
     }
 
-    .status .icon {
-      font-size: 48px;
-      margin-bottom: 12px;
+    .check-circle {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      animation: scaleIn 0.4s ease forwards;
+    }
+    .check-circle circle { fill: #4CAF50; }
+    .check-circle path {
+      stroke: #fff;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      stroke-dasharray: 50;
+      stroke-dashoffset: 50;
+      animation: checkDraw 0.4s 0.3s ease forwards;
+    }
+    @keyframes scaleIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    @keyframes checkDraw {
+      from { stroke-dashoffset: 50; }
+      to { stroke-dashoffset: 0; }
     }
 
     .status .message {
@@ -494,7 +550,7 @@
     }
 
     .mock-conn-check.checked::after {
-      content: '✓';
+      content: '\2713';
       color: #fff;
       font-size: 13px;
       font-weight: 700;
@@ -535,17 +591,20 @@
 </head>
 <body>
   <div class="container">
-    <a href="index.html" class="back-link">← 소개 페이지로</a>
+    <a href="index.html" class="back-link">&larr; 소개 페이지로</a>
     <div class="header">
       <h1>Running Coach</h1>
       <p>intervals.icu 연동 설정</p>
     </div>
 
     <div class="step-indicator">
-      <div class="step-dot active" id="dot-1"></div>
-      <div class="step-dot" id="dot-2"></div>
-      <div class="step-dot" id="dot-3"></div>
-      <div class="step-dot" id="dot-4"></div>
+      <div class="step-dot active" id="dot-1">1</div>
+      <div class="step-connector" id="conn-1-2"></div>
+      <div class="step-dot" id="dot-2">2</div>
+      <div class="step-connector" id="conn-2-3"></div>
+      <div class="step-dot" id="dot-3">3</div>
+      <div class="step-connector" id="conn-3-4"></div>
+      <div class="step-dot" id="dot-4">4</div>
     </div>
 
     <!-- Step 1: intervals.icu 가입 -->
@@ -555,17 +614,19 @@
         intervals.icu는 무료 러닝 데이터 분석 플랫폼입니다.<br>
         가입 후 운동 기기를 연결하고 API 키를 연동합니다.
       </div>
-      <a href="https://intervals.icu/signup" target="_blank" class="btn btn-primary" onclick="pendingStep=2">
-        intervals.icu 가입하기
-      </a>
-      <button class="btn btn-secondary" onclick="goToStep(2)">
-        이미 계정이 있어요
-      </button>
-      <button class="btn btn-ghost" onclick="closeLater()">
-        나중에 할게요
-      </button>
-      <div class="later-note">
-        언제든 봇에게 /start 를 보내면<br>이 화면으로 돌아올 수 있어요.
+      <div class="step-actions">
+        <a href="https://intervals.icu/signup" target="_blank" class="btn btn-primary" onclick="pendingStep=2">
+          intervals.icu 가입하기
+        </a>
+        <button class="btn btn-secondary" onclick="goToStep(2)">
+          이미 계정이 있어요
+        </button>
+        <button class="btn btn-ghost" onclick="closeLater()">
+          나중에 할게요
+        </button>
+        <div class="later-note">
+          언제든 봇에게 /start 를 보내면<br>이 화면으로 돌아올 수 있어요.
+        </div>
       </div>
     </div>
 
@@ -577,50 +638,54 @@
         워치/앱을 연결해주세요.
       </div>
 
-      <!-- intervals.icu Connections 실제 화면 목업 -->
-      <div class="mock-conn">
-        <div class="mock-conn-tabs">
-          <span class="mock-conn-tab">SETTINGS</span>
-          <span class="mock-conn-tab active">CONNECTIONS</span>
-          <span class="mock-conn-tab">APPS &rsaquo;</span>
-        </div>
-        <div class="mock-conn-card">
-          <div class="mock-conn-logo">
-            <span style="color:#4a9bd9;font-weight:300;font-size:18px;font-style:italic;">connect</span><br>
-            <span style="font-size:10px;color:#999;">powered by Garmin</span>
+      <div class="step-card">
+        <!-- intervals.icu Connections 실제 화면 목업 -->
+        <div class="mock-conn">
+          <div class="mock-conn-tabs">
+            <span class="mock-conn-tab">SETTINGS</span>
+            <span class="mock-conn-tab active">CONNECTIONS</span>
+            <span class="mock-conn-tab">APPS &rsaquo;</span>
           </div>
-          <div class="mock-conn-row">
-            <div class="mock-conn-check checked"></div>
-            <div class="mock-conn-text">
-              <span>Download activities</span>
-              <span class="mock-conn-sub">All activities</span>
-              <span class="mock-conn-link">DOWNLOAD OLD DATA</span>
+          <div class="mock-conn-card">
+            <div class="mock-conn-logo">
+              <span style="color:#4a9bd9;font-weight:300;font-size:18px;font-style:italic;">connect</span><br>
+              <span style="font-size:10px;color:#999;">powered by Garmin</span>
+            </div>
+            <div class="mock-conn-row">
+              <div class="mock-conn-check checked"></div>
+              <div class="mock-conn-text">
+                <span>Download activities</span>
+                <span class="mock-conn-sub">All activities</span>
+                <span class="mock-conn-link">DOWNLOAD OLD DATA</span>
+              </div>
+            </div>
+            <div class="mock-conn-row">
+              <div class="mock-conn-check checked"></div>
+              <div class="mock-conn-text">
+                <span>Download wellness data</span>
+                <span class="mock-conn-sub">Weight, Body Fat, Resting HR, Sleep, VO2 Max, HRV, Steps</span>
+                <span class="mock-conn-link">DOWNLOAD OLD DATA</span>
+              </div>
             </div>
           </div>
-          <div class="mock-conn-row">
-            <div class="mock-conn-check checked"></div>
-            <div class="mock-conn-text">
-              <span>Download wellness data</span>
-              <span class="mock-conn-sub">Weight, Body Fat, Resting HR, Sleep, VO2 Max, HRV, Steps</span>
-              <span class="mock-conn-link">DOWNLOAD OLD DATA</span>
-            </div>
-          </div>
+          <div class="mock-conn-hint">이런 화면이 보이면 연동 완료!</div>
         </div>
-        <div class="mock-conn-hint">이런 화면이 보이면 연동 완료!</div>
       </div>
 
-      <a href="https://intervals.icu/settings/connections" target="_blank" class="btn btn-primary">
-        Connections 설정 열기
-      </a>
-      <button class="btn btn-secondary" onclick="goToStep(3)">
-        연동을 완료했어요
-      </button>
-      <button class="btn btn-ghost" onclick="goToStep(1)">
-        ← 이전 단계
-      </button>
-      <button class="btn btn-ghost" onclick="closeLater()">
-        나중에 이어서 할게요
-      </button>
+      <div class="step-actions">
+        <a href="https://intervals.icu/settings/connections" target="_blank" class="btn btn-primary">
+          Connections 설정 열기
+        </a>
+        <button class="btn btn-secondary" onclick="goToStep(3)">
+          연동을 완료했어요
+        </button>
+        <button class="btn btn-ghost" onclick="goToStep(1)">
+          &larr; 이전 단계
+        </button>
+        <button class="btn btn-ghost" onclick="closeLater()">
+          나중에 이어서 할게요
+        </button>
+      </div>
     </div>
 
     <!-- Step 3: API 키 복사 (상세 가이드) -->
@@ -630,78 +695,82 @@
         intervals.icu Settings 하단에서 API 키를 복사해주세요.
       </div>
 
-      <!-- Sub-step 3-1: Developer Settings 찾기 -->
-      <div class="guide-step">
-        <div class="guide-step-header">
-          <div class="guide-step-num">1</div>
-          <div class="guide-step-label">Developer Settings 찾기</div>
-        </div>
-        <div class="guide-step-desc">
-          Settings 페이지 하단으로 스크롤하면<br>
-          <b>&lt; &gt; Developer Settings</b> 영역이 보입니다.
-        </div>
-        <div class="mockup">
-          <div class="mockup-header">intervals.icu / Settings</div>
-          <div class="mockup-body">
-            <div class="mock-dev-title">Developer Settings</div>
-            <div class="mock-dev-row">
-              <div class="mock-dev-col">
-                <span class="mock-dev-label">Athlete ID</span>
-                <span class="mock-dev-value">i484059</span>
-              </div>
-              <div class="mock-dev-col">
-                <span class="mock-dev-label">API Key</span>
-                <span class="mock-dev-value"><span class="mock-dev-link">(view)</span> &#9998;</span>
+      <div class="step-card">
+        <!-- Sub-step 3-1: Developer Settings 찾기 -->
+        <div class="guide-step">
+          <div class="guide-step-header">
+            <div class="guide-step-num">1</div>
+            <div class="guide-step-label">Developer Settings 찾기</div>
+          </div>
+          <div class="guide-step-desc">
+            Settings 페이지 하단으로 스크롤하면<br>
+            <b>&lt; &gt; Developer Settings</b> 영역이 보입니다.
+          </div>
+          <div class="mockup">
+            <div class="mockup-header">intervals.icu / Settings</div>
+            <div class="mockup-body">
+              <div class="mock-dev-title">Developer Settings</div>
+              <div class="mock-dev-row">
+                <div class="mock-dev-col">
+                  <span class="mock-dev-label">Athlete ID</span>
+                  <span class="mock-dev-value">i484059</span>
+                </div>
+                <div class="mock-dev-col">
+                  <span class="mock-dev-label">API Key</span>
+                  <span class="mock-dev-value"><span class="mock-dev-link">(view)</span> &#9998;</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Sub-step 3-2: (view) 클릭 -->
+        <div class="guide-step">
+          <div class="guide-step-header">
+            <div class="guide-step-num">2</div>
+            <div class="guide-step-label">API Key의 (view) 클릭</div>
+          </div>
+          <div class="guide-step-desc">
+            API Key가 아직 없다면 자동 생성됩니다.<br>
+            <b>(view)</b>를 터치하면 키가 표시됩니다.
+          </div>
+          <div class="mock-pointer">&#128072; (view) 를 터치하세요</div>
+        </div>
+
+        <!-- Sub-step 3-3: 키 복사 -->
+        <div class="guide-step">
+          <div class="guide-step-header">
+            <div class="guide-step-num">3</div>
+            <div class="guide-step-label">파란색 키를 터치해서 복사</div>
+          </div>
+          <div class="guide-step-desc">
+            팝업이 뜨면 파란색 키 텍스트를 터치하세요.<br>
+            자동으로 클립보드에 복사됩니다.
+          </div>
+          <div class="mock-popup">
+            <div class="mock-popup-title">Intervals.icu API Key</div>
+            <div class="mock-popup-text">Your API key allows other applications to access your Intervals.icu data.</div>
+            <div class="mock-popup-key">a1b2c3d4e5f6g7h8i9j0klmn</div>
+            <div class="mock-popup-actions"><span class="mock-popup-btn">CLOSE</span></div>
+          </div>
+          <div class="mock-toast">&#10003; API key has been copied to the clipboard</div>
+        </div>
       </div>
 
-      <!-- Sub-step 3-2: (view) 클릭 -->
-      <div class="guide-step">
-        <div class="guide-step-header">
-          <div class="guide-step-num">2</div>
-          <div class="guide-step-label">API Key의 (view) 클릭</div>
-        </div>
-        <div class="guide-step-desc">
-          API Key가 아직 없다면 자동 생성됩니다.<br>
-          <b>(view)</b>를 터치하면 키가 표시됩니다.
-        </div>
-        <div class="mock-pointer">&#128072; (view) 를 터치하세요</div>
+      <div class="step-actions">
+        <a href="https://intervals.icu/settings" target="_blank" class="btn btn-primary">
+          Settings 페이지 열기
+        </a>
+        <button class="btn btn-secondary" onclick="goToStep(4)">
+          복사 완료! 다음으로
+        </button>
+        <button class="btn btn-ghost" onclick="goToStep(2)">
+          &larr; 이전 단계
+        </button>
+        <button class="btn btn-ghost" onclick="closeLater()">
+          나중에 이어서 할게요
+        </button>
       </div>
-
-      <!-- Sub-step 3-3: 키 복사 -->
-      <div class="guide-step">
-        <div class="guide-step-header">
-          <div class="guide-step-num">3</div>
-          <div class="guide-step-label">파란색 키를 터치해서 복사</div>
-        </div>
-        <div class="guide-step-desc">
-          팝업이 뜨면 파란색 키 텍스트를 터치하세요.<br>
-          자동으로 클립보드에 복사됩니다.
-        </div>
-        <div class="mock-popup">
-          <div class="mock-popup-title">Intervals.icu API Key</div>
-          <div class="mock-popup-text">Your API key allows other applications to access your Intervals.icu data.</div>
-          <div class="mock-popup-key">a1b2c3d4e5f6g7h8i9j0klmn</div>
-          <div class="mock-popup-actions"><span class="mock-popup-btn">CLOSE</span></div>
-        </div>
-        <div class="mock-toast">&#10003; API key has been copied to the clipboard</div>
-      </div>
-
-      <a href="https://intervals.icu/settings" target="_blank" class="btn btn-primary">
-        Settings 페이지 열기
-      </a>
-      <button class="btn btn-secondary" onclick="goToStep(4)">
-        복사 완료! 다음으로
-      </button>
-      <button class="btn btn-ghost" onclick="goToStep(2)">
-        ← 이전 단계
-      </button>
-      <button class="btn btn-ghost" onclick="closeLater()">
-        나중에 이어서 할게요
-      </button>
     </div>
 
     <!-- Step 4: API 키 입력 -->
@@ -710,26 +779,33 @@
       <div class="step-desc">
         아래 입력란을 길게 눌러 <b>붙여넣기</b> 해주세요.
       </div>
-      <div class="input-group">
-        <label>API Key</label>
-        <input type="password" id="api-key-input" placeholder="여기를 길게 눌러 붙여넣기" autocomplete="off">
+      <div class="step-card">
+        <div class="input-group">
+          <label>API Key</label>
+          <input type="password" id="api-key-input" placeholder="여기를 길게 눌러 붙여넣기" autocomplete="off">
+        </div>
       </div>
-      <button class="btn btn-primary" id="btn-submit" onclick="submitApiKey()">
-        연동하기
-      </button>
-      <div class="error-text" id="error-msg" style="display:none"></div>
-      <button class="btn btn-ghost" onclick="goToStep(3)">
-        ← 이전 단계
-      </button>
-      <button class="btn btn-ghost" onclick="closeLater()">
-        나중에 이어서 할게요
-      </button>
+      <div class="step-actions">
+        <button class="btn btn-primary" id="btn-submit" onclick="submitApiKey()">
+          연동하기
+        </button>
+        <div class="error-text" id="error-msg" style="display:none"></div>
+        <button class="btn btn-ghost" onclick="goToStep(3)">
+          &larr; 이전 단계
+        </button>
+        <button class="btn btn-ghost" onclick="closeLater()">
+          나중에 이어서 할게요
+        </button>
+      </div>
     </div>
 
     <!-- Success State -->
     <div class="step" id="step-success">
       <div class="status">
-        <div class="icon">&#127881;</div>
+        <svg class="check-circle" viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="32"/>
+          <path d="M20 33 L28 41 L44 25"/>
+        </svg>
         <div class="step-title">연동 완료!</div>
         <div class="message" id="success-msg">
           intervals.icu 연동이 완료되었습니다.
@@ -760,24 +836,37 @@
       }
     });
 
+    function updateIndicator(fromStep, toStep) {
+      const fromDot = document.getElementById('dot-' + fromStep);
+      const toDot = document.getElementById('dot-' + toStep);
+
+      if (fromDot) fromDot.classList.remove('active');
+      if (toDot) toDot.classList.add('active');
+
+      if (typeof toStep === 'number' && typeof fromStep === 'number') {
+        if (toStep > fromStep) {
+          if (fromDot) fromDot.classList.add('done');
+          const conn = document.getElementById('conn-' + fromStep + '-' + toStep);
+          if (conn) conn.classList.add('done');
+        } else {
+          for (let i = toStep; i <= fromStep; i++) {
+            const dot = document.getElementById('dot-' + i);
+            if (dot && i !== toStep) dot.classList.remove('done');
+          }
+          for (let i = toStep; i < fromStep; i++) {
+            const conn = document.getElementById('conn-' + i + '-' + (i + 1));
+            if (conn) conn.classList.remove('done');
+          }
+        }
+      }
+    }
+
     function goToStep(step) {
       const prev = currentStep;
       document.getElementById('step-' + prev)?.classList.remove('active');
-      document.getElementById('dot-' + prev)?.classList.remove('active');
-
-      // 앞으로 가면 done, 뒤로 가면 done 해제
-      if (typeof step === 'number' && typeof prev === 'number' && step < prev) {
-        document.getElementById('dot-' + prev)?.classList.remove('done');
-        for (let i = step; i <= prev; i++) {
-          document.getElementById('dot-' + i)?.classList.remove('done');
-        }
-      } else {
-        document.getElementById('dot-' + prev)?.classList.add('done');
-      }
-
+      updateIndicator(prev, step);
       currentStep = step;
       document.getElementById('step-' + step)?.classList.add('active');
-      document.getElementById('dot-' + step)?.classList.add('active');
     }
 
     function closeLater() {

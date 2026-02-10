@@ -366,6 +366,69 @@
       margin-bottom: 16px;
     }
 
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      color: var(--tg-theme-hint-color);
+      margin-bottom: 6px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--tg-theme-hint-color);
+      border-radius: 8px;
+      font-size: 15px;
+      background: var(--tg-theme-bg-color);
+      color: var(--tg-theme-text-color);
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--tg-theme-button-color);
+    }
+
+    .status {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .status .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .status .message {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .error-text {
+      color: #e74c3c;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     .info-box {
       background: #f0f7ff;
       border: 1px solid #d0e3f7;
@@ -390,6 +453,7 @@
       <div class="step-dot active" id="dot-1"></div>
       <div class="step-dot" id="dot-2"></div>
       <div class="step-dot" id="dot-3"></div>
+      <div class="step-dot" id="dot-4"></div>
     </div>
 
     <!-- Step 1: intervals.icu 가입 -->
@@ -445,8 +509,7 @@
     <div class="step" id="step-3">
       <div class="step-title">3. API 키 복사</div>
       <div class="step-desc">
-        intervals.icu Settings 하단에서 API 키를 복사해주세요.<br>
-        복사한 후, 이 화면을 닫고 <b>채팅에 붙여넣으세요.</b>
+        intervals.icu Settings 하단에서 API 키를 복사해주세요.
       </div>
 
       <!-- Sub-step 3-1: Developer Settings 찾기 -->
@@ -512,8 +575,8 @@
       <a href="https://intervals.icu/settings" target="_blank" class="btn btn-primary">
         Settings 페이지 열기
       </a>
-      <button class="btn btn-secondary" onclick="closeAndPaste()">
-        채팅으로 돌아가기
+      <button class="btn btn-secondary" onclick="goToStep(4)">
+        복사 완료! 다음으로
       </button>
       <button class="btn btn-ghost" onclick="goToStep(2)">
         ← 이전 단계
@@ -522,9 +585,45 @@
         나중에 이어서 할게요
       </button>
     </div>
+
+    <!-- Step 4: API 키 입력 -->
+    <div class="step" id="step-4">
+      <div class="step-title">4. API 키 연동</div>
+      <div class="step-desc">
+        아래 입력란을 길게 눌러 <b>붙여넣기</b> 해주세요.
+      </div>
+      <div class="input-group">
+        <label>API Key</label>
+        <input type="password" id="api-key-input" placeholder="여기를 길게 눌러 붙여넣기" autocomplete="off">
+      </div>
+      <button class="btn btn-primary" id="btn-submit" onclick="submitApiKey()">
+        연동하기
+      </button>
+      <div class="error-text" id="error-msg" style="display:none"></div>
+      <button class="btn btn-ghost" onclick="goToStep(3)">
+        ← 이전 단계
+      </button>
+      <button class="btn btn-ghost" onclick="closeLater()">
+        나중에 이어서 할게요
+      </button>
+    </div>
+
+    <!-- Success State -->
+    <div class="step" id="step-success">
+      <div class="status">
+        <div class="icon">&#127881;</div>
+        <div class="step-title">연동 완료!</div>
+        <div class="message" id="success-msg">
+          intervals.icu 연동이 완료되었습니다.
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
+    // Edge Function POST endpoint
+    const API_URL = 'https://dotsosqsftympgdescvz.supabase.co/functions/v1/rc-onboarding';
+
     // Telegram WebApp 초기화
     const tg = window.Telegram?.WebApp;
     if (tg) {
@@ -562,12 +661,76 @@
       }
     }
 
-    function closeAndPaste() {
-      if (tg) {
-        tg.close();
-      } else {
-        alert('Telegram 채팅으로 돌아가서 API 키를 붙여넣으세요.');
+    async function submitApiKey() {
+      const apiKey = document.getElementById('api-key-input').value.trim();
+      if (!apiKey) {
+        showError('API 키를 입력해주세요.');
+        return;
       }
+
+      if (apiKey.length < 10) {
+        showError('API 키가 너무 짧습니다. 올바른 키인지 확인해주세요.');
+        return;
+      }
+
+      const btnSubmit = document.getElementById('btn-submit');
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = '<span class="spinner"></span>검증 중...';
+      hideError();
+
+      try {
+        const user = tg?.initDataUnsafe?.user;
+        if (!user?.id) {
+          showError('Telegram 인증 정보를 가져올 수 없습니다. Telegram에서 다시 열어주세요.');
+          resetButtons();
+          return;
+        }
+
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            telegram_user_id: user.id,
+            api_key: apiKey,
+            init_data: tg.initData,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          document.getElementById('success-msg').textContent =
+            '선수: ' + (result.athlete_name || result.athlete_id) + '\n연동이 완료되었습니다!';
+          goToStep('success');
+
+          setTimeout(() => {
+            window.location.href = 'survey.html';
+          }, 1500);
+        } else {
+          showError(result.error || '연동에 실패했습니다. 다시 시도해주세요.');
+          resetButtons();
+        }
+      } catch (err) {
+        console.error('Submit error:', err);
+        showError('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+        resetButtons();
+      }
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error-msg');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function hideError() {
+      document.getElementById('error-msg').style.display = 'none';
+    }
+
+    function resetButtons() {
+      const btnSubmit = document.getElementById('btn-submit');
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = '연동하기';
     }
   </script>
 </body>

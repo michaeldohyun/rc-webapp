@@ -851,7 +851,12 @@
     function showComplete() {
       goToStep('complete');
       setTimeout(() => {
-        if (tg) tg.close();
+        var fromApp = new URLSearchParams(window.location.search).get('from') === 'app';
+        if (fromApp) {
+          window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=settings';
+        } else if (tg) {
+          tg.close();
+        }
       }, 2000);
     }
 

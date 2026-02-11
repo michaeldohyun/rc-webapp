@@ -154,6 +154,27 @@
   .quest-progress-text { font-size: 11px; color: var(--hint); margin-top: 3px; text-align: right; }
   .quest-empty { text-align: center; padding: 24px 16px; color: var(--hint); background: var(--bg); border-radius: var(--card-radius); font-size: 13px; }
 
+  /* Home: Summary Cards */
+  .summary-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .summary-card { flex: 1; background: var(--bg); border-radius: 14px; padding: 14px; border: 1px solid var(--secondary-bg); }
+  .summary-card-head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+  .summary-card-head .sc-icon { color: var(--btn); display: flex; }
+  .summary-card-head .sc-icon svg { width: 16px; height: 16px; }
+  .summary-card-head .sc-title { font-size: 12px; font-weight: 600; color: var(--hint); }
+  .summary-card-head .sc-edit { margin-left: auto; color: var(--link); display: flex; cursor: pointer; }
+  .summary-card-head .sc-edit svg { width: 14px; height: 14px; }
+  .sc-content { font-size: 13px; line-height: 1.6; }
+  .sc-content .sc-row { display: flex; align-items: center; gap: 4px; }
+  .sc-content .sc-label { color: var(--hint); font-size: 11px; }
+  .sc-content .sc-value { font-weight: 600; }
+  .sc-empty { font-size: 12px; color: var(--hint); text-align: center; padding: 4px 0; }
+  .sc-empty a { color: var(--link); text-decoration: none; font-weight: 600; }
+  .plan-mini { display: flex; gap: 3px; margin-top: 4px; }
+  .plan-mini-day { flex: 1; text-align: center; padding: 4px 0; border-radius: 6px; font-size: 10px; }
+  .plan-mini-day.rest { background: var(--secondary-bg); color: var(--hint); }
+  .plan-mini-day.active { background: rgba(var(--btn-rgb,38,120,182),0.12); color: var(--btn); font-weight: 600; }
+  .plan-mini-dist { font-size: 9px; font-weight: 700; }
+
   /* ===== QUEST PATH TAB ===== */
   .quest-path-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
   .quest-path-sub { font-size: 13px; color: var(--hint); margin-bottom: 20px; }
@@ -341,8 +362,8 @@
 <script>
 (function() {
   var API_URL = 'https://dotsosqsftympgdescvz.supabase.co/functions/v1/rc-onboarding';
-  var SURVEY_URL = 'https://michaeldohyun.github.io/rc-webapp/survey.html';
-  var PLAN_URL = 'https://michaeldohyun.github.io/rc-webapp/plan.html';
+  var SURVEY_URL = 'https://michaeldohyun.github.io/rc-webapp/survey.html?from=app';
+  var PLAN_URL = 'https://michaeldohyun.github.io/rc-webapp/plan.html?from=app';
 
   var QUEST_XP = { core: 30, method: 40, stretch: 50 };
   var QUEST_TYPE_LABELS = { core: '핵심', method: '훈련법', stretch: '도전' };
@@ -443,6 +464,50 @@
         '<div class="hs-item"><div class="hs-value">' + p.current_streak + '</div><div class="hs-label">연속(주)</div></div>' +
         '<div class="hs-item"><div class="hs-value">' + fmtNum(p.total_xp) + '</div><div class="hs-label">XP</div></div>' +
       '</div></div>';
+
+    // Survey + Plan summary
+    var sv = h.survey_summary;
+    var wp = h.weekly_plan;
+    var PRIORITY_LABELS = { health: '건강 관리', distance: '거리 늘리기', speed: '속도 향상', habit: '습관 형성', race: '대회 준비' };
+    var FREQ_LABELS = { '1-2': '주 1~2회', '3-4': '주 3~4회', '5+': '주 5회 이상' };
+    var DAY_SHORT = ['월','화','수','목','금','토','일'];
+
+    html += '<div class="summary-row">';
+    // Profile summary
+    html += '<div class="summary-card"><div class="summary-card-head"><span class="sc-icon">' + icon('user') + '</span><span class="sc-title">러닝 프로필</span><a href="' + SURVEY_URL + '" class="sc-edit">' + icon('edit') + '</a></div>';
+    if (sv && (sv.goal_text || sv.weekly_frequency || sv.priority)) {
+      html += '<div class="sc-content">';
+      if (sv.goal_text) html += '<div class="sc-row"><span class="sc-value">' + esc(sv.goal_text) + '</span></div>';
+      if (sv.weekly_frequency || sv.priority) {
+        html += '<div class="sc-row">';
+        if (sv.weekly_frequency) html += '<span class="sc-label">' + (FREQ_LABELS[sv.weekly_frequency] || sv.weekly_frequency) + '</span>';
+        if (sv.weekly_frequency && sv.priority) html += '<span class="sc-label"> · </span>';
+        if (sv.priority) html += '<span class="sc-label">' + (PRIORITY_LABELS[sv.priority] || sv.priority) + '</span>';
+        html += '</div>';
+      }
+      if (sv.target_date) html += '<div class="sc-row"><span class="sc-label">목표일 ' + esc(sv.target_date) + '</span></div>';
+      html += '</div>';
+    } else {
+      html += '<div class="sc-empty"><a href="' + SURVEY_URL + '">프로필 설정하기</a></div>';
+    }
+    html += '</div>';
+
+    // Plan summary
+    html += '<div class="summary-card"><div class="summary-card-head"><span class="sc-icon">' + icon('clipboard') + '</span><span class="sc-title">이번 주 계획</span><a href="' + PLAN_URL + '" class="sc-edit">' + icon('edit') + '</a></div>';
+    if (wp && wp.days && wp.days.length > 0) {
+      var planRuns = wp.days.filter(function(d){return !d.is_rest;}).length;
+      var planKm = wp.days.reduce(function(a,d){return a+(d.distance_km||0);},0);
+      html += '<div class="sc-content"><div class="sc-row"><span class="sc-value">' + planRuns + '회</span><span class="sc-label"> · </span><span class="sc-value">' + (Math.round(planKm*10)/10) + 'km</span></div></div>';
+      html += '<div class="plan-mini">';
+      wp.days.forEach(function(d,i) {
+        var cls = d.is_rest ? 'rest' : 'active';
+        html += '<div class="plan-mini-day ' + cls + '">' + (DAY_SHORT[i]||'') + (d.distance_km && !d.is_rest ? '<div class="plan-mini-dist">' + d.distance_km + '</div>' : '') + '</div>';
+      });
+      html += '</div>';
+    } else {
+      html += '<div class="sc-empty"><a href="' + PLAN_URL + '">계획 만들기</a></div>';
+    }
+    html += '</div></div>';
 
     // Weekly quests
     var wq = h.weekly_quests;

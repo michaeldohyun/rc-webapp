@@ -680,7 +680,12 @@
         if (res.ok && result.success) {
           btn.textContent = '저장 완료!';
           setTimeout(() => {
-            if (tg) tg.close();
+            var fromApp = new URLSearchParams(window.location.search).get('from') === 'app';
+            if (fromApp) {
+              window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=settings';
+            } else if (tg) {
+              tg.close();
+            }
           }, 1000);
         } else {
           document.getElementById('save-error').textContent = result.error || '저장 실패';
@@ -693,7 +698,12 @@
         // 네트워크 오류 시에도 닫기
         btn.textContent = '저장 완료!';
         setTimeout(() => {
-          if (tg) tg.close();
+          var fromApp = new URLSearchParams(window.location.search).get('from') === 'app';
+          if (fromApp) {
+            window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=settings';
+          } else if (tg) {
+            tg.close();
+          }
         }, 1000);
       }
     }

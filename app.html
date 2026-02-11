@@ -38,42 +38,31 @@
   }
 
   .container { max-width: 480px; margin: 0 auto; padding: 0 16px; }
-
-  /* Tab content */
   .tab-content { display: none; padding-top: 12px; padding-bottom: 16px; }
   .tab-content.active { display: block; animation: fadeIn 0.25s ease; }
 
+  /* Inline icon base */
+  .ic { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }
+  .ic svg { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .ic-sm svg { width: 16px; height: 16px; }
+  .ic-md svg { width: 20px; height: 20px; }
+  .ic-lg svg { width: 24px; height: 24px; }
+
   /* Bottom Navigation */
   .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 50;
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
     background: var(--bg);
     border-top: 1px solid var(--secondary-bg);
     padding-bottom: env(safe-area-inset-bottom);
   }
   .bottom-nav-inner {
-    max-width: 480px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+    max-width: 480px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-around;
   }
   .nav-btn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    padding: 8px 0 6px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    transition: color 0.15s;
-    color: var(--hint);
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 8px 0 6px; border: none; background: transparent; cursor: pointer;
+    -webkit-tap-highlight-color: transparent; transition: color 0.15s; color: var(--hint);
   }
   .nav-btn.active { color: var(--btn); }
   .nav-btn svg { width: 22px; height: 22px; }
@@ -81,575 +70,239 @@
   .nav-btn span { font-size: 10px; font-weight: 500; }
   .nav-btn.active span { font-weight: 700; }
 
-  /* Card base */
-  .card {
-    background: var(--bg);
-    border-radius: var(--card-radius);
-    padding: 16px;
-    margin-bottom: 12px;
-  }
+  /* Card */
+  .card { background: var(--bg); border-radius: var(--card-radius); padding: 16px; margin-bottom: 12px; }
 
-  /* Loading skeleton */
+  /* Skeleton */
   .skeleton { display: flex; flex-direction: column; gap: 12px; padding-top: 20px; }
-  .sk-block {
-    background: var(--bg);
-    border-radius: var(--card-radius);
-    position: relative;
-    overflow: hidden;
-  }
-  .sk-block::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent 0%, var(--shimmer-color) 50%, transparent 100%);
-    animation: shimmer 1.5s infinite;
-  }
-  .sk-1 { height: 120px; }
-  .sk-2 { height: 80px; }
-  .sk-3 { height: 200px; }
-  .sk-4 { height: 160px; }
+  .sk-block { background: var(--bg); border-radius: var(--card-radius); position: relative; overflow: hidden; }
+  .sk-block::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, var(--shimmer-color) 50%, transparent 100%); animation: shimmer 1.5s infinite; }
+  .sk-1 { height: 160px; } .sk-2 { height: 80px; } .sk-3 { height: 200px; } .sk-4 { height: 120px; }
 
   /* Error */
   .error-container { text-align: center; padding: 60px 20px; }
-  .error-icon { font-size: 48px; margin-bottom: 16px; }
+  .error-ic { color: var(--hint); margin-bottom: 16px; }
+  .error-ic svg { width: 48px; height: 48px; }
   .error-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
   .error-msg { font-size: 14px; color: var(--hint); line-height: 1.5; }
-  .error-retry {
-    margin-top: 20px;
-    padding: 10px 24px;
-    border-radius: 8px;
-    border: none;
-    background: var(--btn);
-    color: var(--btn-text);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-  }
+  .error-retry { margin-top: 20px; padding: 10px 24px; border-radius: 8px; border: none; background: var(--btn); color: var(--btn-text); font-size: 14px; font-weight: 600; cursor: pointer; }
 
   /* ===== HOME TAB ===== */
-  .home-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 4px;
+  .home-header-card { animation: fadeIn 0.4s ease; }
+  .home-top { display: flex; align-items: center; gap: 14px; }
+  .avatar { position: relative; flex-shrink: 0; }
+  .avatar-circle {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: var(--btn); color: var(--btn-text);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 700;
   }
-  .home-greeting { font-size: 13px; color: var(--hint); }
-  .home-name { font-size: 20px; font-weight: 700; }
-  .streak-badge {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    background: rgba(239,68,68,0.1);
-    font-size: 13px;
-    font-weight: 700;
-    color: #ef4444;
+  .avatar-badge {
+    position: absolute; bottom: -2px; right: -2px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--link); color: #fff;
+    font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--bg);
   }
-  .xp-section { margin-bottom: 16px; }
-  .xp-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 6px;
+  .home-info { flex: 1; min-width: 0; }
+  .home-name { font-size: 18px; font-weight: 700; }
+  .home-sub { font-size: 12px; color: var(--hint); margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+  .home-streak { display: inline-flex; align-items: center; gap: 3px; color: #ef4444; font-weight: 600; }
+  .home-streak svg { width: 14px; height: 14px; stroke: #ef4444; }
+  .home-xp-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .home-xp-bar { flex: 1; height: 8px; background: var(--secondary-bg); border-radius: 4px; overflow: hidden; }
+  .home-xp-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--btn), var(--link)); transition: width 0.8s ease; position: relative; overflow: hidden; }
+  .home-xp-fill::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%); animation: shimmer 2s infinite; }
+  .home-xp-label { font-size: 11px; font-weight: 600; color: var(--hint); white-space: nowrap; }
+  .home-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 14px;
   }
-  .xp-level { font-size: 14px; font-weight: 700; }
-  .xp-text { font-size: 12px; color: var(--hint); }
-  .xp-bar {
-    height: 10px;
-    background: var(--secondary-bg);
-    border-radius: 5px;
-    overflow: hidden;
-  }
-  .xp-fill {
-    height: 100%;
-    border-radius: 5px;
-    background: linear-gradient(90deg, var(--btn), var(--link));
-    transition: width 0.8s ease;
-    position: relative;
-    overflow: hidden;
-  }
-  .xp-fill::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
-    animation: shimmer 2s infinite;
-  }
-
-  .quick-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  .qs-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 12px 6px;
-    background: var(--bg);
-    border-radius: 14px;
-    border: 1px solid var(--secondary-bg);
-  }
-  .qs-icon { font-size: 20px; margin-bottom: 4px; }
-  .qs-value { font-size: 18px; font-weight: 700; }
-  .qs-label { font-size: 10px; color: var(--hint); margin-top: 2px; }
+  .hs-item { display: flex; flex-direction: column; align-items: center; padding: 8px 4px; background: var(--secondary-bg); border-radius: 10px; }
+  .hs-value { font-size: 15px; font-weight: 700; }
+  .hs-label { font-size: 10px; color: var(--hint); margin-top: 1px; }
 
   .section-title {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    font-size: 16px; font-weight: 700; margin: 16px 0 10px;
+    display: flex; align-items: center; gap: 6px;
   }
-  .section-title .count { font-size: 12px; color: var(--hint); font-weight: 500; }
+  .section-title .ic svg { width: 18px; height: 18px; }
+  .section-title .count { font-size: 12px; color: var(--hint); font-weight: 500; margin-left: auto; }
 
   .quest-list { display: flex; flex-direction: column; gap: 8px; }
-  .quest-card {
-    background: var(--bg);
-    border-radius: 12px;
-    padding: 12px 12px 12px 16px;
-    position: relative;
-    overflow: hidden;
-  }
-  .quest-card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 4px;
-  }
+  .quest-card { background: var(--bg); border-radius: 12px; padding: 12px 12px 12px 16px; position: relative; overflow: hidden; }
+  .quest-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
   .quest-card[data-type="core"]::before { background: var(--core-color); }
   .quest-card[data-type="method"]::before { background: var(--method-color); }
   .quest-card[data-type="stretch"]::before { background: var(--stretch-color); }
   .quest-card.completed { background: rgba(34,197,94,0.06); }
-  .quest-card.completed::after {
-    content: '\2713';
-    position: absolute;
-    right: 12px; top: 12px;
-    font-size: 18px;
-    color: var(--success);
-    font-weight: 700;
-  }
+  .quest-card.completed .quest-done-ic { position: absolute; right: 12px; top: 12px; color: var(--success); }
+  .quest-card.completed .quest-done-ic svg { width: 20px; height: 20px; }
   .quest-top { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-  .quest-pill {
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 7px;
-    border-radius: 20px;
-    color: #fff;
-  }
+  .quest-pill { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; color: #fff; }
   .quest-pill.core { background: var(--core-color); }
   .quest-pill.method { background: var(--method-color); }
   .quest-pill.stretch { background: var(--stretch-color); }
   .quest-xp { font-size: 10px; font-weight: 600; color: var(--link); margin-left: auto; }
   .quest-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-  .quest-progress-bar {
-    height: 6px;
-    background: var(--secondary-bg);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .quest-progress-fill {
-    height: 100%;
-    border-radius: 3px;
-    transition: width 0.6s ease;
-  }
+  .quest-progress-bar { height: 6px; background: var(--secondary-bg); border-radius: 3px; overflow: hidden; }
+  .quest-progress-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
   .quest-card[data-type="core"] .quest-progress-fill { background: var(--core-color); }
   .quest-card[data-type="method"] .quest-progress-fill { background: var(--method-color); }
   .quest-card[data-type="stretch"] .quest-progress-fill { background: var(--stretch-color); }
   .quest-card.completed .quest-progress-fill { background: var(--success); }
   .quest-progress-text { font-size: 11px; color: var(--hint); margin-top: 3px; text-align: right; }
-  .quest-empty {
-    text-align: center;
-    padding: 24px 16px;
-    color: var(--hint);
-    background: var(--bg);
-    border-radius: var(--card-radius);
-    font-size: 13px;
-  }
+  .quest-empty { text-align: center; padding: 24px 16px; color: var(--hint); background: var(--bg); border-radius: var(--card-radius); font-size: 13px; }
 
   /* ===== QUEST PATH TAB ===== */
   .quest-path-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
   .quest-path-sub { font-size: 13px; color: var(--hint); margin-bottom: 20px; }
-
   .path-container { position: relative; }
-  .path-line {
-    position: absolute;
-    left: 20px;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: var(--secondary-bg);
-  }
+  .path-line { position: absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: var(--secondary-bg); }
   .path-stages { display: flex; flex-direction: column; gap: 10px; }
-
   .stage-item { position: relative; }
   .stage-node {
-    position: absolute;
-    left: 20px;
-    top: 16px;
-    transform: translateX(-50%);
-    z-index: 2;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    border: 3px solid var(--secondary-bg);
-    background: var(--bg);
-    color: var(--hint);
+    position: absolute; left: 20px; top: 16px; transform: translateX(-50%); z-index: 2;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 3px solid var(--secondary-bg); background: var(--bg); color: var(--hint);
   }
-  .stage-item.completed .stage-node {
-    border-color: var(--btn);
-    background: var(--btn);
-    color: var(--btn-text);
-  }
-  .stage-item.current .stage-node {
-    border-color: var(--btn);
-    color: var(--btn);
-    animation: pulse 2s infinite;
-  }
-
+  .stage-node svg { width: 14px; height: 14px; }
+  .stage-item.completed .stage-node { border-color: var(--btn); background: var(--btn); color: var(--btn-text); }
+  .stage-item.current .stage-node { border-color: var(--btn); color: var(--btn); animation: pulse 2s infinite; }
   .stage-card {
-    margin-left: 48px;
-    border-radius: 14px;
-    padding: 14px;
-    border: 1px solid var(--secondary-bg);
-    background: var(--bg);
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    transition: all 0.2s;
+    margin-left: 48px; border-radius: 14px; padding: 14px;
+    border: 1px solid var(--secondary-bg); background: var(--bg);
+    cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all 0.2s;
   }
-  .stage-item.completed .stage-card {
-    border-color: rgba(var(--btn-rgb, 38,120,182), 0.15);
-    background: rgba(var(--btn-rgb, 38,120,182), 0.03);
-  }
-  .stage-item.current .stage-card {
-    border-color: var(--btn);
-    box-shadow: 0 2px 12px rgba(var(--btn-rgb, 38,120,182), 0.1);
-  }
-  .stage-item.locked .stage-card {
-    opacity: 0.5;
-    cursor: default;
-  }
+  .stage-item.completed .stage-card { border-color: rgba(var(--btn-rgb, 38,120,182), 0.15); background: rgba(var(--btn-rgb, 38,120,182), 0.03); }
+  .stage-item.current .stage-card { border-color: var(--btn); box-shadow: 0 2px 12px rgba(var(--btn-rgb, 38,120,182), 0.1); }
+  .stage-item.locked .stage-card { opacity: 0.5; cursor: default; }
   .stage-head { display: flex; align-items: center; justify-content: space-between; }
   .stage-meta { display: flex; align-items: center; gap: 6px; }
   .stage-lv { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--hint); }
-  .stage-item.completed .stage-lv,
-  .stage-item.current .stage-lv { color: var(--btn); }
-  .stage-now-badge {
-    font-size: 9px;
-    font-weight: 700;
-    padding: 1px 6px;
-    border-radius: 10px;
-    background: var(--btn);
-    color: var(--btn-text);
-  }
+  .stage-item.completed .stage-lv, .stage-item.current .stage-lv { color: var(--btn); }
+  .stage-now-badge { font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 10px; background: var(--btn); color: var(--btn-text); }
   .stage-count { font-size: 12px; color: var(--hint); }
-  .stage-chevron { font-size: 14px; color: var(--hint); transition: transform 0.2s; }
+  .stage-chevron { color: var(--hint); transition: transform 0.2s; display: flex; }
+  .stage-chevron svg { width: 16px; height: 16px; }
   .stage-chevron.open { transform: rotate(180deg); }
   .stage-title { font-size: 15px; font-weight: 700; margin-top: 4px; }
   .stage-item.locked .stage-title { color: var(--hint); }
   .stage-desc { font-size: 12px; color: var(--hint); margin-top: 2px; }
-
-  .stage-progress-bar {
-    margin-top: 10px;
-    height: 4px;
-    background: var(--secondary-bg);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .stage-progress-fill {
-    height: 100%;
-    border-radius: 2px;
-    background: var(--btn);
-    transition: width 0.6s ease;
-  }
-
-  .stage-missions {
-    margin-top: 8px;
-    padding: 10px;
-    background: var(--secondary-bg);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+  .stage-progress-bar { margin-top: 10px; height: 4px; background: var(--secondary-bg); border-radius: 2px; overflow: hidden; }
+  .stage-progress-fill { height: 100%; border-radius: 2px; background: var(--btn); transition: width 0.6s ease; }
+  .stage-missions { margin-top: 8px; padding: 10px; background: var(--secondary-bg); border-radius: 10px; display: flex; flex-direction: column; gap: 6px; }
   .mission-row { display: flex; align-items: center; gap: 8px; padding: 4px; }
-  .mission-check {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-  }
+  .mission-check { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .mission-check svg { width: 12px; height: 12px; }
   .mission-check.done { background: var(--btn); color: var(--btn-text); }
   .mission-check.pending { border: 2px solid var(--hint); opacity: 0.4; }
   .mission-name { font-size: 13px; }
   .mission-row.done .mission-name { font-weight: 500; }
   .mission-row.pending .mission-name { color: var(--hint); }
-
-  .trophy-final {
-    position: relative;
-    margin-top: 10px;
-  }
+  .trophy-final { position: relative; margin-top: 10px; }
   .trophy-node {
-    position: absolute;
-    left: 20px;
-    top: 10px;
-    transform: translateX(-50%);
-    z-index: 2;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    background: var(--secondary-bg);
+    position: absolute; left: 20px; top: 10px; transform: translateX(-50%); z-index: 2;
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--secondary-bg); color: var(--btn);
   }
-  .trophy-card {
-    margin-left: 48px;
-    border-radius: 14px;
-    padding: 14px;
-    border: 1px solid var(--secondary-bg);
-    background: var(--bg);
-  }
+  .trophy-node svg { width: 18px; height: 18px; }
+  .trophy-card { margin-left: 48px; border-radius: 14px; padding: 14px; border: 1px solid var(--secondary-bg); background: var(--bg); }
   .trophy-title { font-size: 15px; font-weight: 700; }
   .trophy-desc { font-size: 12px; color: var(--hint); margin-top: 2px; }
 
   /* ===== STATS TAB ===== */
   .stats-page-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
   .stats-page-sub { font-size: 13px; color: var(--hint); margin-bottom: 16px; }
-
-  .period-toggle {
-    display: flex;
-    border-radius: 12px;
-    background: var(--bg);
-    padding: 3px;
-    margin-bottom: 16px;
-  }
-  .period-btn {
-    flex: 1;
-    padding: 8px 0;
-    border: none;
-    border-radius: 10px;
-    background: transparent;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--hint);
-    cursor: pointer;
-    transition: all 0.2s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .period-btn.active {
-    background: var(--btn);
-    color: var(--btn-text);
-    font-weight: 600;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-  }
-
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-  .stats-card {
-    background: var(--bg);
-    border-radius: 14px;
-    padding: 14px;
-    border: 1px solid var(--secondary-bg);
-  }
-  .stats-card-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    margin-bottom: 8px;
-  }
+  .period-toggle { display: flex; border-radius: 12px; background: var(--bg); padding: 3px; margin-bottom: 16px; }
+  .period-btn { flex: 1; padding: 8px 0; border: none; border-radius: 10px; background: transparent; font-size: 13px; font-weight: 500; color: var(--hint); cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
+  .period-btn.active { background: var(--btn); color: var(--btn-text); font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+  .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+  .stats-card { background: var(--bg); border-radius: 14px; padding: 14px; border: 1px solid var(--secondary-bg); }
+  .stats-card-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+  .stats-card-icon svg { width: 16px; height: 16px; }
   .stats-card-value { font-size: 22px; font-weight: 700; }
   .stats-card-label { font-size: 11px; color: var(--hint); margin-top: 2px; }
-
-  .chart-card {
-    background: var(--bg);
-    border-radius: var(--card-radius);
-    padding: 16px;
-    margin-bottom: 12px;
-    border: 1px solid var(--secondary-bg);
-  }
+  .chart-card { background: var(--bg); border-radius: var(--card-radius); padding: 16px; margin-bottom: 12px; border: 1px solid var(--secondary-bg); }
   .chart-title { font-size: 15px; font-weight: 600; margin-bottom: 14px; }
-  .bar-chart {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 6px;
-    height: 110px;
-  }
-  .bar-col {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    height: 100%;
-    justify-content: flex-end;
-  }
+  .bar-chart { display: flex; align-items: flex-end; justify-content: space-between; gap: 6px; height: 110px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
   .bar-value { font-size: 9px; font-weight: 600; color: var(--text); }
-  .bar-fill {
-    width: 100%;
-    border-radius: 6px;
-    transition: height 0.6s ease;
-    min-height: 4px;
-  }
+  .bar-fill { width: 100%; border-radius: 6px; transition: height 0.6s ease; min-height: 4px; }
   .bar-fill.has-data { background: var(--btn); }
   .bar-fill.no-data { background: var(--secondary-bg); height: 4px !important; }
   .bar-label { font-size: 10px; color: var(--hint); }
-
   .records-list { display: flex; flex-direction: column; gap: 8px; }
-  .record-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px;
-    background: var(--bg);
-    border-radius: 12px;
-    border: 1px solid var(--secondary-bg);
-  }
+  .record-row { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--bg); border-radius: 12px; border: 1px solid var(--secondary-bg); }
   .record-left { display: flex; align-items: center; gap: 10px; }
-  .record-icon { font-size: 20px; }
+  .record-ic { color: var(--btn); display: flex; }
+  .record-ic svg { width: 20px; height: 20px; }
   .record-label { font-size: 14px; }
   .record-value { font-size: 15px; font-weight: 700; }
 
-  /* ===== PROFILE TAB ===== */
-  .profile-header-card { animation: fadeIn 0.4s ease; }
-  .profile-top { display: flex; align-items: center; gap: 14px; }
-  .avatar { position: relative; flex-shrink: 0; }
-  .avatar-circle {
-    width: 60px; height: 60px;
-    border-radius: 50%;
-    background: var(--btn);
-    color: var(--btn-text);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; font-weight: 700;
+  /* ===== SETTINGS TAB ===== */
+  .settings-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+  .settings-links { display: flex; flex-direction: column; gap: 1px; background: var(--secondary-bg); border-radius: var(--card-radius); overflow: hidden; margin-bottom: 16px; }
+  .settings-link {
+    display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+    background: var(--bg); text-decoration: none; color: var(--text);
+    cursor: pointer; border: none; font-size: 15px; font-weight: 500;
+    -webkit-tap-highlight-color: transparent; text-align: left; width: 100%;
   }
-  .avatar-badge {
-    position: absolute; bottom: -2px; right: -2px;
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    background: var(--link);
-    color: #fff;
-    font-size: 10px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    border: 2px solid var(--bg);
-  }
-  .profile-info { flex: 1; min-width: 0; }
-  .profile-name { font-size: 18px; font-weight: 700; }
-  .profile-since { font-size: 12px; color: var(--hint); margin-top: 2px; }
-  .profile-xp-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-  .profile-xp-bar { flex: 1; height: 8px; background: var(--secondary-bg); border-radius: 4px; overflow: hidden; }
-  .profile-xp-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--btn), var(--link)); transition: width 0.8s ease; }
-  .profile-xp-label { font-size: 11px; font-weight: 600; color: var(--hint); white-space: nowrap; }
+  .settings-link .sl-icon { color: var(--btn); display: flex; }
+  .settings-link .sl-icon svg { width: 20px; height: 20px; }
+  .settings-link .sl-arrow { margin-left: auto; color: var(--hint); display: flex; }
+  .settings-link .sl-arrow svg { width: 16px; height: 16px; }
 
-  .profile-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    margin-top: 14px;
-  }
-  .ps-item {
-    display: flex; flex-direction: column; align-items: center;
-    padding: 8px 4px;
-    background: var(--secondary-bg);
-    border-radius: 10px;
-  }
-  .ps-value { font-size: 15px; font-weight: 700; }
-  .ps-label { font-size: 10px; color: var(--hint); margin-top: 1px; }
-
-  .roadmap-title {
-    font-size: 15px; font-weight: 600;
-    margin-bottom: 10px;
-    display: flex; align-items: center; gap: 6px;
-  }
+  .roadmap-title { font-size: 15px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .roadmap-title svg { width: 16px; height: 16px; color: var(--link); }
   .level-list { display: flex; flex-direction: column; gap: 4px; }
-  .level-row {
-    display: flex; align-items: center; gap: 8px;
-    padding: 6px 8px;
-    border-radius: 10px;
-    transition: background 0.2s;
-  }
+  .level-row { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 10px; transition: background 0.2s; }
   .level-row.reached { background: rgba(var(--btn-rgb, 38,120,182), 0.05); }
   .level-row.current { background: rgba(var(--btn-rgb, 38,120,182), 0.12); border: 1.5px solid var(--btn); }
   .level-row.locked { background: var(--secondary-bg); opacity: 0.5; }
-  .lv-icon-box {
-    width: 32px; height: 32px;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; flex-shrink: 0;
-  }
-  .level-row.reached .lv-icon-box,
-  .level-row.current .lv-icon-box { background: var(--btn); color: var(--btn-text); font-size: 11px; font-weight: 700; }
-  .level-row.locked .lv-icon-box { background: var(--secondary-bg); }
+  .lv-icon-box { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .level-row.reached .lv-icon-box, .level-row.current .lv-icon-box { background: var(--btn); color: var(--btn-text); }
+  .level-row.locked .lv-icon-box { background: var(--secondary-bg); color: var(--hint); }
   .lv-info { flex: 1; min-width: 0; }
   .lv-title { font-size: 13px; font-weight: 600; }
   .lv-xp { font-size: 10px; color: var(--hint); }
   .level-row.locked .lv-title { color: var(--hint); }
   .lv-tag { font-size: 10px; font-weight: 600; color: var(--btn); padding: 1px 7px; border-radius: 8px; background: rgba(var(--btn-rgb, 38,120,182), 0.1); }
   .lv-tag.current-tag { background: var(--btn); color: var(--btn-text); }
+  .lv-lock { color: var(--hint); display: flex; }
+  .lv-lock svg { width: 14px; height: 14px; }
 
-  .milestones-title { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
-  .milestones-title .mcount { font-size: 12px; font-weight: 400; color: var(--hint); }
+  .milestones-title { font-size: 15px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .milestones-title svg { width: 16px; height: 16px; }
+  .milestones-title .mcount { font-size: 12px; font-weight: 400; color: var(--hint); margin-left: 4px; }
   .milestone-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .ms-card {
-    background: var(--bg);
-    border-radius: 12px;
-    padding: 10px 6px;
-    text-align: center;
-    position: relative;
-    border: 1px solid rgba(var(--btn-rgb, 38,120,182), 0.12);
-  }
+  .ms-card { background: var(--bg); border-radius: 12px; padding: 10px 6px; text-align: center; position: relative; border: 1px solid rgba(var(--btn-rgb, 38,120,182), 0.12); }
   .ms-card.locked { opacity: 0.5; border-color: transparent; background: var(--secondary-bg); }
-  .ms-icon { font-size: 24px; line-height: 1; }
-  .ms-card.locked .ms-icon { filter: grayscale(1); }
+  .ms-icon { display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+  .ms-icon svg { width: 28px; height: 28px; }
+  .ms-card.locked .ms-icon { opacity: 0.4; }
   .ms-title { font-size: 10px; font-weight: 600; margin-top: 4px; line-height: 1.3; }
   .ms-date { font-size: 9px; color: var(--hint); margin-top: 2px; }
-  .ms-lock { font-size: 9px; position: absolute; top: 4px; right: 4px; }
+  .ms-lock-ic { position: absolute; top: 4px; right: 4px; color: var(--hint); display: flex; }
+  .ms-lock-ic svg { width: 10px; height: 10px; }
   .ms-prog-bar { margin-top: 4px; height: 3px; background: rgba(128,128,128,0.15); border-radius: 2px; overflow: hidden; }
   .ms-prog-fill { height: 100%; background: var(--hint); border-radius: 2px; }
   .ms-prog-text { font-size: 8px; color: var(--hint); margin-top: 1px; }
 
-  .cta-section { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-  .btn-primary {
-    display: block; width: 100%; padding: 12px;
-    border: none; border-radius: 12px;
-    background: var(--btn); color: var(--btn-text);
-    font-size: 14px; font-weight: 600;
-    cursor: pointer; text-align: center; text-decoration: none;
-    -webkit-tap-highlight-color: transparent;
-  }
+  .cta-section { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
   .btn-secondary {
-    display: block; width: 100%; padding: 12px;
-    border: 1.5px solid var(--hint); border-radius: 12px;
-    background: transparent; color: var(--text);
-    font-size: 14px; font-weight: 600;
-    cursor: pointer; text-align: center;
-    -webkit-tap-highlight-color: transparent;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    width: 100%; padding: 12px; border: 1.5px solid var(--hint); border-radius: 12px;
+    background: transparent; color: var(--text); font-size: 14px; font-weight: 600;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
+  .btn-secondary svg { width: 16px; height: 16px; }
 
-  /* Animations */
   @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 </style>
 </head>
@@ -664,7 +317,6 @@
   </div>
 </div>
 
-<!-- Bottom Navigation -->
 <nav class="bottom-nav" id="bottom-nav" style="display:none">
   <div class="bottom-nav-inner">
     <button class="nav-btn active" data-tab="home">
@@ -679,9 +331,9 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       <span>기록</span>
     </button>
-    <button class="nav-btn" data-tab="profile">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>프로필</span>
+    <button class="nav-btn" data-tab="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      <span>설정</span>
     </button>
   </div>
 </nav>
@@ -690,24 +342,55 @@
 (function() {
   var API_URL = 'https://dotsosqsftympgdescvz.supabase.co/functions/v1/rc-onboarding';
   var SURVEY_URL = 'https://michaeldohyun.github.io/rc-webapp/survey.html';
+  var PLAN_URL = 'https://michaeldohyun.github.io/rc-webapp/plan.html';
 
   var QUEST_XP = { core: 30, method: 40, stretch: 50 };
-  var QUEST_TYPE_LABELS = { core: '\uD575\uC2EC', method: '\uD6C8\uB828\uBC95', stretch: '\uB3C4\uC804' };
+  var QUEST_TYPE_LABELS = { core: '핵심', method: '훈련법', stretch: '도전' };
 
   var XP_LEVELS = [
-    { level: 1,  title: '\uCCAB \uBC1C\uC790\uAD6D',       min_xp: 0,     icon: '\uD83D\uDC5F' },
-    { level: 2,  title: '\uC6CC\uBC0D\uC5C5 \uB7EC\uB108',     min_xp: 100,   icon: '\uD83C\uDFC3' },
-    { level: 3,  title: '\uB9AC\uB4EC\uC744 \uCC3E\uB294 \uB7EC\uB108', min_xp: 300,   icon: '\uD83C\uDFBD' },
-    { level: 4,  title: '\uAFB8\uC900\uD55C \uB7EC\uB108',     min_xp: 650,   icon: '\uD83D\uDCAA' },
-    { level: 5,  title: '\uB3C4\uC804\uD558\uB294 \uB7EC\uB108',   min_xp: 1150,  icon: '\u26A1' },
-    { level: 6,  title: '\uD398\uC774\uC2A4\uBA54\uC774\uCEE4',     min_xp: 1850,  icon: '\uD83C\uDFC5' },
-    { level: 7,  title: '\uD6C8\uB828\uC758 \uB2EC\uC778',     min_xp: 2850,  icon: '\uD83C\uDFC6' },
-    { level: 8,  title: '\uB9C8\uB77C\uD1A0\uB108',         min_xp: 4350,  icon: '\uD83E\uDD47' },
-    { level: 9,  title: '\uB7EC\uB2DD \uB9C8\uC2A4\uD130',     min_xp: 6350,  icon: '\uD83D\uDC51' },
-    { level: 10, title: '\uC804\uC124\uC758 \uB7EC\uB108',     min_xp: 9350,  icon: '\uD83D\uDC09' },
+    { level: 1,  title: '첫 발자국',       min_xp: 0 },
+    { level: 2,  title: '워밍업 러너',     min_xp: 100 },
+    { level: 3,  title: '리듬을 찾는 러너', min_xp: 300 },
+    { level: 4,  title: '꾸준한 러너',     min_xp: 650 },
+    { level: 5,  title: '도전하는 러너',   min_xp: 1150 },
+    { level: 6,  title: '페이스메이커',     min_xp: 1850 },
+    { level: 7,  title: '훈련의 달인',     min_xp: 2850 },
+    { level: 8,  title: '마라토너',         min_xp: 4350 },
+    { level: 9,  title: '러닝 마스터',     min_xp: 6350 },
+    { level: 10, title: '전설의 러너',     min_xp: 9350 },
   ];
 
-  // State
+  // ---- SVG Icons (Lucide-style) ----
+  var I = {
+    flame: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>',
+    run: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M7.5 16l3-5 2.5 2 3-4"/><path d="M5 21l3-7"/><path d="M12.5 13L16 21"/><path d="M10 5l-2 6"/></svg>',
+    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1116 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    target: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+    trophy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 010-5H6"/><path d="M18 9h1.5a2.5 2.5 0 000-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22"/><path d="M18 2H6v7a6 6 0 1012 0V2z"/></svg>',
+    lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    checkCircle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    zap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+    star: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+    calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+    ruler: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3a2.4 2.4 0 010 3.4l-2.6 2.6a2.4 2.4 0 01-3.4 0L2.7 8.7a2.4 2.4 0 010-3.4l2.6-2.6a2.4 2.4 0 013.4 0z"/><path d="M14.5 12.5l2-2"/><path d="M11.5 9.5l2-2"/><path d="M8.5 6.5l2-2"/><path d="M17.5 15.5l2-2"/></svg>',
+    edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+    clipboard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>',
+    chevronDown: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
+    chevronRight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
+    alertTriangle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    swords: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/><line x1="19" y1="21" x2="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" y1="14" x2="9" y2="18"/><line x1="7" y1="17" x2="4" y2="20"/><line x1="3" y1="19" x2="5" y2="21"/></svg>',
+    barChart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+    mountain: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l4 8 5-5 5 15H2L8 3z"/></svg>',
+    heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>',
+    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+    user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  };
+
+  // Milestone category → icon key
+  var MS_ICONS = { volume: 'barChart', endurance: 'mountain', consistency: 'flame', speed: 'zap', fitness: 'heart' };
+
   var appData = null;
   var activeTab = 'home';
   var expandedStage = null;
@@ -717,387 +400,222 @@
   var initData = '';
   var userId = null;
 
-  if (tg) {
-    tg.ready();
-    tg.expand();
-    initData = tg.initData || '';
-    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-      userId = tg.initDataUnsafe.user.id;
-    }
-  }
+  if (tg) { tg.ready(); tg.expand(); initData = tg.initData || ''; if (tg.initDataUnsafe && tg.initDataUnsafe.user) userId = tg.initDataUnsafe.user.id; }
 
-  // URL param for deeplink
   var params = new URLSearchParams(window.location.search);
   var tabParam = params.get('tab');
-  if (tabParam && ['home', 'quest', 'stats', 'profile'].indexOf(tabParam) !== -1) {
-    activeTab = tabParam;
-  }
+  if (tabParam === 'profile') tabParam = 'settings'; // backwards compat
+  if (tabParam && ['home','quest','stats','settings'].indexOf(tabParam) !== -1) activeTab = tabParam;
 
-  function esc(str) {
-    var d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
-  }
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+  function formatDate(ds) { if (!ds) return ''; var d = new Date(ds); return d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'); }
+  function fmtNum(n) { if (n >= 10000) return (n/10000).toFixed(1)+'만'; if (n >= 1000) return n.toLocaleString(); return String(n); }
+  function fmtMin(m) { if (m >= 60) return Math.floor(m/60)+'h '+m%60+'m'; return m+'m'; }
+  function icon(name) { return I[name] || ''; }
 
-  function formatDate(ds) {
-    if (!ds) return '';
-    var d = new Date(ds);
-    return d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + String(d.getDate()).padStart(2,'0');
-  }
-
-  function fmtNum(n) {
-    if (n >= 10000) return (n/10000).toFixed(1) + '\uB9CC';
-    if (n >= 1000) return n.toLocaleString();
-    return String(n);
-  }
-
-  function fmtMin(m) {
-    if (m >= 60) { var h = Math.floor(m/60); var mm = m % 60; return h + 'h ' + mm + 'm'; }
-    return m + 'm';
-  }
-
-  // -------------------------------------------------------
-  // Fetch data
-  // -------------------------------------------------------
   async function fetchAppData() {
-    if (!userId) throw new Error('\uD154\uB808\uADF8\uB7A8\uC5D0\uC11C \uC5F4\uC5B4\uC8FC\uC138\uC694');
-    var res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'get_app_data', telegram_user_id: userId, init_data: initData })
-    });
-    if (!res.ok) throw new Error('\uC11C\uBC84 \uC624\uB958 (' + res.status + ')');
+    if (!userId) throw new Error('텔레그램에서 열어주세요');
+    var res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'get_app_data', telegram_user_id: userId, init_data: initData }) });
+    if (!res.ok) throw new Error('서버 오류 (' + res.status + ')');
     var data = await res.json();
-    if (!data.success) throw new Error(data.error || '\uB370\uC774\uD130\uB97C \uBD88\uB7EC\uC62C \uC218 \uC5C6\uC2B5\uB2C8\uB2E4');
+    if (!data.success) throw new Error(data.error || '데이터를 불러올 수 없습니다');
     return data;
   }
 
-  // -------------------------------------------------------
-  // HOME TAB
-  // -------------------------------------------------------
+  // ---- HOME TAB ----
   function renderHome(d) {
-    var h = d.home;
+    var h = d.home, p = d.profile;
     var lvl = h.level;
-    var s = h.streak;
-    var qs = h.quick_stats;
     var xpPct = lvl.next_level_xp > 0 ? Math.min(100, (lvl.current_xp / lvl.next_level_xp) * 100) : 100;
+    var initial = (h.name || '?').charAt(0).toUpperCase();
 
-    var html = '';
-    // Header
-    html += '<div class="home-header">' +
-      '<div><div class="home-greeting">\uC548\uB155\uD558\uC138\uC694,</div><div class="home-name">' + esc(h.name) + '</div></div>';
-    if (s.current_weeks > 0) {
-      html += '<div class="streak-badge">\uD83D\uDD25 ' + s.current_weeks + '\uC8FC</div>';
-    }
-    html += '</div>';
-
-    // XP
-    html += '<div class="xp-section card">' +
-      '<div class="xp-header"><span class="xp-level">' + lvl.icon + ' Lv.' + lvl.xp_level + ' ' + esc(lvl.title) + '</span>' +
-      '<span class="xp-text">' + lvl.current_xp + ' / ' + lvl.next_level_xp + ' XP</span></div>' +
-      '<div class="xp-bar"><div class="xp-fill" style="width:' + xpPct + '%"></div></div>' +
-    '</div>';
-
-    // Quick Stats
-    html += '<div class="quick-stats">' +
-      '<div class="qs-item"><div class="qs-icon">\uD83C\uDFC3</div><div class="qs-value">' + fmtNum(qs.total_runs) + '</div><div class="qs-label">\uCD1D \uB7EC\uB2DD</div></div>' +
-      '<div class="qs-item"><div class="qs-icon">\uD83D\uDCCD</div><div class="qs-value">' + qs.total_distance_km + '</div><div class="qs-label">\uCD1D \uAC70\uB9AC(km)</div></div>' +
-      '<div class="qs-item"><div class="qs-icon">\u23F1</div><div class="qs-value">' + qs.total_time_hours + '</div><div class="qs-label">\uCD1D \uC2DC\uAC04(h)</div></div>' +
-    '</div>';
+    var html = '<div class="card home-header-card"><div class="home-top">' +
+      '<div class="avatar"><div class="avatar-circle">' + esc(initial) + '</div><div class="avatar-badge">' + lvl.xp_level + '</div></div>' +
+      '<div class="home-info"><div class="home-name">' + esc(h.name) + '</div>' +
+      '<div class="home-sub">Lv.' + lvl.xp_level + ' ' + esc(lvl.title);
+    if (h.streak.current_weeks > 0) html += ' <span class="home-streak">' + icon('flame') + ' ' + h.streak.current_weeks + '주</span>';
+    html += '</div>' +
+      '<div class="home-xp-row"><div class="home-xp-bar"><div class="home-xp-fill" style="width:' + xpPct + '%"></div></div><span class="home-xp-label">' + lvl.current_xp + '/' + lvl.next_level_xp + '</span></div>' +
+      '</div></div>' +
+      '<div class="home-stats">' +
+        '<div class="hs-item"><div class="hs-value">' + fmtNum(p.total_runs) + '</div><div class="hs-label">러닝</div></div>' +
+        '<div class="hs-item"><div class="hs-value">' + fmtNum(Math.round(p.total_distance_km)) + '</div><div class="hs-label">km</div></div>' +
+        '<div class="hs-item"><div class="hs-value">' + p.current_streak + '</div><div class="hs-label">연속(주)</div></div>' +
+        '<div class="hs-item"><div class="hs-value">' + fmtNum(p.total_xp) + '</div><div class="hs-label">XP</div></div>' +
+      '</div></div>';
 
     // Weekly quests
     var wq = h.weekly_quests;
     var completed = wq.filter(function(q) { return q.completed; }).length;
-    html += '<div class="section-title">\u2694\uFE0F \uC774\uBC88 \uC8FC \uD038\uC2A4\uD2B8 <span class="count">' + completed + '/' + wq.length + '</span></div>';
+    html += '<div class="section-title"><span class="ic">' + icon('swords') + '</span> 이번 주 퀘스트 <span class="count">' + completed + '/' + wq.length + '</span></div>';
     if (wq.length === 0) {
-      html += '<div class="quest-empty">\uD83D\uDCDD /plan \uBA85\uB839\uC5B4\uB85C \uC774\uBC88 \uC8FC \uACC4\uD68D\uC744 \uBA3C\uC800 \uB9CC\uB4E4\uC5B4\uC8FC\uC138\uC694</div>';
+      html += '<div class="quest-empty">/plan 명령어로 이번 주 계획을 먼저 만들어주세요</div>';
     } else {
       html += '<div class="quest-list">';
       wq.forEach(function(q) {
         var pct = q.target_value > 0 ? Math.min(100, (q.current_value / q.target_value) * 100) : 0;
         var cls = q.completed ? ' completed' : '';
-        var typeLabel = QUEST_TYPE_LABELS[q.quest_type] || q.quest_type;
-        var xp = QUEST_XP[q.quest_type] || 30;
-        html += '<div class="quest-card' + cls + '" data-type="' + q.quest_type + '">' +
-          '<div class="quest-top"><span class="quest-pill ' + q.quest_type + '">' + esc(typeLabel) + '</span><span class="quest-xp">+' + xp + ' XP</span></div>' +
+        html += '<div class="quest-card' + cls + '" data-type="' + q.quest_type + '">';
+        if (q.completed) html += '<div class="quest-done-ic">' + icon('checkCircle') + '</div>';
+        html += '<div class="quest-top"><span class="quest-pill ' + q.quest_type + '">' + esc(QUEST_TYPE_LABELS[q.quest_type] || q.quest_type) + '</span><span class="quest-xp">+' + (QUEST_XP[q.quest_type]||30) + ' XP</span></div>' +
           '<div class="quest-title">' + esc(q.title) + '</div>' +
           '<div class="quest-progress-bar"><div class="quest-progress-fill" style="width:' + pct + '%"></div></div>' +
-          '<div class="quest-progress-text">' + q.current_value + ' / ' + q.target_value + ' ' + esc(q.unit) + '</div>' +
-        '</div>';
+          '<div class="quest-progress-text">' + q.current_value + ' / ' + q.target_value + ' ' + esc(q.unit) + '</div></div>';
       });
       html += '</div>';
     }
     return html;
   }
 
-  // -------------------------------------------------------
-  // QUEST PATH TAB
-  // -------------------------------------------------------
+  // ---- QUEST PATH TAB ----
   function renderQuestPath(d) {
     var stages = d.quest_path.stages;
-    if (!expandedStage) {
-      var cur = stages.find(function(s) { return s.status === 'current'; });
-      if (cur) expandedStage = cur.id;
-    }
+    if (!expandedStage) { var cur = stages.find(function(s) { return s.status === 'current'; }); if (cur) expandedStage = cur.id; }
 
-    var html = '<div class="quest-path-title">\uD038\uC2A4\uD2B8 \uACBD\uB85C</div>' +
-      '<div class="quest-path-sub">\uB2E8\uACC4\uBCC4 \uBBF8\uC158\uC744 \uD074\uB9AC\uC5B4\uD558\uBA70 \uC131\uC7A5\uD558\uC138\uC694</div>';
-
+    var html = '<div class="quest-path-title">퀘스트 경로</div><div class="quest-path-sub">단계별 미션을 클리어하며 성장하세요</div>';
     html += '<div class="path-container"><div class="path-line"></div><div class="path-stages">';
 
     stages.forEach(function(stage) {
-      var completedM = stage.missions.filter(function(m) { return m.completed; }).length;
-      var totalM = stage.missions.length;
-      var isExpanded = expandedStage === stage.id;
-      var nodeIcon = stage.status === 'completed' ? '\u2713' : stage.status === 'current' ? '\u26A1' : '\uD83D\uDD12';
+      var cm = stage.missions.filter(function(m) { return m.completed; }).length;
+      var tm = stage.missions.length;
+      var isExp = expandedStage === stage.id;
+      var nodeHtml = stage.status === 'completed' ? icon('check') : stage.status === 'current' ? icon('zap') : icon('lock');
 
-      html += '<div class="stage-item ' + stage.status + '">' +
-        '<div class="stage-node">' + nodeIcon + '</div>' +
-        '<div class="stage-card" data-stage-id="' + stage.id + '">' +
-          '<div class="stage-head"><div class="stage-meta"><span class="stage-lv">Lv.' + stage.level + '</span>';
+      html += '<div class="stage-item ' + stage.status + '"><div class="stage-node">' + nodeHtml + '</div>' +
+        '<div class="stage-card" data-stage-id="' + stage.id + '"><div class="stage-head"><div class="stage-meta"><span class="stage-lv">Lv.' + stage.level + '</span>';
       if (stage.status === 'current') html += '<span class="stage-now-badge">NOW</span>';
       html += '</div><div style="display:flex;align-items:center;gap:6px">';
-      if (stage.status !== 'locked') html += '<span class="stage-count">' + completedM + '/' + totalM + '</span>';
-      if (stage.status !== 'locked') html += '<span class="stage-chevron' + (isExpanded ? ' open' : '') + '">\u25BC</span>';
-      html += '</div></div>' +
-          '<div class="stage-title">' + esc(stage.title) + '</div>' +
-          '<div class="stage-desc">' + esc(stage.description) + '</div>';
+      if (stage.status !== 'locked') html += '<span class="stage-count">' + cm + '/' + tm + '</span><span class="stage-chevron' + (isExp ? ' open' : '') + '">' + icon('chevronDown') + '</span>';
+      html += '</div></div><div class="stage-title">' + esc(stage.title) + '</div><div class="stage-desc">' + esc(stage.description) + '</div>';
 
-      if (stage.status === 'current') {
-        var pct = totalM > 0 ? (completedM / totalM) * 100 : 0;
-        html += '<div class="stage-progress-bar"><div class="stage-progress-fill" style="width:' + pct + '%"></div></div>';
-      }
+      if (stage.status === 'current') { var pct = tm > 0 ? (cm/tm)*100 : 0; html += '<div class="stage-progress-bar"><div class="stage-progress-fill" style="width:' + pct + '%"></div></div>'; }
 
-      if (isExpanded && stage.status !== 'locked') {
+      if (isExp && stage.status !== 'locked') {
         html += '<div class="stage-missions">';
         stage.missions.forEach(function(m) {
           var cls = m.completed ? 'done' : 'pending';
-          html += '<div class="mission-row ' + cls + '">' +
-            '<div class="mission-check ' + cls + '">' + (m.completed ? '\u2713' : '') + '</div>' +
-            '<span class="mission-name">' + esc(m.name) + '</span>' +
-          '</div>';
+          html += '<div class="mission-row ' + cls + '"><div class="mission-check ' + cls + '">' + (m.completed ? icon('check') : '') + '</div><span class="mission-name">' + esc(m.name) + '</span></div>';
         });
         html += '</div>';
       }
       html += '</div></div>';
     });
 
-    // Trophy
-    html += '<div class="trophy-final">' +
-      '<div class="trophy-node">\uD83C\uDFC6</div>' +
-      '<div class="trophy-card">' +
-        '<div class="trophy-title">\uCD5C\uC885 \uBAA9\uD45C</div>' +
-        '<div class="trophy-desc">\uBAA8\uB4E0 \uD038\uC2A4\uD2B8\uB97C \uD074\uB9AC\uC5B4\uD558\uACE0 \uB7EC\uB2DD \uB9C8\uC2A4\uD130\uAC00 \uB418\uC138\uC694!</div>' +
-      '</div></div>';
-
+    html += '<div class="trophy-final"><div class="trophy-node">' + icon('trophy') + '</div><div class="trophy-card"><div class="trophy-title">최종 목표</div><div class="trophy-desc">모든 퀘스트를 클리어하고 러닝 마스터가 되세요!</div></div></div>';
     html += '</div></div>';
     return html;
   }
 
-  // -------------------------------------------------------
-  // STATS TAB
-  // -------------------------------------------------------
+  // ---- STATS TAB ----
   function renderStats(d) {
     var s = d.stats;
+    var html = '<div class="stats-page-title">나의 기록</div><div class="stats-page-sub">누적된 러닝 데이터를 확인하세요</div>';
 
-    var html = '<div class="stats-page-title">\uB098\uC758 \uAE30\uB85D</div>' +
-      '<div class="stats-page-sub">\uB204\uC801\uB41C \uB7EC\uB2DD \uB370\uC774\uD130\uB97C \uD655\uC778\uD558\uC138\uC694</div>';
-
-    // Period toggle
     html += '<div class="period-toggle">' +
-      '<button class="period-btn' + (statsPeriod === 'week' ? ' active' : '') + '" data-period="week">\uC774\uBC88 \uC8FC</button>' +
-      '<button class="period-btn' + (statsPeriod === 'month' ? ' active' : '') + '" data-period="month">\uC774\uBC88 \uB2EC</button>' +
-      '<button class="period-btn' + (statsPeriod === 'total' ? ' active' : '') + '" data-period="total">\uC804\uCCB4</button>' +
-    '</div>';
+      '<button class="period-btn' + (statsPeriod==='week'?' active':'') + '" data-period="week">이번 주</button>' +
+      '<button class="period-btn' + (statsPeriod==='month'?' active':'') + '" data-period="month">이번 달</button>' +
+      '<button class="period-btn' + (statsPeriod==='total'?' active':'') + '" data-period="total">전체</button></div>';
 
-    // Stats cards
-    var distVal, timeVal, runsVal, paceVal;
+    var dv, tv, rv, pv;
     if (statsPeriod === 'week') {
-      var wDist = s.weekly.reduce(function(a, b) { return a + b.distance; }, 0);
-      var wTime = s.weekly.reduce(function(a, b) { return a + b.time; }, 0);
-      var wRuns = s.weekly.filter(function(d) { return d.distance > 0; }).length;
-      distVal = wDist.toFixed(1);
-      timeVal = wTime;
-      runsVal = wRuns;
-      paceVal = s.totals.avg_pace;
+      dv = s.weekly.reduce(function(a,b){return a+b.distance;},0).toFixed(1);
+      tv = s.weekly.reduce(function(a,b){return a+b.time;},0);
+      rv = s.weekly.filter(function(d){return d.distance>0;}).length;
+      pv = s.totals.avg_pace;
     } else if (statsPeriod === 'month') {
-      // current month from monthly data (last item)
-      var mData = s.monthly[s.monthly.length - 1];
-      distVal = mData ? mData.distance : 0;
-      timeVal = '-';
-      runsVal = '-';
-      paceVal = s.totals.avg_pace;
-    } else {
-      distVal = s.totals.distance_km;
-      timeVal = s.totals.time_min;
-      runsVal = s.totals.runs;
-      paceVal = s.totals.avg_pace;
-    }
+      var mD = s.monthly[s.monthly.length-1]; dv = mD ? mD.distance : 0; tv = '-'; rv = '-'; pv = s.totals.avg_pace;
+    } else { dv = s.totals.distance_km; tv = s.totals.time_min; rv = s.totals.runs; pv = s.totals.avg_pace; }
 
     html += '<div class="stats-grid">' +
-      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(var(--btn-rgb,38,120,182),0.1)">\uD83D\uDCCD</div><div class="stats-card-value">' + distVal + '</div><div class="stats-card-label">\uCD1D \uAC70\uB9AC (km)</div></div>' +
-      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(168,85,247,0.1)">\u23F1</div><div class="stats-card-value">' + (typeof timeVal === 'number' ? fmtMin(timeVal) : timeVal) + '</div><div class="stats-card-label">\uCD1D \uC2DC\uAC04</div></div>' +
-      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(239,68,68,0.1)">\uD83D\uDCC5</div><div class="stats-card-value">' + runsVal + '</div><div class="stats-card-label">\uB7EC\uB2DD \uD69F\uC218</div></div>' +
-      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(34,197,94,0.1)">\u26A1</div><div class="stats-card-value">' + paceVal + '</div><div class="stats-card-label">\uD3C9\uADE0 \uD398\uC774\uC2A4</div></div>' +
-    '</div>';
+      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(var(--btn-rgb,38,120,182),0.1);color:var(--btn)">' + icon('pin') + '</div><div class="stats-card-value">' + dv + '</div><div class="stats-card-label">총 거리 (km)</div></div>' +
+      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(168,85,247,0.1);color:#a855f7">' + icon('clock') + '</div><div class="stats-card-value">' + (typeof tv==='number'?fmtMin(tv):tv) + '</div><div class="stats-card-label">총 시간</div></div>' +
+      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(239,68,68,0.1);color:#ef4444">' + icon('calendar') + '</div><div class="stats-card-value">' + rv + '</div><div class="stats-card-label">러닝 횟수</div></div>' +
+      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(34,197,94,0.1);color:#22c55e">' + icon('zap') + '</div><div class="stats-card-value">' + pv + '</div><div class="stats-card-label">평균 페이스</div></div></div>';
 
-    // Charts
     if (statsPeriod === 'week') {
-      var maxD = Math.max.apply(null, s.weekly.map(function(d) { return d.distance; }));
-      html += '<div class="chart-card"><div class="chart-title">\uC8FC\uAC04 \uAC70\uB9AC</div><div class="bar-chart">';
-      s.weekly.forEach(function(day) {
-        var h = maxD > 0 ? (day.distance / maxD) * 100 : 0;
-        var cls = day.distance > 0 ? 'has-data' : 'no-data';
-        html += '<div class="bar-col">';
-        if (day.distance > 0) html += '<div class="bar-value">' + day.distance + '</div>';
-        html += '<div class="bar-fill ' + cls + '" style="height:' + (day.distance > 0 ? Math.max(h, 8) + '%' : '4px') + '"></div>' +
-          '<div class="bar-label">' + day.day + '</div></div>';
-      });
+      var mx = Math.max.apply(null, s.weekly.map(function(d){return d.distance;}));
+      html += '<div class="chart-card"><div class="chart-title">주간 거리</div><div class="bar-chart">';
+      s.weekly.forEach(function(day) { var h = mx>0?(day.distance/mx)*100:0; var cls = day.distance>0?'has-data':'no-data'; html += '<div class="bar-col">'; if (day.distance>0) html += '<div class="bar-value">'+day.distance+'</div>'; html += '<div class="bar-fill '+cls+'" style="height:'+(day.distance>0?Math.max(h,8)+'%':'4px')+'"></div><div class="bar-label">'+day.day+'</div></div>'; });
       html += '</div></div>';
     }
-
     if (statsPeriod === 'month') {
-      var maxM = Math.max.apply(null, s.monthly.map(function(m) { return m.distance; }));
-      html += '<div class="chart-card"><div class="chart-title">\uC6D4\uBCC4 \uAC70\uB9AC</div><div class="bar-chart">';
-      s.monthly.forEach(function(m) {
-        var h = maxM > 0 ? (m.distance / maxM) * 100 : 0;
-        var cls = m.distance > 0 ? 'has-data' : 'no-data';
-        html += '<div class="bar-col">';
-        if (m.distance > 0) html += '<div class="bar-value">' + m.distance + '</div>';
-        html += '<div class="bar-fill ' + cls + '" style="height:' + (m.distance > 0 ? Math.max(h, 8) + '%' : '4px') + '"></div>' +
-          '<div class="bar-label">' + m.month + '</div></div>';
-      });
+      var mxM = Math.max.apply(null, s.monthly.map(function(m){return m.distance;}));
+      html += '<div class="chart-card"><div class="chart-title">월별 거리</div><div class="bar-chart">';
+      s.monthly.forEach(function(m) { var h = mxM>0?(m.distance/mxM)*100:0; var cls = m.distance>0?'has-data':'no-data'; html += '<div class="bar-col">'; if (m.distance>0) html += '<div class="bar-value">'+m.distance+'</div>'; html += '<div class="bar-fill '+cls+'" style="height:'+(m.distance>0?Math.max(h,8)+'%':'4px')+'"></div><div class="bar-label">'+m.month+'</div></div>'; });
       html += '</div></div>';
     }
-
     if (statsPeriod === 'total') {
       var r = s.records;
-      html += '<div class="chart-card"><div class="chart-title">\uAC1C\uC778 \uCD5C\uACE0 \uAE30\uB85D</div><div class="records-list">' +
-        '<div class="record-row"><div class="record-left"><span class="record-icon">\uD83D\uDCCF</span><span class="record-label">\uCD5C\uC7A5 \uAC70\uB9AC</span></div><span class="record-value">' + r.longest_distance_km + ' km</span></div>' +
-        '<div class="record-row"><div class="record-left"><span class="record-icon">\u26A1</span><span class="record-label">\uCD5C\uACE0 \uD398\uC774\uC2A4</span></div><span class="record-value">' + r.best_pace + ' /km</span></div>' +
-        '<div class="record-row"><div class="record-left"><span class="record-icon">\u23F1</span><span class="record-label">\uCD5C\uC7A5 \uC2DC\uAC04</span></div><span class="record-value">' + fmtMin(r.longest_time_min) + '</span></div>' +
-        '<div class="record-row"><div class="record-left"><span class="record-icon">\uD83D\uDD25</span><span class="record-label">\uCD5C\uC7A5 \uC5F0\uC18D</span></div><span class="record-value">' + r.longest_streak + '\uC8FC</span></div>' +
+      html += '<div class="chart-card"><div class="chart-title">개인 최고 기록</div><div class="records-list">' +
+        '<div class="record-row"><div class="record-left"><span class="record-ic">' + icon('ruler') + '</span><span class="record-label">최장 거리</span></div><span class="record-value">' + r.longest_distance_km + ' km</span></div>' +
+        '<div class="record-row"><div class="record-left"><span class="record-ic" style="color:#ef4444">' + icon('zap') + '</span><span class="record-label">최고 페이스</span></div><span class="record-value">' + r.best_pace + ' /km</span></div>' +
+        '<div class="record-row"><div class="record-left"><span class="record-ic" style="color:#a855f7">' + icon('clock') + '</span><span class="record-label">최장 시간</span></div><span class="record-value">' + fmtMin(r.longest_time_min) + '</span></div>' +
+        '<div class="record-row"><div class="record-left"><span class="record-ic" style="color:#f59e0b">' + icon('flame') + '</span><span class="record-label">최장 연속</span></div><span class="record-value">' + r.longest_streak + '주</span></div>' +
       '</div></div>';
     }
-
     return html;
   }
 
-  // -------------------------------------------------------
-  // PROFILE TAB
-  // -------------------------------------------------------
-  function renderProfile(d) {
+  // ---- SETTINGS TAB ----
+  function renderSettings(d) {
     var p = d.profile;
-    var initial = (p.name || '?').charAt(0).toUpperCase();
-    var xpPct = p.next_level_xp > 0 ? Math.min(100, (p.current_xp / p.next_level_xp) * 100) : 100;
-    var sinceText = p.joined_date ? formatDate(p.joined_date) + '\uBD80\uD130 \uB7EC\uB2DD' : '';
+    var html = '<div class="settings-title">설정</div>';
 
-    var html = '';
-    // Header
-    html += '<div class="card profile-header-card">' +
-      '<div class="profile-top">' +
-        '<div class="avatar"><div class="avatar-circle">' + esc(initial) + '</div><div class="avatar-badge">' + p.level + '</div></div>' +
-        '<div class="profile-info">' +
-          '<div class="profile-name">' + esc(p.name) + '</div>' +
-          '<div class="profile-since">' + esc(sinceText) + '</div>' +
-          '<div class="profile-xp-row"><div class="profile-xp-bar"><div class="profile-xp-fill" style="width:' + xpPct + '%"></div></div><span class="profile-xp-label">Lv.' + p.level + '</span></div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="profile-stats">' +
-        '<div class="ps-item"><div class="ps-value">' + fmtNum(p.total_runs) + '</div><div class="ps-label">\uB7EC\uB2DD</div></div>' +
-        '<div class="ps-item"><div class="ps-value">' + fmtNum(Math.round(p.total_distance_km)) + '</div><div class="ps-label">km</div></div>' +
-        '<div class="ps-item"><div class="ps-value">' + p.current_streak + '</div><div class="ps-label">\uC5F0\uC18D(\uC8FC)</div></div>' +
-        '<div class="ps-item"><div class="ps-value">' + fmtNum(p.total_xp) + '</div><div class="ps-label">XP</div></div>' +
-      '</div>' +
+    // Setting links
+    html += '<div class="settings-links">' +
+      '<a href="' + SURVEY_URL + '" class="settings-link"><span class="sl-icon">' + icon('user') + '</span>러닝 프로필 수정<span class="sl-arrow">' + icon('chevronRight') + '</span></a>' +
+      '<a href="' + PLAN_URL + '" class="settings-link"><span class="sl-icon">' + icon('clipboard') + '</span>주간 훈련 계획 수정<span class="sl-arrow">' + icon('chevronRight') + '</span></a>' +
     '</div>';
 
     // Level Roadmap
-    html += '<div class="card">' +
-      '<div class="roadmap-title">\u2B50 \uB808\uBCA8 \uB85C\uB4DC\uB9F5</div><div class="level-list">';
+    html += '<div class="card"><div class="roadmap-title">' + icon('star') + ' 레벨 로드맵</div><div class="level-list">';
     for (var i = 0; i < XP_LEVELS.length; i++) {
       var lv = XP_LEVELS[i];
-      var isCurrent = lv.level === p.level;
-      var isReached = lv.level < p.level;
-      var cls = isCurrent ? 'current' : isReached ? 'reached' : 'locked';
-      html += '<div class="level-row ' + cls + '">';
-      if (isReached || isCurrent) {
-        html += '<div class="lv-icon-box">' + lv.level + '</div>';
-      } else {
-        html += '<div class="lv-icon-box">' + lv.icon + '</div>';
-      }
-      html += '<div class="lv-info"><div class="lv-title">' + esc(lv.title) + '</div><div class="lv-xp">' + lv.min_xp.toLocaleString() + ' XP</div></div>';
-      if (isCurrent) html += '<span class="lv-tag current-tag">\uD604\uC7AC</span>';
-      else if (isReached) html += '<span class="lv-tag">\uB2EC\uC131</span>';
-      else html += '<span style="font-size:12px;color:var(--hint)">\uD83D\uDD12</span>';
+      var isCur = lv.level === p.level, isR = lv.level < p.level;
+      var cls = isCur ? 'current' : isR ? 'reached' : 'locked';
+      html += '<div class="level-row ' + cls + '"><div class="lv-icon-box">' + lv.level + '</div>' +
+        '<div class="lv-info"><div class="lv-title">' + esc(lv.title) + '</div><div class="lv-xp">' + lv.min_xp.toLocaleString() + ' XP</div></div>';
+      if (isCur) html += '<span class="lv-tag current-tag">현재</span>';
+      else if (isR) html += '<span class="lv-tag">달성</span>';
+      else html += '<span class="lv-lock">' + icon('lock') + '</span>';
       html += '</div>';
     }
     html += '</div></div>';
 
     // Milestones
-    var achieved = (p.milestones || []).filter(function(m) { return m.achieved; });
-    var locked = (p.milestones || []).filter(function(m) { return !m.achieved; });
+    var achieved = (p.milestones||[]).filter(function(m){return m.achieved;});
+    var locked = (p.milestones||[]).filter(function(m){return !m.achieved;});
 
     if (achieved.length > 0) {
-      html += '<div class="card"><div class="milestones-title">\uD83C\uDFC6 \uD68D\uB4DD\uD55C \uBC30\uC9C0 <span class="mcount">' + achieved.length + '/' + p.milestones.length + '</span></div><div class="milestone-grid">';
-      achieved.forEach(function(m) {
-        html += '<div class="ms-card"><div class="ms-icon">' + m.icon + '</div><div class="ms-title">' + esc(m.title) + '</div><div class="ms-date">' + formatDate(m.achieved_at) + '</div></div>';
-      });
+      html += '<div class="card"><div class="milestones-title">' + icon('trophy') + ' 획득한 배지 <span class="mcount">' + achieved.length + '/' + p.milestones.length + '</span></div><div class="milestone-grid">';
+      achieved.forEach(function(m) { html += '<div class="ms-card"><div class="ms-icon" style="color:var(--btn)">' + icon(MS_ICONS[m.category] || 'target') + '</div><div class="ms-title">' + esc(m.title) + '</div><div class="ms-date">' + formatDate(m.achieved_at) + '</div></div>'; });
       html += '</div></div>';
     }
-
     if (locked.length > 0) {
-      html += '<div class="card"><div class="milestones-title">\uD83D\uDD12 \uBBF8\uD68D\uB4DD \uBC30\uC9C0 <span class="mcount">' + locked.length + '</span></div><div class="milestone-grid">';
+      html += '<div class="card"><div class="milestones-title">' + icon('lock') + ' 미획득 배지 <span class="mcount">' + locked.length + '</span></div><div class="milestone-grid">';
       locked.forEach(function(m) {
         var prog = m.progress || {};
-        var pct = prog.target ? Math.min(100, (prog.current / prog.target) * 100) : 0;
-        html += '<div class="ms-card locked"><div class="ms-lock">\uD83D\uDD12</div><div class="ms-icon">' + m.icon + '</div><div class="ms-title">' + esc(m.title) + '</div>';
-        if (prog.target) {
-          html += '<div class="ms-prog-bar"><div class="ms-prog-fill" style="width:' + pct + '%"></div></div><div class="ms-prog-text">' + prog.current + ' / ' + prog.target + '</div>';
-        }
+        var pct = prog.target ? Math.min(100, (prog.current/prog.target)*100) : 0;
+        html += '<div class="ms-card locked"><div class="ms-lock-ic">' + icon('lock') + '</div><div class="ms-icon">' + icon(MS_ICONS[m.category] || 'target') + '</div><div class="ms-title">' + esc(m.title) + '</div>';
+        if (prog.target) html += '<div class="ms-prog-bar"><div class="ms-prog-fill" style="width:' + pct + '%"></div></div><div class="ms-prog-text">' + prog.current + ' / ' + prog.target + '</div>';
         html += '</div>';
       });
       html += '</div>';
     }
 
-    // CTA
-    html += '<div class="cta-section">' +
-      '<a href="' + SURVEY_URL + '" class="btn-primary">\uD504\uB85C\uD544 \uC218\uC815</a>' +
-      '<button class="btn-secondary" id="btn-close">\uB2EB\uAE30</button>' +
-    '</div>';
-
+    html += '<div class="cta-section"><button class="btn-secondary" id="btn-close">' + icon('x') + ' 닫기</button></div>';
     return html;
   }
 
-  // -------------------------------------------------------
-  // Render error
-  // -------------------------------------------------------
   function renderError(msg) {
-    return '<div class="error-container">' +
-      '<div class="error-icon">\uD83D\uDE16</div>' +
-      '<div class="error-title">\uBB38\uC81C\uAC00 \uBC1C\uC0DD\uD588\uC5B4\uC694</div>' +
-      '<div class="error-msg">' + esc(msg) + '</div>' +
-      '<button class="error-retry" onclick="location.reload()">\uB2E4\uC2DC \uC2DC\uB3C4</button>' +
-    '</div>';
+    return '<div class="error-container"><div class="error-ic">' + icon('alertTriangle') + '</div><div class="error-title">문제가 발생했어요</div><div class="error-msg">' + esc(msg) + '</div><button class="error-retry" onclick="location.reload()">다시 시도</button></div>';
   }
 
-  // -------------------------------------------------------
-  // Tab switching
-  // -------------------------------------------------------
   function switchTab(tab) {
     activeTab = tab;
     renderActiveTab();
-
-    // Update nav
-    document.querySelectorAll('.nav-btn').forEach(function(btn) {
-      btn.classList.toggle('active', btn.dataset.tab === tab);
-    });
-
-    // Update URL without reload
-    var url = new URL(window.location);
-    url.searchParams.set('tab', tab);
-    history.replaceState(null, '', url);
-
-    // Scroll to top
+    document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.tab === tab); });
+    var url = new URL(window.location); url.searchParams.set('tab', tab); history.replaceState(null, '', url);
     window.scrollTo(0, 0);
   }
 
@@ -1105,69 +623,28 @@
     if (!appData) return;
     var app = document.getElementById('app');
     var html = '';
-
     if (activeTab === 'home') html = renderHome(appData);
     else if (activeTab === 'quest') html = renderQuestPath(appData);
     else if (activeTab === 'stats') html = renderStats(appData);
-    else if (activeTab === 'profile') html = renderProfile(appData);
-
+    else if (activeTab === 'settings') html = renderSettings(appData);
     app.innerHTML = '<div class="tab-content active">' + html + '</div>';
     attachTabEvents();
   }
 
   function attachTabEvents() {
-    // Stage expand/collapse
-    document.querySelectorAll('.stage-card').forEach(function(card) {
-      card.addEventListener('click', function() {
-        var id = this.dataset.stageId;
-        var stage = appData.quest_path.stages.find(function(s) { return s.id === id; });
-        if (stage && stage.status === 'locked') return;
-        expandedStage = expandedStage === id ? null : id;
-        renderActiveTab();
-      });
-    });
-
-    // Stats period toggle
-    document.querySelectorAll('.period-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        statsPeriod = this.dataset.period;
-        renderActiveTab();
-      });
-    });
-
-    // Profile close button
-    var closeBtn = document.getElementById('btn-close');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function() {
-        if (tg) tg.close();
-      });
-    }
+    document.querySelectorAll('.stage-card').forEach(function(c) { c.addEventListener('click', function() { var id = this.dataset.stageId; var st = appData.quest_path.stages.find(function(s){return s.id===id;}); if (st && st.status === 'locked') return; expandedStage = expandedStage===id?null:id; renderActiveTab(); }); });
+    document.querySelectorAll('.period-btn').forEach(function(b) { b.addEventListener('click', function() { statsPeriod = this.dataset.period; renderActiveTab(); }); });
+    var cb = document.getElementById('btn-close'); if (cb) cb.addEventListener('click', function() { if (tg) tg.close(); });
   }
 
-  // -------------------------------------------------------
-  // Init
-  // -------------------------------------------------------
   async function init() {
     var app = document.getElementById('app');
     try {
       appData = await fetchAppData();
       document.getElementById('bottom-nav').style.display = '';
       renderActiveTab();
-
-      // Attach nav events
-      document.querySelectorAll('.nav-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          switchTab(this.dataset.tab);
-        });
-      });
-
-      // Set initial active nav
-      document.querySelectorAll('.nav-btn').forEach(function(btn) {
-        btn.classList.toggle('active', btn.dataset.tab === activeTab);
-      });
-    } catch (e) {
-      app.innerHTML = renderError(e.message || '\uC54C \uC218 \uC5C6\uB294 \uC624\uB958');
-    }
+      document.querySelectorAll('.nav-btn').forEach(function(b) { b.addEventListener('click', function() { switchTab(this.dataset.tab); }); b.classList.toggle('active', b.dataset.tab === activeTab); });
+    } catch (e) { app.innerHTML = renderError(e.message || '알 수 없는 오류'); }
   }
 
   init();

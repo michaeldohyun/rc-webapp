@@ -625,9 +625,16 @@
     const API_URL = 'https://dotsosqsftympgdescvz.supabase.co/functions/v1/rc-onboarding';
 
     const tg = window.Telegram?.WebApp;
+    const _fromApp = new URLSearchParams(window.location.search).get('from');
     if (tg) {
       tg.ready();
       tg.expand();
+      if (_fromApp) {
+        tg.BackButton.show();
+        tg.BackButton.onClick(function() {
+          window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=settings';
+        });
+      }
     }
 
     let currentStep = 1;

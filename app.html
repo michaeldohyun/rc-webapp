@@ -627,10 +627,15 @@
     var html = '<div class="settings-title">설정</div>';
 
     // Setting links
+    var hasPlan = !!(d.home.weekly_plan && d.home.weekly_plan.days && d.home.weekly_plan.days.length > 0);
     html += '<div class="settings-links">' +
-      '<a href="' + SURVEY_URL + '" class="settings-link"><span class="sl-icon">' + icon('user') + '</span>러닝 프로필 수정<span class="sl-arrow">' + icon('chevronRight') + '</span></a>' +
-      '<a href="' + PLAN_URL + '" class="settings-link"><span class="sl-icon">' + icon('clipboard') + '</span>주간 훈련 계획 수정<span class="sl-arrow">' + icon('chevronRight') + '</span></a>' +
-    '</div>';
+      '<a href="' + SURVEY_URL + '" class="settings-link"><span class="sl-icon">' + icon('user') + '</span>러닝 프로필 수정<span class="sl-arrow">' + icon('chevronRight') + '</span></a>';
+    if (hasPlan) {
+      html += '<a href="' + PLAN_URL + '" class="settings-link"><span class="sl-icon">' + icon('clipboard') + '</span>주간 훈련 계획 수정<span class="sl-arrow">' + icon('chevronRight') + '</span></a>';
+    } else {
+      html += '<button class="settings-link" id="btn-create-plan"><span class="sl-icon">' + icon('clipboard') + '</span>주간 계획 세우기<span class="sl-arrow" style="font-size:11px;color:var(--hint)">채팅에서 /plan</span></button>';
+    }
+    html += '</div>';
 
     // Level Roadmap
     html += '<div class="card"><div class="roadmap-title">' + icon('star') + ' 레벨 로드맵</div><div class="level-list">';
@@ -700,6 +705,7 @@
     document.querySelectorAll('.stage-card').forEach(function(c) { c.addEventListener('click', function() { var id = this.dataset.stageId; var st = appData.quest_path.stages.find(function(s){return s.id===id;}); if (st && st.status === 'locked') return; expandedStage = expandedStage===id?null:id; renderActiveTab(); }); });
     document.querySelectorAll('.period-btn').forEach(function(b) { b.addEventListener('click', function() { statsPeriod = this.dataset.period; renderActiveTab(); }); });
     var cb = document.getElementById('btn-close'); if (cb) cb.addEventListener('click', function() { if (tg) tg.close(); });
+    var cpb = document.getElementById('btn-create-plan'); if (cpb) cpb.addEventListener('click', function() { if (tg) tg.close(); });
   }
 
   async function init() {

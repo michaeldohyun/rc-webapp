@@ -393,9 +393,16 @@
     ];
 
     const tg = window.Telegram?.WebApp;
+    const _fromParam = new URLSearchParams(window.location.search).get('from');
     if (tg) {
       tg.ready();
       tg.expand();
+      if (_fromParam) {
+        tg.BackButton.show();
+        tg.BackButton.onClick(function() {
+          window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=home';
+        });
+      }
     }
 
     let planData = null;
@@ -680,9 +687,9 @@
         if (res.ok && result.success) {
           btn.textContent = '저장 완료!';
           setTimeout(() => {
-            var fromApp = new URLSearchParams(window.location.search).get('from') === 'app';
+            var fromApp = !!new URLSearchParams(window.location.search).get('from');
             if (fromApp) {
-              window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=settings';
+              window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=home';
             } else if (tg) {
               tg.close();
             }

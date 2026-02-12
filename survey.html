@@ -632,7 +632,7 @@
       if (_fromApp) {
         tg.BackButton.show();
         tg.BackButton.onClick(function() {
-          window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=settings';
+          window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=home';
         });
       }
     }
@@ -860,7 +860,7 @@
       setTimeout(() => {
         var fromApp = new URLSearchParams(window.location.search).get('from') === 'app';
         if (fromApp) {
-          window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=settings';
+          window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=home';
         } else if (tg) {
           tg.close();
         }

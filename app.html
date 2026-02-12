@@ -424,6 +424,8 @@
 
   if (tg) { tg.ready(); tg.expand(); initData = tg.initData || ''; if (tg.initDataUnsafe && tg.initDataUnsafe.user) userId = tg.initDataUnsafe.user.id; }
 
+  function sendCommand(cmd) { if (tg) { tg.sendData(cmd); tg.close(); } }
+
   var params = new URLSearchParams(window.location.search);
   var tabParam = params.get('tab');
   if (tabParam === 'profile') tabParam = 'settings'; // backwards compat
@@ -506,7 +508,7 @@
       });
       html += '</div>';
     } else {
-      html += '<div class="sc-empty"><a href="' + PLAN_URL + '">계획 만들기</a></div>';
+      html += '<div class="sc-empty"><a href="#" onclick="sendCommand(\'/plan\');return false;">계획 만들기</a></div>';
     }
     html += '</div></div>';
 
@@ -721,7 +723,7 @@
     document.querySelectorAll('.stage-card').forEach(function(c) { c.addEventListener('click', function() { var id = this.dataset.stageId; var st = appData.quest_path.stages.find(function(s){return s.id===id;}); if (st && st.status === 'locked') return; expandedStage = expandedStage===id?null:id; renderActiveTab(); }); });
     document.querySelectorAll('.period-btn').forEach(function(b) { b.addEventListener('click', function() { statsPeriod = this.dataset.period; renderActiveTab(); }); });
     var cb = document.getElementById('btn-close'); if (cb) cb.addEventListener('click', function() { if (tg) tg.close(); });
-    var cpb = document.getElementById('btn-create-plan'); if (cpb) cpb.addEventListener('click', function() { if (tg) tg.close(); });
+    var cpb = document.getElementById('btn-create-plan'); if (cpb) cpb.addEventListener('click', function() { sendCommand('/plan'); });
   }
 
   async function init() {

@@ -247,6 +247,9 @@
     .animate-d1 { animation-delay: 0.1s; }
     .animate-d2 { animation-delay: 0.2s; }
     .animate-d3 { animation-delay: 0.3s; }
+    .animate-d4 { animation-delay: 0.4s; }
+    .animate-d5 { animation-delay: 0.5s; }
+    .animate-d6 { animation-delay: 0.6s; }
   </style>
 </head>
 <body>
@@ -260,7 +263,7 @@
       <div class="subtitle">궁금한 점이 있으신가요?</div>
     </div>
 
-    <!-- 시작하기 -->
+    <!-- 1. 시작하기 -->
     <div class="category animate animate-d1">
       <div class="category-title"><span class="icon">🏁</span> 시작하기</div>
       <div class="faq-list">
@@ -294,7 +297,7 @@
       </div>
     </div>
 
-    <!-- 데이터 연동 -->
+    <!-- 2. 데이터 연동 -->
     <div class="category animate animate-d2">
       <div class="category-title"><span class="icon">🔗</span> 데이터 연동</div>
       <div class="faq-list">
@@ -326,19 +329,22 @@
       </div>
     </div>
 
-    <!-- 봇 사용 -->
+    <!-- 3. 명령어 안내 -->
     <div class="category animate animate-d3">
-      <div class="category-title"><span class="icon">🤖</span> 봇 사용</div>
+      <div class="category-title"><span class="icon">🤖</span> 명령어 안내</div>
       <div class="faq-list">
         <details>
           <summary>어떤 명령어가 있나요?</summary>
           <div class="answer">
-            <p>4가지 명령어를 사용할 수 있어요.</p>
+            <p>7가지 명령어를 사용할 수 있어요.</p>
             <ol class="step-list">
-              <li><span class="highlight">/rec</span> — AI 훈련법 추천 (프로필 + 러닝 데이터 기반 맞춤 추천)</li>
-              <li><span class="highlight">/plan</span> — 이번 주 훈련 계획 (AI가 7일 일정 자동 생성)</li>
-              <li><span class="highlight">/p</span> — 러닝 프로필 조회 및 수정</li>
-              <li><span class="highlight">/h</span> — 도움말 + 자주 묻는 질문</li>
+              <li><span class="highlight">/home</span> — 마이페이지 (미니앱)</li>
+              <li><span class="highlight">/rec</span> — AI 훈련법 추천</li>
+              <li><span class="highlight">/plan</span> — 이번 주 훈련 계획 + 퀘스트 생성</li>
+              <li><span class="highlight">/weather</span> (/w) — 날씨·미세먼지 정보</li>
+              <li><span class="highlight">/quest</span> (/q) — 퀘스트 보드</li>
+              <li><span class="highlight">/profile</span> (/p) — 프로필 조회·수정</li>
+              <li><span class="highlight">/help</span> (/h) — 도움말</li>
             </ol>
             <p>명령어 외에 자유롭게 메시지를 보내면 <span class="highlight">Q&A</span>로 답변해드려요.</p>
           </div>
@@ -352,7 +358,18 @@
               <li>최근 러닝 기록 (페이스, 심박수, 거리 등)을 분석</li>
               <li>맞춤 훈련법을 추천하고 이유를 설명</li>
             </ol>
-            <p>추천 결과에 "프로필에 반영하기" 버튼이 나타나면, 탭하여 바로 적용할 수 있어요.</p>
+            <p><span class="highlight">8개 훈련법</span> 중에서 추천됩니다.</p>
+            <div class="tag-list">
+              <span class="tag">이지런</span>
+              <span class="tag">LSD</span>
+              <span class="tag">템포런</span>
+              <span class="tag">인터벌</span>
+              <span class="tag">파틀렉</span>
+              <span class="tag">언덕훈련</span>
+              <span class="tag">레이스페이스</span>
+              <span class="tag">회복런</span>
+            </div>
+            <p>추천 결과에 "프로필에 반영하기" 버튼이 나타나면, 탭하여 바로 적용할 수 있어요. 훈련법을 꾸준히 수행하면 다음 단계로 진급합니다.</p>
           </div>
         </details>
         <details>
@@ -369,6 +386,19 @@
           </div>
         </details>
         <details>
+          <summary>날씨·미세먼지 정보는 어떻게 보나요?</summary>
+          <div class="answer">
+            <p><span class="highlight">/weather</span> (또는 <span class="highlight">/w</span>)를 입력하면 러닝에 필요한 날씨 정보를 알려드려요.</p>
+            <ol class="step-list">
+              <li><span class="highlight">7일 예보</span> — 기온, 강수 확률, 풍속</li>
+              <li><span class="highlight">미세먼지</span> — PM2.5, PM10 농도 및 등급</li>
+              <li><span class="highlight">러닝 적합도</span> — 오늘 야외 러닝이 괜찮은지 판단</li>
+              <li><span class="highlight">복장 팁</span> — 기온별 추천 러닝 복장</li>
+            </ol>
+            <p>AI 사용 횟수에 포함되지 않아 자유롭게 확인할 수 있어요.</p>
+          </div>
+        </details>
+        <details>
           <summary>어떤 질문을 할 수 있나요?</summary>
           <div class="answer">
             <p>자유 형식으로 무엇이든 물어보세요! 예를 들면:</p>
@@ -379,6 +409,129 @@
               <li>"심박수가 너무 높은데 괜찮아?"</li>
             </ol>
             <p>러닝에 관한 질문이면 무엇이든 답변해드려요.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- 4. 게이미피케이션 -->
+    <div class="category animate animate-d4">
+      <div class="category-title"><span class="icon">⚔️</span> 게이미피케이션</div>
+      <div class="faq-list">
+        <details>
+          <summary>XP와 레벨은 뭔가요?</summary>
+          <div class="answer">
+            <p>러닝 활동으로 <span class="highlight">XP(경험치)</span>를 얻고, 쌓인 XP에 따라 레벨이 올라갑니다.</p>
+            <p><span class="highlight">XP 획득 방법</span></p>
+            <ol class="step-list">
+              <li><span class="highlight">러닝 완료</span> — 거리·시간에 비례하여 XP 획득</li>
+              <li><span class="highlight">퀘스트 완료</span> — 주간 퀘스트 달성 시 보너스 XP</li>
+              <li><span class="highlight">마일스톤 달성</span> — 특별 배지와 함께 XP 획득</li>
+              <li><span class="highlight">스트릭 유지</span> — 연속 주간 러닝 보상</li>
+            </ol>
+            <p>총 <span class="highlight">10단계 레벨</span>이 있으며, 레벨이 오를수록 더 도전적인 퀘스트가 열립니다.</p>
+          </div>
+        </details>
+        <details>
+          <summary>퀘스트는 어떻게 진행하나요?</summary>
+          <div class="answer">
+            <p><span class="highlight">/plan</span>으로 주간 계획을 생성하면 퀘스트가 자동으로 만들어집니다.</p>
+            <p><span class="highlight">퀘스트 3종류</span></p>
+            <ol class="step-list">
+              <li><span class="highlight">코어</span> — 핵심 훈련 목표 (예: 주 3회 러닝)</li>
+              <li><span class="highlight">메소드</span> — 특정 훈련법 실행 (예: 템포런 1회)</li>
+              <li><span class="highlight">스트레치</span> — 도전 목표 (예: 주간 30km 달성)</li>
+            </ol>
+            <p>러닝을 완료하면 <span class="highlight">자동으로 진행률이 업데이트</span>됩니다. <span class="highlight">/quest</span>로 현재 진행 상황을 확인하세요.</p>
+          </div>
+        </details>
+        <details>
+          <summary>마일스톤은 뭔가요?</summary>
+          <div class="answer">
+            <p>특별한 달성 기준을 충족하면 <span class="highlight">배지</span>를 획득합니다. 총 <span class="highlight">19종</span>이 있어요.</p>
+            <p><span class="highlight">5개 카테고리</span></p>
+            <div class="tag-list">
+              <span class="tag">거리 누적</span>
+              <span class="tag">장거리 도전</span>
+              <span class="tag">꾸준함</span>
+              <span class="tag">속도</span>
+              <span class="tag">체력</span>
+            </div>
+            <p>러닝 기록이 동기화될 때 자동으로 달성 여부를 체크합니다. 마이페이지에서 획득한 배지를 확인할 수 있어요.</p>
+          </div>
+        </details>
+        <details>
+          <summary>스트릭은 어떻게 유지하나요?</summary>
+          <div class="answer">
+            <p>한 주에 <span class="highlight">2회 이상</span> 러닝하면 1주 스트릭이 인정됩니다.</p>
+            <p>매주 연속으로 조건을 충족하면 스트릭이 쌓이고, 한 주라도 빠지면 초기화됩니다. 스트릭이 길어질수록 더 많은 보너스 XP를 받아요.</p>
+          </div>
+        </details>
+        <details>
+          <summary>퀘스트 경로란?</summary>
+          <div class="answer">
+            <p>장기 성장 로드맵인 <span class="highlight">7단계 스테이지</span>입니다.</p>
+            <ol class="step-list">
+              <li>러닝 입문</li>
+              <li>기초 체력</li>
+              <li>5K 도전</li>
+              <li>10K 도전</li>
+              <li>하프 마라톤</li>
+              <li>마라톤 준비</li>
+              <li>풀 마라톤</li>
+            </ol>
+            <p>각 스테이지의 미션을 클리어하면 다음 단계로 진행됩니다. 마이페이지에서 현재 스테이지를 확인할 수 있어요.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- 5. 미니앱 -->
+    <div class="category animate animate-d5">
+      <div class="category-title"><span class="icon">📱</span> 미니앱</div>
+      <div class="faq-list">
+        <details>
+          <summary>미니앱은 어떻게 여나요?</summary>
+          <div class="answer">
+            <p><span class="highlight">/home</span> 명령어를 입력하면 미니앱이 열립니다.</p>
+            <p><span class="highlight">4개 탭</span>으로 구성되어 있어요.</p>
+            <div class="tag-list">
+              <span class="tag">홈</span>
+              <span class="tag">퀘스트</span>
+              <span class="tag">기록</span>
+              <span class="tag">설정</span>
+            </div>
+            <p>텔레그램 내에서 바로 열리며, 별도 앱 설치가 필요 없습니다.</p>
+          </div>
+        </details>
+        <details>
+          <summary>기록 탭에서 뭘 볼 수 있나요?</summary>
+          <div class="answer">
+            <p>러닝 기록을 한눈에 확인할 수 있습니다.</p>
+            <ol class="step-list">
+              <li><span class="highlight">주간 통계</span> — 이번 주 거리, 시간, 횟수</li>
+              <li><span class="highlight">월간 통계</span> — 이번 달 누적 기록</li>
+              <li><span class="highlight">전체 통계</span> — 총 누적 거리, 러닝 횟수</li>
+              <li><span class="highlight">개인 최고 기록</span> — 최장 거리, 최고 페이스 등</li>
+            </ol>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- 6. 기타 -->
+    <div class="category animate animate-d6">
+      <div class="category-title"><span class="icon">💡</span> 기타</div>
+      <div class="faq-list">
+        <details>
+          <summary>AI 사용 제한이 있나요?</summary>
+          <div class="answer">
+            <p>AI 기능은 <span class="highlight">하루 5회</span>까지 사용할 수 있습니다.</p>
+            <ol class="step-list">
+              <li>AI 차감 대상: <span class="highlight">/rec</span>, <span class="highlight">/plan</span>, 자유 질문(Q&A)</li>
+              <li>AI 미차감: <span class="highlight">/weather</span>, <span class="highlight">/home</span>, <span class="highlight">/quest</span>, <span class="highlight">/profile</span>, <span class="highlight">/help</span></li>
+            </ol>
+            <p>매일 <span class="highlight">자정(KST)</span>에 횟수가 초기화됩니다.</p>
           </div>
         </details>
         <details>
@@ -394,7 +547,7 @@
   </div>
 
   <!-- Fixed CTA -->
-  <div class="cta animate animate-d3">
+  <div class="cta animate animate-d6">
     <div class="cta-inner">
       <button class="btn-cta" onclick="closeFaq()">닫기</button>
     </div>

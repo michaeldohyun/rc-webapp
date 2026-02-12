@@ -146,187 +146,201 @@
       cursor: not-allowed;
     }
 
-    /* Sub-step guide */
-    .guide-step {
-      margin-bottom: 24px;
-    }
-
-    .guide-step-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .guide-step-num {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--tg-theme-button-color);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .guide-step-label {
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .guide-step-desc {
-      color: var(--tg-theme-hint-color);
-      font-size: 13px;
-      line-height: 1.5;
-      margin-left: 38px;
-      margin-bottom: 10px;
-    }
-
-    /* CSS Mockup: intervals.icu UI */
-    .mockup {
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
+    /* Demo phone animation */
+    .demo-phone {
+      width: 280px;
+      height: 380px;
+      margin: 0 auto 16px;
+      border: 2px solid #d0d0d0;
+      border-radius: 24px;
       overflow: hidden;
-      margin: 10px 0 8px 38px;
-      font-size: 13px;
       background: #fff;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      position: relative;
     }
 
-    .mockup-header {
-      background: #f8f8f8;
+    .demo-phone-bar {
+      background: #f5f5f5;
       padding: 8px 12px;
-      border-bottom: 1px solid #e0e0e0;
       font-size: 11px;
       color: #999;
       text-align: center;
+      border-bottom: 1px solid #e0e0e0;
+      position: relative;
+      z-index: 2;
     }
 
-    .mockup-body {
-      padding: 14px;
+    .demo-viewport {
+      width: 100%;
+      height: calc(100% - 33px);
+      overflow: hidden;
+      position: relative;
     }
 
-    /* Developer Settings mockup */
-    .mock-dev-title {
+    .demo-content {
+      animation: demoScroll 12s ease-in-out infinite;
+    }
+
+    .demo-section {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .demo-section-dev {
+      background: #f0f7ff;
+      border-bottom: none;
       color: var(--tg-theme-link-color);
-      font-size: 15px;
       font-weight: 600;
-      margin-bottom: 12px;
     }
 
-    .mock-dev-title::before {
-      content: '< > ';
-      font-family: monospace;
-    }
-
-    .mock-dev-row {
-      display: flex;
-      gap: 24px;
-      align-items: baseline;
-    }
-
-    .mock-dev-col {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .mock-dev-label {
-      font-size: 12px;
-      color: #888;
-    }
-
-    .mock-dev-value {
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .mock-dev-link {
-      color: var(--tg-theme-link-color);
-      font-weight: 400;
-      text-decoration: none;
-    }
-
-    /* Pointer arrow */
-    .mock-pointer {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: #fff3cd;
-      color: #856404;
-      border: 1px solid #ffc107;
-      border-radius: 6px;
-      padding: 3px 8px;
-      font-size: 11px;
-      font-weight: 600;
-      margin-top: 8px;
-      margin-left: 38px;
-    }
-
-    /* API Key popup mockup */
-    .mock-popup {
-      background: #fff;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      margin: 10px 0 8px 38px;
-    }
-
-    .mock-popup-title {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .mock-popup-text {
+    .demo-section-dev div {
       font-size: 12px;
       color: #666;
-      line-height: 1.5;
-      margin-bottom: 14px;
+      font-weight: 400;
+      margin-top: 6px;
     }
 
-    .mock-popup-key {
+    .demo-view {
+      color: var(--tg-theme-link-color);
+      font-weight: 600;
+      animation: demoHighlight 12s infinite;
+    }
+
+    .demo-popup-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      animation: demoPopup 12s infinite;
+      z-index: 5;
+    }
+
+    .demo-popup {
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px;
+      width: 240px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      transform: translateY(20px);
+      animation: demoPopupSlide 12s infinite;
+    }
+
+    .demo-key {
       background: #e8f4fd;
       border: 2px solid var(--tg-theme-link-color);
       border-radius: 8px;
-      padding: 10px 14px;
+      padding: 8px 10px;
+      margin: 12px 0;
       color: var(--tg-theme-link-color);
       font-family: monospace;
-      font-size: 14px;
+      font-size: 11px;
       font-weight: 600;
-      text-align: center;
-      position: relative;
-      animation: pulse-border 2s infinite;
+      animation: demoKeyPulse 12s infinite;
     }
 
-    @keyframes pulse-border {
-      0%, 100% { border-color: var(--tg-theme-link-color); }
-      50% { border-color: #90caf9; }
-    }
-
-    .mock-popup-actions {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 14px;
-    }
-
-    .mock-popup-btn {
+    .demo-popup-close {
+      font-size: 12px;
       color: var(--tg-theme-link-color);
-      font-size: 13px;
       font-weight: 700;
     }
 
-    /* Copied toast mockup */
-    .mock-toast {
+    .demo-toast {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
       background: #323232;
       color: #fff;
       border-radius: 8px;
-      padding: 8px 14px;
-      font-size: 12px;
+      padding: 8px 12px;
+      font-size: 11px;
       text-align: center;
-      margin: 8px 0 0 38px;
+      opacity: 0;
+      z-index: 10;
+      animation: demoToast 12s infinite;
+    }
+
+    .demo-summary {
+      text-align: center;
+      font-size: 13px;
+      color: var(--tg-theme-hint-color);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .demo-summary b {
+      color: var(--tg-theme-text-color);
+    }
+
+    /* Scroll: 0-1s stay, 1-4s scroll down, 4-10s stay, 10-11s fade, 11-12s reset */
+    @keyframes demoScroll {
+      0%, 8% { transform: translateY(0); opacity: 1; }
+      33% { transform: translateY(-260px); opacity: 1; }
+      83% { transform: translateY(-260px); opacity: 1; }
+      88% { transform: translateY(-260px); opacity: 0; }
+      92% { transform: translateY(0); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Highlight (view): blink at 4-5.5s = 33%-46% */
+    @keyframes demoHighlight {
+      0%, 33% { background: transparent; color: var(--tg-theme-link-color); }
+      35% { background: #fff3cd; color: #856404; }
+      38% { background: transparent; color: var(--tg-theme-link-color); }
+      40% { background: #fff3cd; color: #856404; }
+      43% { background: transparent; color: var(--tg-theme-link-color); }
+      46% { background: #fff3cd; color: #856404; }
+      48% { background: transparent; color: var(--tg-theme-link-color); }
+      100% { background: transparent; color: var(--tg-theme-link-color); }
+    }
+
+    /* Popup overlay: appear at 5.5s=46%, hide at 10s=83% */
+    @keyframes demoPopup {
+      0%, 45% { opacity: 0; pointer-events: none; }
+      48% { opacity: 1; }
+      83% { opacity: 1; }
+      88% { opacity: 0; pointer-events: none; }
+      100% { opacity: 0; pointer-events: none; }
+    }
+
+    /* Popup slide in */
+    @keyframes demoPopupSlide {
+      0%, 45% { transform: translateY(20px); }
+      48% { transform: translateY(0); }
+      83% { transform: translateY(0); }
+      88% { transform: translateY(20px); }
+      100% { transform: translateY(20px); }
+    }
+
+    /* Key pulse: at 6.5-8s = 54%-67% */
+    @keyframes demoKeyPulse {
+      0%, 53% { border-color: var(--tg-theme-link-color); transform: scale(1); }
+      56% { border-color: #ff9800; transform: scale(1.05); }
+      59% { border-color: var(--tg-theme-link-color); transform: scale(1); }
+      62% { border-color: #ff9800; transform: scale(1.05); }
+      65% { border-color: var(--tg-theme-link-color); transform: scale(1); }
+      100% { border-color: var(--tg-theme-link-color); transform: scale(1); }
+    }
+
+    /* Toast: show at 8s=67%, hide at 10s=83% */
+    @keyframes demoToast {
+      0%, 65% { opacity: 0; transform: translateY(10px); }
+      68% { opacity: 1; transform: translateY(0); }
+      83% { opacity: 1; transform: translateY(0); }
+      88% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 0; transform: translateY(10px); }
     }
 
     .input-group {
@@ -429,81 +443,6 @@
       margin-bottom: 16px;
     }
 
-    /* Long page mockup */
-    .mockup-long-page {
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      overflow: hidden;
-      margin: 10px 0 12px 38px;
-      font-size: 13px;
-      background: #fff;
-    }
-
-    .mockup-long-page .mlp-header {
-      background: #f8f8f8;
-      padding: 6px 12px;
-      border-bottom: 1px solid #e0e0e0;
-      font-size: 11px;
-      color: #999;
-      text-align: center;
-    }
-
-    .mockup-long-page .mlp-body {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 10px 14px;
-    }
-
-    .mlp-section-top {
-      width: 100%;
-      background: #f0f0f0;
-      border-radius: 6px;
-      padding: 6px 10px;
-      font-size: 11px;
-      color: #aaa;
-      text-align: center;
-    }
-
-    .mlp-scroll-zone {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      padding: 8px 0;
-      color: var(--tg-theme-hint-color);
-      font-size: 11px;
-    }
-
-    .mlp-dots {
-      letter-spacing: 2px;
-      color: #ccc;
-    }
-
-    .scroll-arrow {
-      font-size: 18px;
-      color: var(--tg-theme-button-color);
-      animation: scrollPulse 1.5s ease-in-out infinite;
-    }
-
-    @keyframes scrollPulse {
-      0%, 100% { opacity: 0.4; transform: translateY(0); }
-      50% { opacity: 1; transform: translateY(4px); }
-    }
-
-    .mlp-section-bottom {
-      width: 100%;
-      background: #e8f4fd;
-      border: 2px solid var(--tg-theme-link-color);
-      border-radius: 6px;
-      padding: 8px 10px;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--tg-theme-link-color);
-      text-align: center;
-    }
-
     /* Pre-button reminder */
     .pre-button-reminder {
       background: #fff8e1;
@@ -553,85 +492,46 @@
       </div>
     </div>
 
-    <!-- Step 2: API 키 복사 (상세 가이드) -->
+    <!-- Step 2: API 키 복사 (CSS 애니메이션 가이드) -->
     <div class="step" id="step-2">
       <div class="step-title">2. API 키 복사</div>
       <div class="step-desc">
-        intervals.icu Settings에서 API 키를 복사해주세요.
+        아래 데모처럼 Settings에서 API 키를 복사하세요.
       </div>
 
-      <!-- Sub-step 2-1: Developer Settings 찾기 -->
-      <div class="guide-step">
-        <div class="guide-step-header">
-          <div class="guide-step-num">1</div>
-          <div class="guide-step-label">Developer Settings 찾기</div>
-        </div>
-        <div class="guide-step-desc">
-          Settings 페이지를 <b>맨 아래까지</b> 스크롤하면 (페이지가 길어요!)<br>
-          <b>&lt; &gt; Developer Settings</b> 영역이 보입니다.
-        </div>
-        <div class="mockup-long-page">
-          <div class="mlp-header">intervals.icu / Settings</div>
-          <div class="mlp-body">
-            <div class="mlp-section-top">General, Privacy, Calendar ...</div>
-            <div class="mlp-scroll-zone">
-              <span class="mlp-dots">· · ·</span>
-              <span class="scroll-arrow">↓</span>
-              <span>스크롤 하세요</span>
-              <span class="scroll-arrow">↓</span>
-              <span class="mlp-dots">· · ·</span>
-            </div>
-            <div class="mlp-section-bottom">&lt; &gt; Developer Settings 여기!</div>
-          </div>
-        </div>
-        <div class="mockup">
-          <div class="mockup-header">intervals.icu / Settings</div>
-          <div class="mockup-body">
-            <div class="mock-dev-title">Developer Settings</div>
-            <div class="mock-dev-row">
-              <div class="mock-dev-col">
-                <span class="mock-dev-label">Athlete ID</span>
-                <span class="mock-dev-value">i484059</span>
-              </div>
-              <div class="mock-dev-col">
-                <span class="mock-dev-label">API Key</span>
-                <span class="mock-dev-value"><span class="mock-dev-link">(view)</span> &#9998;</span>
-              </div>
+      <!-- CSS 애니메이션 데모 -->
+      <div class="demo-phone">
+        <div class="demo-phone-bar">intervals.icu / Settings</div>
+        <div class="demo-viewport">
+          <div class="demo-content">
+            <div class="demo-section">&#128100; Basic Settings</div>
+            <div class="demo-section">&#127939; Sport Settings</div>
+            <div class="demo-section">&#9889; Power Settings</div>
+            <div class="demo-section">&#10084;&#65039; Heart Rate Settings</div>
+            <div class="demo-section">&#128274; Privacy Settings</div>
+            <div class="demo-section">&#128231; Email Notifications</div>
+            <div class="demo-section demo-section-dev">
+              &lt; &gt; Developer Settings
+              <div>Athlete ID: i484059</div>
+              <div>API Key: <span class="demo-view">(view)</span></div>
             </div>
           </div>
+
+          <div class="demo-popup-overlay">
+            <div class="demo-popup">
+              Intervals.icu API Key
+              <div class="demo-key">6i7ixiuo2m1205j18y316zsc</div>
+              <div class="demo-popup-close">CLOSE</div>
+            </div>
+          </div>
+
+          <div class="demo-toast">&#10003; API key has been copied to the clipboard</div>
         </div>
       </div>
 
-      <!-- Sub-step 2-2: (view) 클릭 -->
-      <div class="guide-step">
-        <div class="guide-step-header">
-          <div class="guide-step-num">2</div>
-          <div class="guide-step-label">API Key의 (view) 클릭</div>
-        </div>
-        <div class="guide-step-desc">
-          API Key가 아직 없다면 자동 생성됩니다.<br>
-          <b>(view)</b>를 터치하면 키가 표시됩니다.
-        </div>
-        <div class="mock-pointer">&#128072; (view) 를 터치하세요</div>
-      </div>
-
-      <!-- Sub-step 2-3: 키 복사 -->
-      <div class="guide-step">
-        <div class="guide-step-header">
-          <div class="guide-step-num">3</div>
-          <div class="guide-step-label">파란색 키를 터치해서 복사</div>
-        </div>
-        <div class="guide-step-desc">
-          팝업이 뜨면 파란색 키 텍스트를 터치하세요.<br>
-          자동으로 클립보드에 복사됩니다.
-        </div>
-        <div class="mock-popup">
-          <div class="mock-popup-title">Intervals.icu API Key</div>
-          <div class="mock-popup-text">Your API key allows other applications to access your Intervals.icu data.</div>
-          <div class="mock-popup-key">a1b2c3d4e5f6g7h8i9j0klmn</div>
-          <div class="mock-popup-actions"><span class="mock-popup-btn">CLOSE</span></div>
-        </div>
-        <div class="mock-toast">&#10003; API key has been copied to the clipboard</div>
+      <div class="demo-summary">
+        <b>&#9312; 맨 아래로 스크롤</b> &#8594; <b>&#9313; (view) 터치</b> &#8594; <b>&#9314; 파란 키 터치</b><br>
+        키가 자동으로 클립보드에 복사됩니다
       </div>
 
       <div class="pre-button-reminder">

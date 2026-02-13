@@ -552,6 +552,22 @@
           </div>
         </div>
 
+        <div class="chip-group">
+          <label>주로 뛰는 지역</label>
+          <div class="chip-options" id="location-chips">
+            <div class="chip" data-value="서울" onclick="selectLocationChip(this)">서울</div>
+            <div class="chip" data-value="부산" onclick="selectLocationChip(this)">부산</div>
+            <div class="chip" data-value="대구" onclick="selectLocationChip(this)">대구</div>
+            <div class="chip" data-value="인천" onclick="selectLocationChip(this)">인천</div>
+            <div class="chip" data-value="광주" onclick="selectLocationChip(this)">광주</div>
+            <div class="chip" data-value="대전" onclick="selectLocationChip(this)">대전</div>
+            <div class="chip" data-value="수원" onclick="selectLocationChip(this)">수원</div>
+            <div class="chip" data-value="제주" onclick="selectLocationChip(this)">제주</div>
+          </div>
+          <input type="text" id="location-custom" placeholder="다른 도시 직접 입력" style="margin-top:8px">
+          <div class="hint">날씨 예보에 사용됩니다</div>
+        </div>
+
         <div class="input-group">
           <label>메모 (선택)</label>
           <textarea id="run-pattern-note" placeholder="예: 주말에만 장거리, 존2 위주로 훈련 중" rows="2"></textarea>
@@ -678,6 +694,17 @@
           });
         }
 
+        // Step 2: location
+        if (s.default_location) {
+          const locName = s.default_location.name || '';
+          const locChip = document.querySelector(`#location-chips .chip[data-value="${locName}"]`);
+          if (locChip) {
+            locChip.classList.add('selected');
+          } else if (locName) {
+            document.getElementById('location-custom').value = locName;
+          }
+        }
+
         // Step 2: pattern note
         if (s.run_pattern_note) document.getElementById('run-pattern-note').value = s.run_pattern_note;
 
@@ -765,6 +792,34 @@
       el.classList.toggle('selected');
     }
 
+    // --- Location chip (single select) ---
+
+    const CITY_COORDS = {
+      '서울': { lat: 37.5665, lon: 126.9780 },
+      '부산': { lat: 35.1796, lon: 129.0756 },
+      '대구': { lat: 35.8714, lon: 128.6014 },
+      '인천': { lat: 37.4563, lon: 126.7052 },
+      '광주': { lat: 35.1595, lon: 126.8526 },
+      '대전': { lat: 36.3504, lon: 127.3845 },
+      '수원': { lat: 37.2636, lon: 127.0286 },
+      '제주': { lat: 33.4996, lon: 126.5312 },
+    };
+
+    function selectLocationChip(el) {
+      // single select: 다른 칩 해제
+      document.querySelectorAll('#location-chips .chip').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      // 직접 입력 필드 초기화
+      document.getElementById('location-custom').value = '';
+    }
+
+    // 직접 입력 시 칩 선택 해제
+    document.getElementById('location-custom')?.addEventListener('input', function() {
+      if (this.value.trim()) {
+        document.querySelectorAll('#location-chips .chip').forEach(c => c.classList.remove('selected'));
+      }
+    });
+
     // --- Card selector ---
 
     function selectCard(el, groupId) {
@@ -796,6 +851,21 @@
 
       const patternNote = document.getElementById('run-pattern-note').value.trim();
       if (patternNote) data.run_pattern_note = patternNote;
+
+      // Step 2: location
+      const customLoc = document.getElementById('location-custom').value.trim();
+      const selectedLocChip = document.querySelector('#location-chips .chip.selected');
+      if (customLoc) {
+        data.default_location = { name: customLoc };
+      } else if (selectedLocChip) {
+        const cityName = selectedLocChip.dataset.value;
+        const coords = CITY_COORDS[cityName];
+        if (coords) {
+          data.default_location = { name: cityName, lat: coords.lat, lon: coords.lon };
+        } else {
+          data.default_location = { name: cityName };
+        }
+      }
 
       // Step 3
       const priorityCard = document.querySelector('#priority-cards .card-option.selected');

@@ -478,9 +478,9 @@
         intervals.icu는 무료 러닝 데이터 분석 플랫폼입니다.<br>
         가입 후 다음 단계에서 API 키를 연동합니다.
       </div>
-      <a href="https://intervals.icu/signup" target="_blank" class="btn btn-primary">
+      <button class="btn btn-primary" onclick="openSignup()">
         intervals.icu 가입하기
-      </a>
+      </button>
       <button class="btn btn-secondary" onclick="goToStep(2)">
         이미 계정이 있어요
       </button>
@@ -616,6 +616,16 @@
       currentStep = step;
       document.getElementById('step-' + step)?.classList.add('active');
       document.getElementById('dot-' + step)?.classList.add('active');
+    }
+
+    function openSignup() {
+      const url = 'https://intervals.icu/signup';
+      if (tg?.openLink) {
+        tg.openLink(url);
+      } else {
+        window.open(url, '_blank');
+      }
+      goToStep(2);
     }
 
     function openSettings() {

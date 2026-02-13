@@ -559,7 +559,7 @@
       </div>
       <div class="input-group">
         <label>API Key</label>
-        <input type="text" id="api-key-input" placeholder="여기를 길게 눌러 붙여넣기" autocomplete="off">
+        <input type="password" id="api-key-input" placeholder="여기를 길게 눌러 붙여넣기" autocomplete="off">
       </div>
       <button class="btn btn-primary" id="btn-submit" onclick="submitApiKey()">
         연동하기
@@ -625,6 +625,7 @@
       } else {
         window.open(url, '_blank');
       }
+      goToStep(3);
     }
 
     function closeLater() {

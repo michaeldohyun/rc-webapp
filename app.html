@@ -432,8 +432,13 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mode: 'webapp_command', command: cmd, telegram_user_id: userId }),
+      keepalive: true,
     }).catch(function(e) { console.error('sendCommand error:', e); });
-    if (tg) tg.close();
+    if (tg && tg.showPopup) {
+      tg.showPopup({ message: '만들고 있어요! 채팅에서 확인하세요 🏃', buttons: [{ type: 'ok' }] }, function() { tg.close(); });
+    } else {
+      if (tg) tg.close();
+    }
   }
 
   var params = new URLSearchParams(window.location.search);

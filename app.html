@@ -425,14 +425,15 @@
   if (tg) { tg.ready(); tg.expand(); initData = tg.initData || ''; if (tg.initDataUnsafe && tg.initDataUnsafe.user) userId = tg.initDataUnsafe.user.id; }
 
   function sendCommand(cmd) {
-    // inline keyboard web_app에서는 sendData가 동작하지 않으므로 deep link 사용
-    var param = cmd.replace(/^\//, '');
-    var deepLink = 'https://t.me/myrunco_bot?start=' + encodeURIComponent(param);
-    if (tg && tg.openTelegramLink) {
-      tg.openTelegramLink(deepLink);
-    } else {
-      window.open(deepLink, '_blank');
-    }
+    if (!userId) return;
+    // inline keyboard web_app에서는 sendData가 동작하지 않으므로 API 직접 호출
+    var RC_URL = 'https://dotsosqsftympgdescvz.supabase.co/functions/v1/running-coach';
+    fetch(RC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode: 'webapp_command', command: cmd, telegram_user_id: userId }),
+    }).catch(function(e) { console.error('sendCommand error:', e); });
+    if (tg) tg.close();
   }
 
   var params = new URLSearchParams(window.location.search);

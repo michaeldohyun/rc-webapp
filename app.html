@@ -364,6 +364,7 @@
   var API_URL = 'https://dotsosqsftympgdescvz.supabase.co/functions/v1/rc-onboarding';
   var SURVEY_URL = 'https://michaeldohyun.github.io/rc-webapp/survey.html?from=app';
   var PLAN_URL = 'https://michaeldohyun.github.io/rc-webapp/plan.html?from=app';
+  var ONBOARDING_URL = 'https://michaeldohyun.github.io/rc-webapp/?from=app';
 
   var QUEST_XP = { core: 30, method: 40, stretch: 50 };
   var QUEST_TYPE_LABELS = { core: '핵심', method: '훈련법', stretch: '도전' };
@@ -668,7 +669,13 @@
       html += '<span class="ic" style="color:var(--hint)">' + icon('x') + '</span>';
       html += '<div style="font-size:14px;color:var(--hint)">미연동</div>';
     }
-    html += '</div></div>';
+    html += '</div>';
+    if (!iv.connected) {
+      html += '<a href="' + ONBOARDING_URL + '" class="settings-link" style="margin-top:8px">';
+      html += '<span class="sl-icon">' + icon('link') + '</span>연동하기';
+      html += '<span class="sl-arrow">' + icon('chevronRight') + '</span></a>';
+    }
+    html += '</div>';
 
     // Level Roadmap
     html += '<div class="card"><div class="roadmap-title">' + icon('star') + ' 레벨 로드맵</div><div class="level-list">';

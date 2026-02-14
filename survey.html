@@ -475,6 +475,43 @@
       color: var(--tg-theme-button-color);
     }
 
+    /* Region group (province selector) */
+    .region-group {
+      margin-bottom: 12px;
+    }
+
+    .region-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .region-label {
+      font-size: 11px;
+      color: var(--tg-theme-hint-color);
+      margin-bottom: 6px;
+      padding-left: 2px;
+    }
+
+    /* City selector header */
+    .city-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .change-link {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--tg-theme-link-color);
+      cursor: pointer;
+    }
+
+    #city-selector {
+      animation: fadeInUp 0.25s ease forwards;
+    }
+
   </style>
 </head>
 <body>
@@ -554,17 +591,58 @@
 
         <div class="chip-group">
           <label>주로 뛰는 지역</label>
-          <div class="chip-options" id="location-chips">
-            <div class="chip" data-value="서울" onclick="selectLocationChip(this)">서울</div>
-            <div class="chip" data-value="부산" onclick="selectLocationChip(this)">부산</div>
-            <div class="chip" data-value="대구" onclick="selectLocationChip(this)">대구</div>
-            <div class="chip" data-value="인천" onclick="selectLocationChip(this)">인천</div>
-            <div class="chip" data-value="광주" onclick="selectLocationChip(this)">광주</div>
-            <div class="chip" data-value="대전" onclick="selectLocationChip(this)">대전</div>
-            <div class="chip" data-value="수원" onclick="selectLocationChip(this)">수원</div>
-            <div class="chip" data-value="제주" onclick="selectLocationChip(this)">제주</div>
+
+          <!-- 1단계: 시/도 선택 -->
+          <div id="province-selector">
+            <div class="region-group">
+              <div class="region-label">수도권</div>
+              <div class="chip-options">
+                <div class="chip" data-province="서울" onclick="selectProvince(this)">서울</div>
+                <div class="chip" data-province="경기" onclick="selectProvince(this)">경기</div>
+                <div class="chip" data-province="인천" onclick="selectProvince(this)">인천</div>
+              </div>
+            </div>
+            <div class="region-group">
+              <div class="region-label">영남권</div>
+              <div class="chip-options">
+                <div class="chip" data-province="부산" onclick="selectProvince(this)">부산</div>
+                <div class="chip" data-province="대구" onclick="selectProvince(this)">대구</div>
+                <div class="chip" data-province="울산" onclick="selectProvince(this)">울산</div>
+                <div class="chip" data-province="경북" onclick="selectProvince(this)">경북</div>
+                <div class="chip" data-province="경남" onclick="selectProvince(this)">경남</div>
+              </div>
+            </div>
+            <div class="region-group">
+              <div class="region-label">충청/호남</div>
+              <div class="chip-options">
+                <div class="chip" data-province="광주" onclick="selectProvince(this)">광주</div>
+                <div class="chip" data-province="대전" onclick="selectProvince(this)">대전</div>
+                <div class="chip" data-province="세종" onclick="selectProvince(this)">세종</div>
+                <div class="chip" data-province="충북" onclick="selectProvince(this)">충북</div>
+                <div class="chip" data-province="충남" onclick="selectProvince(this)">충남</div>
+                <div class="chip" data-province="전북" onclick="selectProvince(this)">전북</div>
+                <div class="chip" data-province="전남" onclick="selectProvince(this)">전남</div>
+              </div>
+            </div>
+            <div class="region-group">
+              <div class="region-label">강원/제주</div>
+              <div class="chip-options">
+                <div class="chip" data-province="강원" onclick="selectProvince(this)">강원</div>
+                <div class="chip" data-province="제주" onclick="selectProvince(this)">제주</div>
+              </div>
+            </div>
           </div>
-          <input type="text" id="location-custom" placeholder="다른 도시 직접 입력" style="margin-top:8px">
+
+          <!-- 2단계: 시/군 선택 -->
+          <div id="city-selector" style="display:none">
+            <div class="city-header">
+              <span id="selected-province-name"></span>
+              <span class="change-link" onclick="resetProvince()">변경</span>
+            </div>
+            <div class="chip-options" id="city-chips"></div>
+            <input type="text" id="location-custom" placeholder="다른 도시 직접 입력" style="margin-top:8px">
+          </div>
+
           <div class="hint">날씨 예보에 사용됩니다</div>
         </div>
 
@@ -694,14 +772,39 @@
           });
         }
 
-        // Step 2: location
+        // Step 2: location (2-step prefill)
         if (s.default_location) {
           const locName = s.default_location.name || '';
-          const locChip = document.querySelector(`#location-chips .chip[data-value="${locName}"]`);
-          if (locChip) {
-            locChip.classList.add('selected');
-          } else if (locName) {
-            document.getElementById('location-custom').value = locName;
+          let locFound = false;
+
+          // 1. 광역시 매칭
+          if (LOCATION_DATA[locName] && LOCATION_DATA[locName].type === 'metro') {
+            const chip = document.querySelector(`#province-selector .chip[data-province="${locName}"]`);
+            if (chip) {
+              chip.classList.add('selected');
+              selectedProvinceName = locName;
+              locFound = true;
+            }
+          }
+
+          // 2. 도 내 시/군 매칭
+          if (!locFound) {
+            for (const [provName, provData] of Object.entries(LOCATION_DATA)) {
+              if (provData.type === 'province' && provData.cities && provData.cities[locName]) {
+                selectedProvinceName = provName;
+                showCitySelector(provName, provData.cities);
+                const cityChip = document.querySelector(`#city-chips .chip[data-city="${locName}"]`);
+                if (cityChip) cityChip.classList.add('selected');
+                locFound = true;
+                break;
+              }
+            }
+          }
+
+          // 3. 미매칭 → 직접입력
+          if (!locFound && locName) {
+            const customEl = document.getElementById('location-custom');
+            if (customEl) customEl.value = locName;
           }
         }
 
@@ -792,31 +895,133 @@
       el.classList.toggle('selected');
     }
 
-    // --- Location chip (single select) ---
+    // --- Location 2-step selector ---
 
-    const CITY_COORDS = {
-      '서울': { lat: 37.5665, lon: 126.9780 },
-      '부산': { lat: 35.1796, lon: 129.0756 },
-      '대구': { lat: 35.8714, lon: 128.6014 },
-      '인천': { lat: 37.4563, lon: 126.7052 },
-      '광주': { lat: 35.1595, lon: 126.8526 },
-      '대전': { lat: 36.3504, lon: 127.3845 },
-      '수원': { lat: 37.2636, lon: 127.0286 },
-      '제주': { lat: 33.4996, lon: 126.5312 },
+    const LOCATION_DATA = {
+      서울: { type: 'metro', lat: 37.5665, lon: 126.9780 },
+      인천: { type: 'metro', lat: 37.4563, lon: 126.7052 },
+      부산: { type: 'metro', lat: 35.1796, lon: 129.0756 },
+      대구: { type: 'metro', lat: 35.8714, lon: 128.6014 },
+      광주: { type: 'metro', lat: 35.1595, lon: 126.8526 },
+      대전: { type: 'metro', lat: 36.3504, lon: 127.3845 },
+      울산: { type: 'metro', lat: 35.5384, lon: 129.3114 },
+      세종: { type: 'metro', lat: 36.4800, lon: 127.2600 },
+      제주: { type: 'metro', lat: 33.4996, lon: 126.5312 },
+      경기: { type: 'province', cities: {
+        수원: { lat: 37.2636, lon: 127.0286 },
+        성남: { lat: 37.4200, lon: 127.1267 },
+        고양: { lat: 37.6584, lon: 126.8320 },
+        용인: { lat: 37.2411, lon: 127.1776 },
+        화성: { lat: 37.1996, lon: 126.8312 },
+        부천: { lat: 37.5034, lon: 126.7660 },
+        안산: { lat: 37.3219, lon: 126.8309 },
+        남양주: { lat: 37.6360, lon: 127.2165 },
+      }},
+      강원: { type: 'province', cities: {
+        춘천: { lat: 37.8813, lon: 127.7300 },
+        원주: { lat: 37.3422, lon: 127.9202 },
+        강릉: { lat: 37.7519, lon: 128.8761 },
+        속초: { lat: 38.2070, lon: 128.5918 },
+        동해: { lat: 37.5247, lon: 129.1143 },
+      }},
+      충북: { type: 'province', cities: {
+        청주: { lat: 36.6424, lon: 127.4890 },
+        충주: { lat: 36.9910, lon: 127.9259 },
+        제천: { lat: 37.1325, lon: 128.1910 },
+      }},
+      충남: { type: 'province', cities: {
+        천안: { lat: 36.8151, lon: 127.1139 },
+        아산: { lat: 36.7898, lon: 127.0018 },
+        서산: { lat: 36.7845, lon: 126.4503 },
+        당진: { lat: 36.8896, lon: 126.6463 },
+        논산: { lat: 36.1872, lon: 127.0986 },
+      }},
+      전북: { type: 'province', cities: {
+        전주: { lat: 35.8242, lon: 127.1480 },
+        익산: { lat: 35.9483, lon: 126.9576 },
+        군산: { lat: 35.9676, lon: 126.7369 },
+        정읍: { lat: 35.5699, lon: 126.8558 },
+        남원: { lat: 35.4164, lon: 127.3906 },
+      }},
+      전남: { type: 'province', cities: {
+        여수: { lat: 34.7604, lon: 127.6622 },
+        순천: { lat: 34.9506, lon: 127.4873 },
+        목포: { lat: 34.8118, lon: 126.3922 },
+        광양: { lat: 34.9407, lon: 127.6957 },
+        나주: { lat: 35.0159, lon: 126.7104 },
+      }},
+      경북: { type: 'province', cities: {
+        포항: { lat: 36.0190, lon: 129.3435 },
+        구미: { lat: 36.1196, lon: 128.3446 },
+        경주: { lat: 35.8562, lon: 129.2248 },
+        김천: { lat: 36.1398, lon: 128.1136 },
+        안동: { lat: 36.5684, lon: 128.7294 },
+      }},
+      경남: { type: 'province', cities: {
+        창원: { lat: 35.2280, lon: 128.6811 },
+        김해: { lat: 35.2285, lon: 128.8894 },
+        진주: { lat: 35.1800, lon: 128.1076 },
+        양산: { lat: 35.3350, lon: 129.0374 },
+        거제: { lat: 34.8806, lon: 128.6211 },
+      }},
     };
 
-    function selectLocationChip(el) {
-      // single select: 다른 칩 해제
-      document.querySelectorAll('#location-chips .chip').forEach(c => c.classList.remove('selected'));
+    let selectedProvinceName = null;
+
+    function selectProvince(el) {
+      const name = el.dataset.province;
+      const data = LOCATION_DATA[name];
+
+      if (data.type === 'metro') {
+        // 광역시: 즉시 확정
+        document.querySelectorAll('#province-selector .chip').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedProvinceName = name;
+        document.getElementById('city-selector').style.display = 'none';
+      } else {
+        // 도: 2단계 표시
+        selectedProvinceName = name;
+        showCitySelector(name, data.cities);
+      }
+    }
+
+    function showCitySelector(provinceName, cities) {
+      document.getElementById('province-selector').style.display = 'none';
+      const citySelector = document.getElementById('city-selector');
+      document.getElementById('selected-province-name').textContent = provinceName;
+
+      const chipsContainer = document.getElementById('city-chips');
+      chipsContainer.innerHTML = '';
+      Object.keys(cities).forEach(cityName => {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.dataset.city = cityName;
+        chip.textContent = cityName;
+        chip.onclick = function() { selectCityChip(this); };
+        chipsContainer.appendChild(chip);
+      });
+
+      const customInput = document.getElementById('location-custom');
+      if (customInput) customInput.value = '';
+      citySelector.style.display = '';
+    }
+
+    function selectCityChip(el) {
+      document.querySelectorAll('#city-chips .chip').forEach(c => c.classList.remove('selected'));
       el.classList.add('selected');
-      // 직접 입력 필드 초기화
       document.getElementById('location-custom').value = '';
     }
 
-    // 직접 입력 시 칩 선택 해제
-    document.getElementById('location-custom')?.addEventListener('input', function() {
-      if (this.value.trim()) {
-        document.querySelectorAll('#location-chips .chip').forEach(c => c.classList.remove('selected'));
+    function resetProvince() {
+      document.getElementById('city-selector').style.display = 'none';
+      document.getElementById('province-selector').style.display = '';
+      selectedProvinceName = null;
+    }
+
+    // 직접 입력 시 시/군 칩 선택 해제
+    document.addEventListener('input', function(e) {
+      if (e.target && e.target.id === 'location-custom' && e.target.value.trim()) {
+        document.querySelectorAll('#city-chips .chip').forEach(c => c.classList.remove('selected'));
       }
     });
 
@@ -852,18 +1057,30 @@
       const patternNote = document.getElementById('run-pattern-note').value.trim();
       if (patternNote) data.run_pattern_note = patternNote;
 
-      // Step 2: location
-      const customLoc = document.getElementById('location-custom').value.trim();
-      const selectedLocChip = document.querySelector('#location-chips .chip.selected');
+      // Step 2: location (2-step selector)
+      const customInput = document.getElementById('location-custom');
+      const customLoc = customInput ? customInput.value.trim() : '';
+      const selectedCityChip = document.querySelector('#city-chips .chip.selected');
+      const selectedMetroChip = document.querySelector('#province-selector .chip.selected');
+
       if (customLoc) {
         data.default_location = { name: customLoc };
-      } else if (selectedLocChip) {
-        const cityName = selectedLocChip.dataset.value;
-        const coords = CITY_COORDS[cityName];
-        if (coords) {
+      } else if (selectedCityChip && selectedProvinceName) {
+        const cityName = selectedCityChip.dataset.city;
+        const provData = LOCATION_DATA[selectedProvinceName];
+        if (provData && provData.cities && provData.cities[cityName]) {
+          const coords = provData.cities[cityName];
           data.default_location = { name: cityName, lat: coords.lat, lon: coords.lon };
         } else {
           data.default_location = { name: cityName };
+        }
+      } else if (selectedMetroChip) {
+        const metroName = selectedMetroChip.dataset.province;
+        const metroData = LOCATION_DATA[metroName];
+        if (metroData && metroData.lat != null) {
+          data.default_location = { name: metroName, lat: metroData.lat, lon: metroData.lon };
+        } else {
+          data.default_location = { name: metroName };
         }
       }
 

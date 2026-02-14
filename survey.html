@@ -475,41 +475,94 @@
       color: var(--tg-theme-button-color);
     }
 
-    /* Region group (province selector) */
-    .region-group {
-      margin-bottom: 12px;
+    /* Location search */
+    #location-search-wrapper {
+      position: relative;
     }
 
-    .region-group:last-child {
-      margin-bottom: 0;
+    #location-search {
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid var(--tg-theme-secondary-bg-color);
+      border-radius: 10px;
+      font-size: 15px;
+      background: var(--tg-theme-bg-color);
+      color: var(--tg-theme-text-color);
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    .region-label {
-      font-size: 11px;
+    #location-search:focus {
+      outline: none;
+      border-color: var(--tg-theme-button-color);
+      box-shadow: 0 0 0 3px rgba(38, 120, 182, 0.15);
+    }
+
+    .location-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--tg-theme-bg-color);
+      border: 1.5px solid var(--tg-theme-secondary-bg-color);
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 10;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .location-results.show {
+      display: block;
+    }
+
+    .location-result-item {
+      padding: 12px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+      border-bottom: 1px solid var(--tg-theme-secondary-bg-color);
+    }
+
+    .location-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .location-result-item:active,
+    .location-result-item:hover {
+      background: rgba(38, 120, 182, 0.08);
+    }
+
+    .location-result-item .result-name {
+      font-weight: 500;
+    }
+
+    .location-result-item .result-match {
+      font-size: 12px;
       color: var(--tg-theme-hint-color);
-      margin-bottom: 6px;
-      padding-left: 2px;
+      margin-top: 2px;
     }
 
-    /* City selector header */
-    .city-header {
+    .selected-location {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 10px;
+      padding: 12px 16px;
+      background: rgba(38, 120, 182, 0.08);
+      border: 1.5px solid var(--tg-theme-button-color);
+      border-radius: 10px;
       font-size: 15px;
       font-weight: 600;
     }
 
-    .change-link {
+    .selected-location .change-link {
       font-size: 13px;
       font-weight: 400;
       color: var(--tg-theme-link-color);
       cursor: pointer;
-    }
-
-    #city-selector {
-      animation: fadeInUp 0.25s ease forwards;
+      margin-left: auto;
     }
 
   </style>
@@ -591,58 +644,16 @@
 
         <div class="chip-group">
           <label>주로 뛰는 지역</label>
-
-          <!-- 1단계: 시/도 선택 -->
-          <div id="province-selector">
-            <div class="region-group">
-              <div class="region-label">수도권</div>
-              <div class="chip-options">
-                <div class="chip" data-province="서울" onclick="selectProvince(this)">서울</div>
-                <div class="chip" data-province="경기" onclick="selectProvince(this)">경기</div>
-                <div class="chip" data-province="인천" onclick="selectProvince(this)">인천</div>
-              </div>
-            </div>
-            <div class="region-group">
-              <div class="region-label">영남권</div>
-              <div class="chip-options">
-                <div class="chip" data-province="부산" onclick="selectProvince(this)">부산</div>
-                <div class="chip" data-province="대구" onclick="selectProvince(this)">대구</div>
-                <div class="chip" data-province="울산" onclick="selectProvince(this)">울산</div>
-                <div class="chip" data-province="경북" onclick="selectProvince(this)">경북</div>
-                <div class="chip" data-province="경남" onclick="selectProvince(this)">경남</div>
-              </div>
-            </div>
-            <div class="region-group">
-              <div class="region-label">충청/호남</div>
-              <div class="chip-options">
-                <div class="chip" data-province="광주" onclick="selectProvince(this)">광주</div>
-                <div class="chip" data-province="대전" onclick="selectProvince(this)">대전</div>
-                <div class="chip" data-province="세종" onclick="selectProvince(this)">세종</div>
-                <div class="chip" data-province="충북" onclick="selectProvince(this)">충북</div>
-                <div class="chip" data-province="충남" onclick="selectProvince(this)">충남</div>
-                <div class="chip" data-province="전북" onclick="selectProvince(this)">전북</div>
-                <div class="chip" data-province="전남" onclick="selectProvince(this)">전남</div>
-              </div>
-            </div>
-            <div class="region-group">
-              <div class="region-label">강원/제주</div>
-              <div class="chip-options">
-                <div class="chip" data-province="강원" onclick="selectProvince(this)">강원</div>
-                <div class="chip" data-province="제주" onclick="selectProvince(this)">제주</div>
-              </div>
+          <div id="location-search-wrapper">
+            <input type="text" id="location-search" placeholder="도시 또는 구 이름 검색 (예: 안양, 서초구)" autocomplete="off">
+            <div id="location-results" class="location-results"></div>
+          </div>
+          <div id="location-selected" style="display:none">
+            <div class="selected-location">
+              <span id="location-display-name"></span>
+              <span class="change-link" onclick="resetLocationSearch()">변경</span>
             </div>
           </div>
-
-          <!-- 2단계: 시/군 선택 -->
-          <div id="city-selector" style="display:none">
-            <div class="city-header">
-              <span id="selected-province-name"></span>
-              <span class="change-link" onclick="resetProvince()">변경</span>
-            </div>
-            <div class="chip-options" id="city-chips"></div>
-            <input type="text" id="location-custom" placeholder="다른 도시 직접 입력" style="margin-top:8px">
-          </div>
-
           <div class="hint">날씨 예보에 사용됩니다</div>
         </div>
 
@@ -772,39 +783,23 @@
           });
         }
 
-        // Step 2: location (2-step prefill)
+        // Step 2: location (search autocomplete prefill)
         if (s.default_location) {
           const locName = s.default_location.name || '';
-          let locFound = false;
-
-          // 1. 광역시 매칭
-          if (LOCATION_DATA[locName] && LOCATION_DATA[locName].type === 'metro') {
-            const chip = document.querySelector(`#province-selector .chip[data-province="${locName}"]`);
-            if (chip) {
-              chip.classList.add('selected');
-              selectedProvinceName = locName;
-              locFound = true;
+          if (locName) {
+            const found = LOCATION_SEARCH_DATA.find(loc => loc.name === locName);
+            if (found) {
+              selectLocation(found);
+            } else {
+              // 검색 데이터에 없으면 좌표가 있을 경우 직접 설정
+              selectLocation({
+                name: locName,
+                display: locName,
+                lat: s.default_location.lat || 0,
+                lon: s.default_location.lon || 0,
+                keywords: [locName],
+              });
             }
-          }
-
-          // 2. 도 내 시/군 매칭
-          if (!locFound) {
-            for (const [provName, provData] of Object.entries(LOCATION_DATA)) {
-              if (provData.type === 'province' && provData.cities && provData.cities[locName]) {
-                selectedProvinceName = provName;
-                showCitySelector(provName, provData.cities);
-                const cityChip = document.querySelector(`#city-chips .chip[data-city="${locName}"]`);
-                if (cityChip) cityChip.classList.add('selected');
-                locFound = true;
-                break;
-              }
-            }
-          }
-
-          // 3. 미매칭 → 직접입력
-          if (!locFound && locName) {
-            const customEl = document.getElementById('location-custom');
-            if (customEl) customEl.value = locName;
           }
         }
 
@@ -895,133 +890,245 @@
       el.classList.toggle('selected');
     }
 
-    // --- Location 2-step selector ---
+    // --- Location search autocomplete ---
 
-    const LOCATION_DATA = {
-      서울: { type: 'metro', lat: 37.5665, lon: 126.9780 },
-      인천: { type: 'metro', lat: 37.4563, lon: 126.7052 },
-      부산: { type: 'metro', lat: 35.1796, lon: 129.0756 },
-      대구: { type: 'metro', lat: 35.8714, lon: 128.6014 },
-      광주: { type: 'metro', lat: 35.1595, lon: 126.8526 },
-      대전: { type: 'metro', lat: 36.3504, lon: 127.3845 },
-      울산: { type: 'metro', lat: 35.5384, lon: 129.3114 },
-      세종: { type: 'metro', lat: 36.4800, lon: 127.2600 },
-      제주: { type: 'metro', lat: 33.4996, lon: 126.5312 },
-      경기: { type: 'province', cities: {
-        수원: { lat: 37.2636, lon: 127.0286 },
-        성남: { lat: 37.4200, lon: 127.1267 },
-        고양: { lat: 37.6584, lon: 126.8320 },
-        용인: { lat: 37.2411, lon: 127.1776 },
-        화성: { lat: 37.1996, lon: 126.8312 },
-        부천: { lat: 37.5034, lon: 126.7660 },
-        안산: { lat: 37.3219, lon: 126.8309 },
-        남양주: { lat: 37.6360, lon: 127.2165 },
-      }},
-      강원: { type: 'province', cities: {
-        춘천: { lat: 37.8813, lon: 127.7300 },
-        원주: { lat: 37.3422, lon: 127.9202 },
-        강릉: { lat: 37.7519, lon: 128.8761 },
-        속초: { lat: 38.2070, lon: 128.5918 },
-        동해: { lat: 37.5247, lon: 129.1143 },
-      }},
-      충북: { type: 'province', cities: {
-        청주: { lat: 36.6424, lon: 127.4890 },
-        충주: { lat: 36.9910, lon: 127.9259 },
-        제천: { lat: 37.1325, lon: 128.1910 },
-      }},
-      충남: { type: 'province', cities: {
-        천안: { lat: 36.8151, lon: 127.1139 },
-        아산: { lat: 36.7898, lon: 127.0018 },
-        서산: { lat: 36.7845, lon: 126.4503 },
-        당진: { lat: 36.8896, lon: 126.6463 },
-        논산: { lat: 36.1872, lon: 127.0986 },
-      }},
-      전북: { type: 'province', cities: {
-        전주: { lat: 35.8242, lon: 127.1480 },
-        익산: { lat: 35.9483, lon: 126.9576 },
-        군산: { lat: 35.9676, lon: 126.7369 },
-        정읍: { lat: 35.5699, lon: 126.8558 },
-        남원: { lat: 35.4164, lon: 127.3906 },
-      }},
-      전남: { type: 'province', cities: {
-        여수: { lat: 34.7604, lon: 127.6622 },
-        순천: { lat: 34.9506, lon: 127.4873 },
-        목포: { lat: 34.8118, lon: 126.3922 },
-        광양: { lat: 34.9407, lon: 127.6957 },
-        나주: { lat: 35.0159, lon: 126.7104 },
-      }},
-      경북: { type: 'province', cities: {
-        포항: { lat: 36.0190, lon: 129.3435 },
-        구미: { lat: 36.1196, lon: 128.3446 },
-        경주: { lat: 35.8562, lon: 129.2248 },
-        김천: { lat: 36.1398, lon: 128.1136 },
-        안동: { lat: 36.5684, lon: 128.7294 },
-      }},
-      경남: { type: 'province', cities: {
-        창원: { lat: 35.2280, lon: 128.6811 },
-        김해: { lat: 35.2285, lon: 128.8894 },
-        진주: { lat: 35.1800, lon: 128.1076 },
-        양산: { lat: 35.3350, lon: 129.0374 },
-        거제: { lat: 34.8806, lon: 128.6211 },
-      }},
-    };
+    const LOCATION_SEARCH_DATA = [
+      // 광역시/특별시
+      { name: '서울', display: '서울', lat: 37.5665, lon: 126.978, keywords: ['서울','강남구','강동구','강북구','강서구','관악구','광진구','구로구','금천구','노원구','도봉구','동대문구','동작구','마포구','서대문구','서초구','성동구','성북구','송파구','양천구','영등포구','용산구','은평구','종로구','중구','중랑구'] },
+      { name: '부산', display: '부산', lat: 35.1796, lon: 129.0756, keywords: ['부산','해운대구','수영구','부산진구','동래구','금정구','연제구','사하구','사상구','영도구','기장군','남구','북구','동구','서구','중구','강서구'] },
+      { name: '대구', display: '대구', lat: 35.8714, lon: 128.6014, keywords: ['대구','수성구','달서구','달성군','중구','동구','서구','남구','북구'] },
+      { name: '인천', display: '인천', lat: 37.4563, lon: 126.7052, keywords: ['인천','미추홀구','연수구','남동구','부평구','계양구','서구','중구','동구','강화군','옹진군'] },
+      { name: '광주', display: '광주', lat: 35.1595, lon: 126.8526, keywords: ['광주','광산구','동구','서구','남구','북구'] },
+      { name: '대전', display: '대전', lat: 36.3504, lon: 127.3845, keywords: ['대전','유성구','대덕구','동구','중구','서구'] },
+      { name: '울산', display: '울산', lat: 35.5384, lon: 129.3114, keywords: ['울산','울주군','중구','남구','동구','북구'] },
+      { name: '세종', display: '세종', lat: 36.48, lon: 127.26, keywords: ['세종'] },
+      { name: '제주', display: '제주', lat: 33.4996, lon: 126.5312, keywords: ['제주','제주시'] },
+      { name: '서귀포', display: '서귀포 (제주)', lat: 33.2541, lon: 126.56, keywords: ['서귀포'] },
+      // 경기도
+      { name: '수원', display: '수원 (경기)', lat: 37.2636, lon: 127.0286, keywords: ['수원','장안구','권선구','팔달구','영통구'] },
+      { name: '성남', display: '성남 (경기)', lat: 37.42, lon: 127.1267, keywords: ['성남','분당구','수정구','중원구','분당'] },
+      { name: '고양', display: '고양 (경기)', lat: 37.6584, lon: 126.832, keywords: ['고양','일산동구','일산서구','덕양구','일산'] },
+      { name: '용인', display: '용인 (경기)', lat: 37.2411, lon: 127.1776, keywords: ['용인','처인구','기흥구','수지구'] },
+      { name: '화성', display: '화성 (경기)', lat: 37.1996, lon: 126.8312, keywords: ['화성','동탄'] },
+      { name: '부천', display: '부천 (경기)', lat: 37.5034, lon: 126.766, keywords: ['부천'] },
+      { name: '안산', display: '안산 (경기)', lat: 37.3219, lon: 126.8309, keywords: ['안산','상록구','단원구'] },
+      { name: '안양', display: '안양 (경기)', lat: 37.3925, lon: 126.9269, keywords: ['안양','만안구','동안구'] },
+      { name: '남양주', display: '남양주 (경기)', lat: 37.636, lon: 127.2165, keywords: ['남양주'] },
+      { name: '평택', display: '평택 (경기)', lat: 36.9921, lon: 127.1126, keywords: ['평택'] },
+      { name: '시흥', display: '시흥 (경기)', lat: 37.38, lon: 126.803, keywords: ['시흥'] },
+      { name: '파주', display: '파주 (경기)', lat: 37.7599, lon: 126.78, keywords: ['파주'] },
+      { name: '김포', display: '김포 (경기)', lat: 37.6153, lon: 126.7156, keywords: ['김포'] },
+      { name: '의정부', display: '의정부 (경기)', lat: 37.7381, lon: 127.0337, keywords: ['의정부'] },
+      { name: '광주시', display: '광주 (경기)', lat: 37.4095, lon: 127.255, keywords: ['광주시','경기광주'] },
+      { name: '하남', display: '하남 (경기)', lat: 37.5393, lon: 127.2148, keywords: ['하남','미사'] },
+      { name: '군포', display: '군포 (경기)', lat: 37.3614, lon: 126.9352, keywords: ['군포'] },
+      { name: '의왕', display: '의왕 (경기)', lat: 37.3449, lon: 126.9685, keywords: ['의왕'] },
+      { name: '오산', display: '오산 (경기)', lat: 37.1498, lon: 127.0698, keywords: ['오산'] },
+      { name: '이천', display: '이천 (경기)', lat: 37.272, lon: 127.435, keywords: ['이천'] },
+      { name: '양주', display: '양주 (경기)', lat: 37.7853, lon: 127.0456, keywords: ['양주'] },
+      { name: '구리', display: '구리 (경기)', lat: 37.5943, lon: 127.1295, keywords: ['구리'] },
+      { name: '광명', display: '광명 (경기)', lat: 37.4784, lon: 126.8666, keywords: ['광명'] },
+      { name: '과천', display: '과천 (경기)', lat: 37.4292, lon: 126.9876, keywords: ['과천'] },
+      { name: '동두천', display: '동두천 (경기)', lat: 37.9035, lon: 127.0607, keywords: ['동두천'] },
+      { name: '포천', display: '포천 (경기)', lat: 37.8949, lon: 127.2003, keywords: ['포천'] },
+      { name: '여주', display: '여주 (경기)', lat: 37.2983, lon: 127.6375, keywords: ['여주'] },
+      { name: '안성', display: '안성 (경기)', lat: 37.0079, lon: 127.2797, keywords: ['안성'] },
+      { name: '연천', display: '연천 (경기)', lat: 38.0965, lon: 127.075, keywords: ['연천'] },
+      { name: '양평', display: '양평 (경기)', lat: 37.4916, lon: 127.4876, keywords: ['양평'] },
+      { name: '가평', display: '가평 (경기)', lat: 37.8315, lon: 127.5096, keywords: ['가평'] },
+      // 강원특별자치도
+      { name: '춘천', display: '춘천 (강원)', lat: 37.8813, lon: 127.73, keywords: ['춘천'] },
+      { name: '원주', display: '원주 (강원)', lat: 37.3422, lon: 127.9202, keywords: ['원주'] },
+      { name: '강릉', display: '강릉 (강원)', lat: 37.7519, lon: 128.8761, keywords: ['강릉'] },
+      { name: '속초', display: '속초 (강원)', lat: 38.207, lon: 128.5918, keywords: ['속초'] },
+      { name: '동해', display: '동해 (강원)', lat: 37.5247, lon: 129.1143, keywords: ['동해'] },
+      { name: '태백', display: '태백 (강원)', lat: 37.1641, lon: 128.9856, keywords: ['태백'] },
+      { name: '삼척', display: '삼척 (강원)', lat: 37.45, lon: 129.1651, keywords: ['삼척'] },
+      { name: '홍천', display: '홍천 (강원)', lat: 37.6972, lon: 127.8886, keywords: ['홍천'] },
+      { name: '횡성', display: '횡성 (강원)', lat: 37.4885, lon: 127.9847, keywords: ['횡성'] },
+      { name: '영월', display: '영월 (강원)', lat: 37.1837, lon: 128.4617, keywords: ['영월'] },
+      { name: '평창', display: '평창 (강원)', lat: 37.3704, lon: 128.3906, keywords: ['평창'] },
+      { name: '정선', display: '정선 (강원)', lat: 37.3808, lon: 128.6608, keywords: ['정선'] },
+      { name: '철원', display: '철원 (강원)', lat: 38.1465, lon: 127.3133, keywords: ['철원'] },
+      { name: '화천', display: '화천 (강원)', lat: 38.1062, lon: 127.7081, keywords: ['화천'] },
+      { name: '양구', display: '양구 (강원)', lat: 38.1096, lon: 127.9897, keywords: ['양구'] },
+      { name: '인제', display: '인제 (강원)', lat: 38.0695, lon: 128.1706, keywords: ['인제'] },
+      { name: '고성', display: '고성 (강원)', lat: 38.3802, lon: 128.4679, keywords: ['고성'] },
+      { name: '양양', display: '양양 (강원)', lat: 38.0754, lon: 128.6189, keywords: ['양양'] },
+      // 충청북도
+      { name: '청주', display: '청주 (충북)', lat: 36.6424, lon: 127.489, keywords: ['청주','상당구','서원구','흥덕구','청원구'] },
+      { name: '충주', display: '충주 (충북)', lat: 36.991, lon: 127.9259, keywords: ['충주'] },
+      { name: '제천', display: '제천 (충북)', lat: 37.1325, lon: 128.191, keywords: ['제천'] },
+      { name: '보은', display: '보은 (충북)', lat: 36.489, lon: 127.7293, keywords: ['보은'] },
+      { name: '옥천', display: '옥천 (충북)', lat: 36.306, lon: 127.5714, keywords: ['옥천'] },
+      { name: '영동', display: '영동 (충북)', lat: 36.175, lon: 127.7764, keywords: ['영동'] },
+      { name: '증평', display: '증평 (충북)', lat: 36.7853, lon: 127.5817, keywords: ['증평'] },
+      { name: '진천', display: '진천 (충북)', lat: 36.8553, lon: 127.4356, keywords: ['진천'] },
+      { name: '괴산', display: '괴산 (충북)', lat: 36.815, lon: 127.7864, keywords: ['괴산'] },
+      { name: '음성', display: '음성 (충북)', lat: 36.94, lon: 127.6903, keywords: ['음성'] },
+      { name: '단양', display: '단양 (충북)', lat: 36.9845, lon: 128.3653, keywords: ['단양'] },
+      // 충청남도
+      { name: '천안', display: '천안 (충남)', lat: 36.8151, lon: 127.1139, keywords: ['천안','동남구','서북구'] },
+      { name: '아산', display: '아산 (충남)', lat: 36.7898, lon: 127.0018, keywords: ['아산'] },
+      { name: '서산', display: '서산 (충남)', lat: 36.7845, lon: 126.4503, keywords: ['서산'] },
+      { name: '당진', display: '당진 (충남)', lat: 36.8896, lon: 126.6463, keywords: ['당진'] },
+      { name: '논산', display: '논산 (충남)', lat: 36.1872, lon: 127.0986, keywords: ['논산'] },
+      { name: '공주', display: '공주 (충남)', lat: 36.4465, lon: 127.119, keywords: ['공주'] },
+      { name: '보령', display: '보령 (충남)', lat: 36.3334, lon: 126.6128, keywords: ['보령'] },
+      { name: '계룡', display: '계룡 (충남)', lat: 36.2747, lon: 127.2486, keywords: ['계룡'] },
+      { name: '금산', display: '금산 (충남)', lat: 36.1086, lon: 127.4881, keywords: ['금산'] },
+      { name: '부여', display: '부여 (충남)', lat: 36.2756, lon: 126.9098, keywords: ['부여'] },
+      { name: '서천', display: '서천 (충남)', lat: 36.0801, lon: 126.6918, keywords: ['서천'] },
+      { name: '청양', display: '청양 (충남)', lat: 36.4593, lon: 126.8023, keywords: ['청양'] },
+      { name: '홍성', display: '홍성 (충남)', lat: 36.6013, lon: 126.6603, keywords: ['홍성'] },
+      { name: '예산', display: '예산 (충남)', lat: 36.6828, lon: 126.8487, keywords: ['예산'] },
+      { name: '태안', display: '태안 (충남)', lat: 36.7457, lon: 126.2979, keywords: ['태안'] },
+      // 전북특별자치도
+      { name: '전주', display: '전주 (전북)', lat: 35.8242, lon: 127.148, keywords: ['전주','완산구','덕진구'] },
+      { name: '익산', display: '익산 (전북)', lat: 35.9483, lon: 126.9576, keywords: ['익산'] },
+      { name: '군산', display: '군산 (전북)', lat: 35.9676, lon: 126.7369, keywords: ['군산'] },
+      { name: '정읍', display: '정읍 (전북)', lat: 35.5699, lon: 126.8558, keywords: ['정읍'] },
+      { name: '남원', display: '남원 (전북)', lat: 35.4164, lon: 127.3906, keywords: ['남원'] },
+      { name: '김제', display: '김제 (전북)', lat: 35.8037, lon: 126.8808, keywords: ['김제'] },
+      { name: '완주', display: '완주 (전북)', lat: 35.9044, lon: 127.1619, keywords: ['완주'] },
+      { name: '진안', display: '진안 (전북)', lat: 35.7917, lon: 127.4247, keywords: ['진안'] },
+      { name: '무주', display: '무주 (전북)', lat: 35.9222, lon: 127.6608, keywords: ['무주'] },
+      { name: '장수', display: '장수 (전북)', lat: 35.6472, lon: 127.5219, keywords: ['장수'] },
+      { name: '임실', display: '임실 (전북)', lat: 35.6178, lon: 127.2828, keywords: ['임실'] },
+      { name: '순창', display: '순창 (전북)', lat: 35.3742, lon: 127.1372, keywords: ['순창'] },
+      { name: '고창', display: '고창 (전북)', lat: 35.4358, lon: 126.7019, keywords: ['고창'] },
+      { name: '부안', display: '부안 (전북)', lat: 35.7317, lon: 126.7331, keywords: ['부안'] },
+      // 전라남도
+      { name: '여수', display: '여수 (전남)', lat: 34.7604, lon: 127.6622, keywords: ['여수'] },
+      { name: '순천', display: '순천 (전남)', lat: 34.9506, lon: 127.4873, keywords: ['순천'] },
+      { name: '목포', display: '목포 (전남)', lat: 34.8118, lon: 126.3922, keywords: ['목포'] },
+      { name: '광양', display: '광양 (전남)', lat: 34.9407, lon: 127.6957, keywords: ['광양'] },
+      { name: '나주', display: '나주 (전남)', lat: 35.0159, lon: 126.7104, keywords: ['나주'] },
+      { name: '담양', display: '담양 (전남)', lat: 35.3211, lon: 126.9883, keywords: ['담양'] },
+      { name: '곡성', display: '곡성 (전남)', lat: 35.2822, lon: 127.2917, keywords: ['곡성'] },
+      { name: '구례', display: '구례 (전남)', lat: 35.2025, lon: 127.4625, keywords: ['구례'] },
+      { name: '고흥', display: '고흥 (전남)', lat: 34.6111, lon: 127.2753, keywords: ['고흥'] },
+      { name: '보성', display: '보성 (전남)', lat: 34.7714, lon: 127.08, keywords: ['보성'] },
+      { name: '화순', display: '화순 (전남)', lat: 35.0644, lon: 126.9867, keywords: ['화순'] },
+      { name: '장흥', display: '장흥 (전남)', lat: 34.6817, lon: 126.9069, keywords: ['장흥'] },
+      { name: '강진', display: '강진 (전남)', lat: 34.6419, lon: 126.7672, keywords: ['강진'] },
+      { name: '해남', display: '해남 (전남)', lat: 34.5736, lon: 126.5992, keywords: ['해남'] },
+      { name: '영암', display: '영암 (전남)', lat: 34.8003, lon: 126.6969, keywords: ['영암'] },
+      { name: '무안', display: '무안 (전남)', lat: 34.9906, lon: 126.4817, keywords: ['무안'] },
+      { name: '함평', display: '함평 (전남)', lat: 35.0656, lon: 126.5167, keywords: ['함평'] },
+      { name: '영광', display: '영광 (전남)', lat: 35.2772, lon: 126.5119, keywords: ['영광'] },
+      { name: '장성', display: '장성 (전남)', lat: 35.3019, lon: 126.7831, keywords: ['장성'] },
+      { name: '완도', display: '완도 (전남)', lat: 34.3108, lon: 126.755, keywords: ['완도'] },
+      { name: '진도', display: '진도 (전남)', lat: 34.4867, lon: 126.2633, keywords: ['진도'] },
+      { name: '신안', display: '신안 (전남)', lat: 34.8322, lon: 126.1072, keywords: ['신안'] },
+      // 경상북도
+      { name: '포항', display: '포항 (경북)', lat: 36.019, lon: 129.3435, keywords: ['포항','남구','북구'] },
+      { name: '구미', display: '구미 (경북)', lat: 36.1196, lon: 128.3446, keywords: ['구미'] },
+      { name: '경주', display: '경주 (경북)', lat: 35.8562, lon: 129.2248, keywords: ['경주'] },
+      { name: '김천', display: '김천 (경북)', lat: 36.1398, lon: 128.1136, keywords: ['김천'] },
+      { name: '안동', display: '안동 (경북)', lat: 36.5684, lon: 128.7294, keywords: ['안동'] },
+      { name: '영주', display: '영주 (경북)', lat: 36.8057, lon: 128.6239, keywords: ['영주'] },
+      { name: '영천', display: '영천 (경북)', lat: 35.9733, lon: 128.9386, keywords: ['영천'] },
+      { name: '상주', display: '상주 (경북)', lat: 36.411, lon: 128.159, keywords: ['상주'] },
+      { name: '문경', display: '문경 (경북)', lat: 36.5866, lon: 128.1867, keywords: ['문경'] },
+      { name: '경산', display: '경산 (경북)', lat: 35.8251, lon: 128.7416, keywords: ['경산'] },
+      { name: '의성', display: '의성 (경북)', lat: 36.3528, lon: 128.697, keywords: ['의성'] },
+      { name: '청송', display: '청송 (경북)', lat: 36.4362, lon: 129.0572, keywords: ['청송'] },
+      { name: '영양', display: '영양 (경북)', lat: 36.6667, lon: 129.1122, keywords: ['영양'] },
+      { name: '영덕', display: '영덕 (경북)', lat: 36.415, lon: 129.3656, keywords: ['영덕'] },
+      { name: '청도', display: '청도 (경북)', lat: 35.6472, lon: 128.7342, keywords: ['청도'] },
+      { name: '고령', display: '고령 (경북)', lat: 35.7261, lon: 128.2631, keywords: ['고령'] },
+      { name: '성주', display: '성주 (경북)', lat: 35.9192, lon: 128.2831, keywords: ['성주'] },
+      { name: '칠곡', display: '칠곡 (경북)', lat: 35.9955, lon: 128.4017, keywords: ['칠곡'] },
+      { name: '예천', display: '예천 (경북)', lat: 36.6575, lon: 128.4536, keywords: ['예천'] },
+      { name: '봉화', display: '봉화 (경북)', lat: 36.8931, lon: 128.7328, keywords: ['봉화'] },
+      { name: '울진', display: '울진 (경북)', lat: 36.9933, lon: 129.4006, keywords: ['울진'] },
+      { name: '울릉', display: '울릉 (경북)', lat: 37.4844, lon: 130.9057, keywords: ['울릉','울릉도'] },
+      // 경상남도
+      { name: '창원', display: '창원 (경남)', lat: 35.228, lon: 128.6811, keywords: ['창원','성산구','의창구','마산','진해'] },
+      { name: '김해', display: '김해 (경남)', lat: 35.2285, lon: 128.8894, keywords: ['김해'] },
+      { name: '진주', display: '진주 (경남)', lat: 35.18, lon: 128.1076, keywords: ['진주'] },
+      { name: '양산', display: '양산 (경남)', lat: 35.335, lon: 129.0374, keywords: ['양산'] },
+      { name: '거제', display: '거제 (경남)', lat: 34.8806, lon: 128.6211, keywords: ['거제'] },
+      { name: '통영', display: '통영 (경남)', lat: 34.8545, lon: 128.433, keywords: ['통영'] },
+      { name: '사천', display: '사천 (경남)', lat: 35.0032, lon: 128.0642, keywords: ['사천'] },
+      { name: '밀양', display: '밀양 (경남)', lat: 35.5037, lon: 128.7464, keywords: ['밀양'] },
+      { name: '의령', display: '의령 (경남)', lat: 35.3222, lon: 128.2614, keywords: ['의령'] },
+      { name: '함안', display: '함안 (경남)', lat: 35.2722, lon: 128.4064, keywords: ['함안'] },
+      { name: '창녕', display: '창녕 (경남)', lat: 35.544, lon: 128.4917, keywords: ['창녕'] },
+      { name: '남해', display: '남해 (경남)', lat: 34.8375, lon: 127.8925, keywords: ['남해'] },
+      { name: '하동', display: '하동 (경남)', lat: 35.0672, lon: 127.7514, keywords: ['하동'] },
+      { name: '산청', display: '산청 (경남)', lat: 35.4156, lon: 127.8731, keywords: ['산청'] },
+      { name: '함양', display: '함양 (경남)', lat: 35.52, lon: 127.7253, keywords: ['함양'] },
+      { name: '거창', display: '거창 (경남)', lat: 35.6867, lon: 127.9094, keywords: ['거창'] },
+      { name: '합천', display: '합천 (경남)', lat: 35.5667, lon: 128.1658, keywords: ['합천'] },
+    ];
 
-    let selectedProvinceName = null;
+    let selectedLocation = null; // { name, display, lat, lon }
 
-    function selectProvince(el) {
-      const name = el.dataset.province;
-      const data = LOCATION_DATA[name];
+    function searchLocation(query) {
+      const q = query.trim().toLowerCase();
+      if (!q) return [];
+      return LOCATION_SEARCH_DATA
+        .filter(loc => loc.keywords.some(kw => kw.includes(q)) || loc.name.includes(q) || loc.display.includes(q))
+        .slice(0, 8);
+    }
 
-      if (data.type === 'metro') {
-        // 광역시: 즉시 확정
-        document.querySelectorAll('#province-selector .chip').forEach(c => c.classList.remove('selected'));
-        el.classList.add('selected');
-        selectedProvinceName = name;
-        document.getElementById('city-selector').style.display = 'none';
-      } else {
-        // 도: 2단계 표시
-        selectedProvinceName = name;
-        showCitySelector(name, data.cities);
+    function renderLocationResults(results, query) {
+      const container = document.getElementById('location-results');
+      if (results.length === 0) {
+        container.classList.remove('show');
+        return;
       }
-    }
+      container.innerHTML = results.map((loc, i) => {
+        const matchedKw = loc.keywords.find(kw => kw.includes(query.trim().toLowerCase()) && kw !== loc.name);
+        const matchHint = matchedKw ? '<div class="result-match">' + matchedKw + ' → ' + loc.name + '</div>' : '';
+        return '<div class="location-result-item" data-index="' + i + '"><div class="result-name">' + loc.display + '</div>' + matchHint + '</div>';
+      }).join('');
+      container.classList.add('show');
 
-    function showCitySelector(provinceName, cities) {
-      document.getElementById('province-selector').style.display = 'none';
-      const citySelector = document.getElementById('city-selector');
-      document.getElementById('selected-province-name').textContent = provinceName;
-
-      const chipsContainer = document.getElementById('city-chips');
-      chipsContainer.innerHTML = '';
-      Object.keys(cities).forEach(cityName => {
-        const chip = document.createElement('div');
-        chip.className = 'chip';
-        chip.dataset.city = cityName;
-        chip.textContent = cityName;
-        chip.onclick = function() { selectCityChip(this); };
-        chipsContainer.appendChild(chip);
+      container.querySelectorAll('.location-result-item').forEach(item => {
+        item.onclick = function() {
+          const idx = parseInt(this.dataset.index);
+          selectLocation(results[idx]);
+        };
       });
-
-      const customInput = document.getElementById('location-custom');
-      if (customInput) customInput.value = '';
-      citySelector.style.display = '';
     }
 
-    function selectCityChip(el) {
-      document.querySelectorAll('#city-chips .chip').forEach(c => c.classList.remove('selected'));
-      el.classList.add('selected');
-      document.getElementById('location-custom').value = '';
+    function selectLocation(loc) {
+      selectedLocation = loc;
+      document.getElementById('location-search-wrapper').style.display = 'none';
+      document.getElementById('location-selected').style.display = '';
+      document.getElementById('location-display-name').textContent = loc.display;
+      document.getElementById('location-results').classList.remove('show');
     }
 
-    function resetProvince() {
-      document.getElementById('city-selector').style.display = 'none';
-      document.getElementById('province-selector').style.display = '';
-      selectedProvinceName = null;
+    function resetLocationSearch() {
+      selectedLocation = null;
+      document.getElementById('location-search-wrapper').style.display = '';
+      document.getElementById('location-selected').style.display = 'none';
+      const searchInput = document.getElementById('location-search');
+      searchInput.value = '';
+      searchInput.focus();
     }
 
-    // 직접 입력 시 시/군 칩 선택 해제
-    document.addEventListener('input', function(e) {
-      if (e.target && e.target.id === 'location-custom' && e.target.value.trim()) {
-        document.querySelectorAll('#city-chips .chip').forEach(c => c.classList.remove('selected'));
+    document.getElementById('location-search').addEventListener('input', function() {
+      const results = searchLocation(this.value);
+      renderLocationResults(results, this.value);
+    });
+
+    document.getElementById('location-search').addEventListener('focus', function() {
+      if (this.value.trim()) {
+        const results = searchLocation(this.value);
+        renderLocationResults(results, this.value);
+      }
+    });
+
+    // 외부 클릭 시 결과 닫기
+    document.addEventListener('click', function(e) {
+      const wrapper = document.getElementById('location-search-wrapper');
+      if (wrapper && !wrapper.contains(e.target)) {
+        document.getElementById('location-results').classList.remove('show');
       }
     });
 
@@ -1057,31 +1164,9 @@
       const patternNote = document.getElementById('run-pattern-note').value.trim();
       if (patternNote) data.run_pattern_note = patternNote;
 
-      // Step 2: location (2-step selector)
-      const customInput = document.getElementById('location-custom');
-      const customLoc = customInput ? customInput.value.trim() : '';
-      const selectedCityChip = document.querySelector('#city-chips .chip.selected');
-      const selectedMetroChip = document.querySelector('#province-selector .chip.selected');
-
-      if (customLoc) {
-        data.default_location = { name: customLoc };
-      } else if (selectedCityChip && selectedProvinceName) {
-        const cityName = selectedCityChip.dataset.city;
-        const provData = LOCATION_DATA[selectedProvinceName];
-        if (provData && provData.cities && provData.cities[cityName]) {
-          const coords = provData.cities[cityName];
-          data.default_location = { name: cityName, lat: coords.lat, lon: coords.lon };
-        } else {
-          data.default_location = { name: cityName };
-        }
-      } else if (selectedMetroChip) {
-        const metroName = selectedMetroChip.dataset.province;
-        const metroData = LOCATION_DATA[metroName];
-        if (metroData && metroData.lat != null) {
-          data.default_location = { name: metroName, lat: metroData.lat, lon: metroData.lon };
-        } else {
-          data.default_location = { name: metroName };
-        }
+      // Step 2: location (search autocomplete)
+      if (selectedLocation) {
+        data.default_location = { name: selectedLocation.name, lat: selectedLocation.lat, lon: selectedLocation.lon };
       }
 
       // Step 3

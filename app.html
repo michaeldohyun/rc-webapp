@@ -424,7 +424,7 @@
 
   if (tg) { tg.ready(); tg.expand(); initData = tg.initData || ''; if (tg.initDataUnsafe && tg.initDataUnsafe.user) userId = tg.initDataUnsafe.user.id; }
 
-  function sendCommand(cmd) {
+  window.sendCommand = function sendCommand(cmd) {
     if (!userId) return;
     // inline keyboard web_app에서는 sendData가 동작하지 않으므로 API 직접 호출
     var RC_URL = 'https://dotsosqsftympgdescvz.supabase.co/functions/v1/running-coach';

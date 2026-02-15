@@ -301,7 +301,55 @@
   .plan-empty a { color: var(--link); text-decoration: none; font-weight: 600; }
   /* plan-edit-link removed — edit action moved to page-header */
 
-  /* Home quest section clickable */
+  /* Plan Slim Card */
+  .plan-slim { background: var(--bg); border-radius: var(--card-radius); padding: 12px 14px; margin-bottom: 12px; border: 1px solid var(--secondary-bg); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .plan-slim:active { background: var(--secondary-bg); }
+  .plan-slim-head { display: flex; align-items: center; gap: 6px; }
+  .plan-slim-head .ps-icon { color: var(--btn); display: flex; }
+  .plan-slim-head .ps-icon svg { width: 16px; height: 16px; }
+  .plan-slim-head .ps-title { font-size: 13px; font-weight: 600; }
+  .plan-slim-head .ps-stats { font-size: 12px; color: var(--hint); margin-left: 4px; }
+  .plan-slim-head .ps-chevron { margin-left: auto; color: var(--hint); display: flex; }
+  .plan-slim-head .ps-chevron svg { width: 16px; height: 16px; }
+
+  /* Quest Summary Card */
+  .quest-summary-card { background: var(--bg); border-radius: var(--card-radius); padding: 14px; margin-bottom: 12px; border: 1px solid var(--secondary-bg); }
+  .quest-summary-head { display: flex; align-items: center; gap: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .quest-summary-head .qs-icon { color: var(--btn); display: flex; }
+  .quest-summary-head .qs-icon svg { width: 16px; height: 16px; }
+  .quest-summary-head .qs-title { font-size: 13px; font-weight: 600; }
+  .quest-summary-head .qs-count { font-size: 12px; color: var(--hint); font-weight: 500; }
+  .quest-summary-head .qs-chevron { margin-left: auto; color: var(--hint); display: flex; transition: transform 0.2s; }
+  .quest-summary-head .qs-chevron svg { width: 16px; height: 16px; }
+  .quest-summary-head .qs-chevron.open { transform: rotate(180deg); }
+  .quest-summary-bar { margin-top: 10px; height: 8px; background: var(--secondary-bg); border-radius: 4px; overflow: hidden; }
+  .quest-summary-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--btn), var(--link)); transition: width 0.6s ease; }
+  .quest-summary-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; font-size: 11px; color: var(--hint); }
+  .quest-summary-xp { font-weight: 600; color: var(--link); }
+
+  /* Quest Accordion Items */
+  .quest-accordion { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--secondary-bg); display: flex; flex-direction: column; gap: 8px; animation: fadeIn 0.25s ease; }
+  .quest-inline-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+  .quest-inline-bar { width: 3px; height: 28px; border-radius: 2px; flex-shrink: 0; }
+  .quest-inline-bar.core { background: var(--core-color); }
+  .quest-inline-bar.method { background: var(--method-color); }
+  .quest-inline-bar.stretch { background: var(--stretch-color); }
+  .quest-inline-bar.done { background: var(--success); }
+  .quest-inline-info { flex: 1; min-width: 0; }
+  .quest-inline-title { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .quest-inline-title.done { text-decoration: line-through; color: var(--hint); }
+  .quest-inline-progress { font-size: 11px; color: var(--hint); }
+  .quest-inline-xp { font-size: 10px; font-weight: 600; color: var(--link); white-space: nowrap; }
+  .quest-inline-check { color: var(--success); display: flex; }
+  .quest-inline-check svg { width: 16px; height: 16px; }
+
+  /* XP Area Tappable */
+  .home-xp-row.tappable { cursor: pointer; -webkit-tap-highlight-color: transparent; padding: 4px 0; margin-top: 4px; border-radius: 6px; transition: background 0.15s; }
+  .home-xp-row.tappable:active { background: var(--secondary-bg); }
+  .home-xp-chevron { color: var(--hint); display: flex; align-items: center; margin-left: 4px; }
+  .home-xp-chevron svg { width: 14px; height: 14px; }
+
+  /* Home quest section clickable (legacy) */
   .section-title.clickable { cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .section-title .chevron-right { margin-left: auto; color: var(--hint); display: flex; }
   .section-title .chevron-right svg { width: 16px; height: 16px; }
@@ -466,6 +514,7 @@
   var activeTab = 'home';
   var expandedStage = null;
   var statsPeriod = 'week';
+  var questExpanded = false;
 
   var tg = window.Telegram && window.Telegram.WebApp;
   var initData = '';
@@ -523,7 +572,7 @@
       '<div class="home-sub">Lv.' + lvl.xp_level + ' ' + esc(lvl.title);
     if (h.streak.current_weeks > 0) html += ' <span class="home-streak">' + icon('flame') + ' ' + h.streak.current_weeks + '주</span>';
     html += '</div>' +
-      '<div class="home-xp-row"><div class="home-xp-bar"><div class="home-xp-fill" style="width:' + xpPct + '%"></div></div><span class="home-xp-label">' + lvl.current_xp + '/' + lvl.next_level_xp + '</span></div>' +
+      '<div class="home-xp-row tappable" id="home-xp-area"><div class="home-xp-bar"><div class="home-xp-fill" style="width:' + xpPct + '%"></div></div><span class="home-xp-label">' + lvl.current_xp + '/' + lvl.next_level_xp + '</span><span class="home-xp-chevron">' + icon('chevronRight') + '</span></div>' +
       '</div></div>' +
       '<div class="home-stats">' +
         '<div class="hs-item"><div class="hs-value">' + fmtNum(p.total_runs) + '</div><div class="hs-label">러닝</div></div>' +
@@ -554,43 +603,47 @@
     }
     html += '</div>'; // close card
 
-    // Plan summary
+    // Plan slim card
     var wp = h.weekly_plan;
     var DAY_SHORT = ['월','화','수','목','금','토','일'];
-    html += '<div class="summary-card"><div class="summary-card-head"><span class="sc-icon">' + icon('clipboard') + '</span><span class="sc-title">이번 주 계획</span><a href="' + PLAN_URL + '" class="sc-edit">' + icon('edit') + '</a></div>';
     if (wp && wp.days && wp.days.length > 0) {
       var planRuns = wp.days.filter(function(d){return !d.is_rest;}).length;
       var planKm = wp.days.reduce(function(a,d){return a+(d.distance_km||0);},0);
-      html += '<div class="sc-content"><div class="sc-row"><span class="sc-value">' + planRuns + '회</span><span class="sc-label"> · </span><span class="sc-value">' + (Math.round(planKm*10)/10) + 'km</span></div></div>';
-      html += '<div class="plan-mini">';
+      html += '<div class="plan-slim" id="plan-slim-card"><div class="plan-slim-head"><span class="ps-icon">' + icon('clipboard') + '</span><span class="ps-title">이번 주 계획</span><span class="ps-stats">' + planRuns + '회·' + (Math.round(planKm*10)/10) + 'km</span><span class="ps-chevron">' + icon('chevronRight') + '</span></div>';
+      html += '<div class="plan-mini" style="margin-top:8px">';
       wp.days.forEach(function(d,i) {
         var cls = d.is_rest ? 'rest' : 'active';
         html += '<div class="plan-mini-day ' + cls + '">' + (DAY_SHORT[i]||'') + (d.distance_km && !d.is_rest ? '<div class="plan-mini-dist">' + d.distance_km + '</div>' : '') + '</div>';
       });
-      html += '</div>';
+      html += '</div></div>';
     } else {
-      html += '<div class="sc-empty"><a href="#" onclick="sendCommand(\'/plan\');return false;">계획 만들기</a></div>';
+      html += '<div class="plan-slim" id="plan-slim-card"><div class="plan-slim-head"><span class="ps-icon">' + icon('clipboard') + '</span><span class="ps-title">이번 주 계획</span><span class="ps-stats">미설정</span><span class="ps-chevron">' + icon('chevronRight') + '</span></div></div>';
     }
-    html += '</div>';
 
-    // Weekly quests
+    // Weekly quests - summary card
     var wq = h.weekly_quests;
     var completed = wq.filter(function(q) { return q.completed; }).length;
-    html += '<div class="section-title clickable" id="quest-section-header"><span class="ic">' + icon('swords') + '</span> 이번 주 퀘스트 <span class="count">' + completed + '/' + wq.length + '</span><span class="chevron-right">' + icon('chevronRight') + '</span></div>';
     if (wq.length === 0) {
-      html += '<div class="quest-empty">/plan 명령어로 이번 주 계획을 먼저 만들어주세요</div>';
+      html += '<div class="quest-summary-card"><div class="quest-summary-head"><span class="qs-icon">' + icon('swords') + '</span><span class="qs-title">이번 주 퀘스트</span></div><div style="font-size:12px;color:var(--hint);text-align:center;padding:8px 0">/plan 명령어로 이번 주 계획을 먼저 만들어주세요</div></div>';
     } else {
-      html += '<div class="quest-list">';
-      wq.forEach(function(q) {
-        var pct = q.target_value > 0 ? Math.min(100, (q.current_value / q.target_value) * 100) : 0;
-        var cls = q.completed ? ' completed' : '';
-        html += '<div class="quest-card' + cls + '" data-type="' + q.quest_type + '">';
-        if (q.completed) html += '<div class="quest-done-ic">' + icon('checkCircle') + '</div>';
-        html += '<div class="quest-top"><span class="quest-pill ' + q.quest_type + '">' + esc(QUEST_TYPE_LABELS[q.quest_type] || q.quest_type) + '</span><span class="quest-xp">+' + (QUEST_XP[q.quest_type]||30) + ' XP</span></div>' +
-          '<div class="quest-title">' + esc(q.title) + '</div>' +
-          '<div class="quest-progress-bar"><div class="quest-progress-fill" style="width:' + pct + '%"></div></div>' +
-          '<div class="quest-progress-text">' + q.current_value + ' / ' + q.target_value + ' ' + esc(q.unit) + '</div></div>';
-      });
+      var qPct = Math.round((completed / wq.length) * 100);
+      var remainXP = wq.filter(function(q){return !q.completed;}).reduce(function(a,q){return a+(QUEST_XP[q.quest_type]||30);},0);
+      html += '<div class="quest-summary-card"><div class="quest-summary-head" id="quest-summary-toggle"><span class="qs-icon">' + icon('swords') + '</span><span class="qs-title">이번 주 퀘스트</span><span class="qs-count">' + completed + '/' + wq.length + '</span><span class="qs-chevron' + (questExpanded ? ' open' : '') + '">' + icon('chevronDown') + '</span></div>';
+      html += '<div class="quest-summary-bar"><div class="quest-summary-fill" style="width:' + qPct + '%"></div></div>';
+      html += '<div class="quest-summary-meta"><span>완료 ' + completed + '/' + wq.length + '</span><span class="quest-summary-xp">남은 XP: +' + remainXP + '</span></div>';
+      if (questExpanded) {
+        html += '<div class="quest-accordion">';
+        wq.forEach(function(q) {
+          var barCls = q.completed ? 'done' : q.quest_type;
+          html += '<div class="quest-inline-item"><div class="quest-inline-bar ' + barCls + '"></div><div class="quest-inline-info"><div class="quest-inline-title' + (q.completed ? ' done' : '') + '">' + esc(q.title) + '</div>';
+          if (!q.completed) html += '<div class="quest-inline-progress">' + q.current_value + '/' + q.target_value + '</div>';
+          html += '</div>';
+          if (q.completed) html += '<span class="quest-inline-check">' + icon('checkCircle') + '</span>';
+          else html += '<span class="quest-inline-xp">+' + (QUEST_XP[q.quest_type]||30) + '</span>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
       html += '</div>';
     }
     return html;
@@ -856,7 +909,9 @@
     document.querySelectorAll('.period-btn').forEach(function(b) { b.addEventListener('click', function() { statsPeriod = this.dataset.period; renderActiveTab(); }); });
     var cb = document.getElementById('btn-close'); if (cb) cb.addEventListener('click', function() { if (tg) tg.close(); });
     var cpb = document.getElementById('btn-create-plan'); if (cpb) cpb.addEventListener('click', function() { sendCommand('/plan'); });
-    var qsh = document.getElementById('quest-section-header'); if (qsh) qsh.addEventListener('click', function() { switchTab('quest'); });
+    var psc = document.getElementById('plan-slim-card'); if (psc) psc.addEventListener('click', function() { var wp = appData && appData.home && appData.home.weekly_plan; if (wp && wp.days && wp.days.length > 0) switchTab('plan'); else sendCommand('/plan'); });
+    var qst = document.getElementById('quest-summary-toggle'); if (qst) qst.addEventListener('click', function() { questExpanded = !questExpanded; renderActiveTab(); });
+    var hxp = document.getElementById('home-xp-area'); if (hxp) hxp.addEventListener('click', function() { switchTab('quest'); });
     var bth = document.getElementById('back-to-home'); if (bth) bth.addEventListener('click', function() { switchTab('home'); });
     var dcb = document.getElementById('btn-disconnect'); if (dcb) dcb.addEventListener('click', async function() {
       if (!confirm('연동을 해제하면 데이터 동기화가 중단됩니다. 해제하시겠습니까?')) return;

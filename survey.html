@@ -753,7 +753,8 @@
       }
     }
 
-    if (_fromApp === 'app') {
+    var _fromTab = new URLSearchParams(window.location.search).get('tab');
+    if (_fromApp && _fromTab === 'home') {
       document.getElementById('back-to-app').style.display = 'flex';
       document.getElementById('back-to-app').addEventListener('click', function() {
         window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=home';

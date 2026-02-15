@@ -597,10 +597,10 @@
       if (sv.target_date) metaParts.push('목표일 ' + sv.target_date);
       if (metaParts.length) html += '<div class="home-profile-meta">' + metaParts.join(' &middot; ') + '</div>';
       html += '</div>';
-      html += '<a href="' + SURVEY_URL + '" class="home-profile-edit">' + icon('edit') + '</a>';
+      html += '<a href="' + SURVEY_URL + '&tab=home" class="home-profile-edit">' + icon('edit') + '</a>';
       html += '</div></div>';
     } else {
-      html += '<div class="home-profile"><div class="home-profile-empty"><a href="' + SURVEY_URL + '">러닝 프로필 설정하기</a></div></div>';
+      html += '<div class="home-profile"><div class="home-profile-empty"><a href="' + SURVEY_URL + '&tab=home">러닝 프로필 설정하기</a></div></div>';
     }
     html += '</div>'; // close card
 

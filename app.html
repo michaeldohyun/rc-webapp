@@ -344,6 +344,10 @@
   .quest-inline-check { color: var(--success); display: flex; }
   .quest-inline-check svg { width: 16px; height: 16px; }
 
+  /* Quest see-more link */
+  .quest-see-more { display: flex; align-items: center; justify-content: flex-end; gap: 2px; padding: 6px 0 0; font-size: 12px; font-weight: 500; color: var(--link); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .quest-see-more svg { width: 14px; height: 14px; }
+
   /* XP Area Tappable */
   .home-xp-row.tappable { cursor: pointer; -webkit-tap-highlight-color: transparent; padding: 4px 0; margin-top: 4px; border-radius: 6px; transition: background 0.15s; }
   .home-xp-row.tappable:active { background: var(--secondary-bg); }
@@ -543,7 +547,7 @@
   var params = new URLSearchParams(window.location.search);
   var tabParam = params.get('tab');
   if (tabParam === 'profile') tabParam = 'settings'; // backwards compat
-  if (tabParam && ['home','plan','quest','stats','settings'].indexOf(tabParam) !== -1) activeTab = tabParam;
+  if (tabParam && ['home','plan','quest','level','stats','settings'].indexOf(tabParam) !== -1) activeTab = tabParam;
 
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
   function formatDate(ds) { if (!ds) return ''; var d = new Date(ds); return d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'); }
@@ -643,6 +647,7 @@
           else html += '<span class="quest-inline-xp">+' + (QUEST_XP[q.quest_type]||30) + '</span>';
           html += '</div>';
         });
+        html += '<div class="quest-see-more" id="go-quest-path">퀘스트 경로 보기 ' + icon('chevronRight') + '</div>';
         html += '</div>';
       }
       html += '</div>';
@@ -740,6 +745,51 @@
 
     html += '<div class="trophy-final"><div class="trophy-node">' + icon('trophy') + '</div><div class="trophy-card"><div class="trophy-title">최종 목표</div><div class="trophy-desc">모든 퀘스트를 클리어하고 러닝 마스터가 되세요!</div></div></div>';
     html += '</div></div>';
+    return html;
+  }
+
+  // ---- LEVEL DETAIL TAB ----
+  function renderLevelDetail(d) {
+    var p = d.profile;
+    var lvl = d.home.level;
+    var html = '<div class="back-header" id="back-to-home">' + icon('chevronLeft') + ' 홈으로</div>';
+    html += '<div class="page-header"><div class="page-header-left"><div class="page-title">내 레벨</div><div class="page-sub">Lv.' + lvl.xp_level + ' ' + esc(lvl.title) + ' · ' + lvl.current_xp + '/' + lvl.next_level_xp + ' XP</div></div></div>';
+
+    // Level Roadmap
+    html += '<div class="card"><div class="roadmap-title">' + icon('star') + ' 레벨 로드맵</div><div class="level-list">';
+    for (var i = 0; i < XP_LEVELS.length; i++) {
+      var lv = XP_LEVELS[i];
+      var isCur = lv.level === p.level, isR = lv.level < p.level;
+      var cls = isCur ? 'current' : isR ? 'reached' : 'locked';
+      html += '<div class="level-row ' + cls + '"><div class="lv-icon-box">' + lv.level + '</div>' +
+        '<div class="lv-info"><div class="lv-title">' + esc(lv.title) + '</div><div class="lv-xp">' + lv.min_xp.toLocaleString() + ' XP</div></div>';
+      if (isCur) html += '<span class="lv-tag current-tag">현재</span>';
+      else if (isR) html += '<span class="lv-tag">달성</span>';
+      else html += '<span class="lv-lock">' + icon('lock') + '</span>';
+      html += '</div>';
+    }
+    html += '</div></div>';
+
+    // Milestones
+    var achieved = (p.milestones||[]).filter(function(m){return m.achieved;});
+    var locked = (p.milestones||[]).filter(function(m){return !m.achieved;});
+
+    if (achieved.length > 0) {
+      html += '<div class="card"><div class="milestones-title">' + icon('trophy') + ' 획득한 배지 <span class="mcount">' + achieved.length + '/' + p.milestones.length + '</span></div><div class="milestone-grid">';
+      achieved.forEach(function(m) { html += '<div class="ms-card"><div class="ms-icon" style="color:var(--btn)">' + icon(MS_ICONS[m.category] || 'target') + '</div><div class="ms-title">' + esc(m.title) + '</div><div class="ms-date">' + formatDate(m.achieved_at) + '</div></div>'; });
+      html += '</div></div>';
+    }
+    if (locked.length > 0) {
+      html += '<div class="card"><div class="milestones-title">' + icon('lock') + ' 미획득 배지 <span class="mcount">' + locked.length + '</span></div><div class="milestone-grid">';
+      locked.forEach(function(m) {
+        var prog = m.progress || {};
+        var pct = prog.target ? Math.min(100, (prog.current/prog.target)*100) : 0;
+        html += '<div class="ms-card locked"><div class="ms-lock-ic">' + icon('lock') + '</div><div class="ms-icon">' + icon(MS_ICONS[m.category] || 'target') + '</div><div class="ms-title">' + esc(m.title) + '</div>';
+        if (prog.target) html += '<div class="ms-prog-bar"><div class="ms-prog-fill" style="width:' + pct + '%"></div></div><div class="ms-prog-text">' + prog.current + ' / ' + prog.target + '</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
     return html;
   }
 
@@ -849,42 +899,6 @@
     }
     html += '</div>';
 
-    // Level Roadmap
-    html += '<div class="card"><div class="roadmap-title">' + icon('star') + ' 레벨 로드맵</div><div class="level-list">';
-    for (var i = 0; i < XP_LEVELS.length; i++) {
-      var lv = XP_LEVELS[i];
-      var isCur = lv.level === p.level, isR = lv.level < p.level;
-      var cls = isCur ? 'current' : isR ? 'reached' : 'locked';
-      html += '<div class="level-row ' + cls + '"><div class="lv-icon-box">' + lv.level + '</div>' +
-        '<div class="lv-info"><div class="lv-title">' + esc(lv.title) + '</div><div class="lv-xp">' + lv.min_xp.toLocaleString() + ' XP</div></div>';
-      if (isCur) html += '<span class="lv-tag current-tag">현재</span>';
-      else if (isR) html += '<span class="lv-tag">달성</span>';
-      else html += '<span class="lv-lock">' + icon('lock') + '</span>';
-      html += '</div>';
-    }
-    html += '</div></div>';
-
-    // Milestones
-    var achieved = (p.milestones||[]).filter(function(m){return m.achieved;});
-    var locked = (p.milestones||[]).filter(function(m){return !m.achieved;});
-
-    if (achieved.length > 0) {
-      html += '<div class="card"><div class="milestones-title">' + icon('trophy') + ' 획득한 배지 <span class="mcount">' + achieved.length + '/' + p.milestones.length + '</span></div><div class="milestone-grid">';
-      achieved.forEach(function(m) { html += '<div class="ms-card"><div class="ms-icon" style="color:var(--btn)">' + icon(MS_ICONS[m.category] || 'target') + '</div><div class="ms-title">' + esc(m.title) + '</div><div class="ms-date">' + formatDate(m.achieved_at) + '</div></div>'; });
-      html += '</div></div>';
-    }
-    if (locked.length > 0) {
-      html += '<div class="card"><div class="milestones-title">' + icon('lock') + ' 미획득 배지 <span class="mcount">' + locked.length + '</span></div><div class="milestone-grid">';
-      locked.forEach(function(m) {
-        var prog = m.progress || {};
-        var pct = prog.target ? Math.min(100, (prog.current/prog.target)*100) : 0;
-        html += '<div class="ms-card locked"><div class="ms-lock-ic">' + icon('lock') + '</div><div class="ms-icon">' + icon(MS_ICONS[m.category] || 'target') + '</div><div class="ms-title">' + esc(m.title) + '</div>';
-        if (prog.target) html += '<div class="ms-prog-bar"><div class="ms-prog-fill" style="width:' + pct + '%"></div></div><div class="ms-prog-text">' + prog.current + ' / ' + prog.target + '</div>';
-        html += '</div>';
-      });
-      html += '</div>';
-    }
-
     html += '<div class="cta-section"><button class="btn-secondary" id="btn-close">' + icon('x') + ' 닫기</button></div>';
     return html;
   }
@@ -897,7 +911,7 @@
     activeTab = tab;
     renderActiveTab();
     // quest는 홈 서브뷰이므로 홈 탭 하이라이트
-    var navHighlight = tab === 'quest' ? 'home' : tab;
+    var navHighlight = (tab === 'quest' || tab === 'level') ? 'home' : tab;
     document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.tab === navHighlight); });
     var url = new URL(window.location); url.searchParams.set('tab', tab); history.replaceState(null, '', url);
     window.scrollTo(0, 0);
@@ -910,6 +924,7 @@
     if (activeTab === 'home') html = renderHome(appData);
     else if (activeTab === 'plan') html = renderPlan(appData);
     else if (activeTab === 'quest') html = renderQuestPath(appData);
+    else if (activeTab === 'level') html = renderLevelDetail(appData);
     else if (activeTab === 'stats') html = renderStats(appData);
     else if (activeTab === 'settings') html = renderSettings(appData);
     app.innerHTML = '<div class="tab-content active">' + html + '</div>';
@@ -923,7 +938,8 @@
     var cpb = document.getElementById('btn-create-plan'); if (cpb) cpb.addEventListener('click', function() { sendCommand('/plan'); });
     var psc = document.getElementById('plan-slim-card'); if (psc) psc.addEventListener('click', function() { var wp = appData && appData.home && appData.home.weekly_plan; if (wp && wp.days && wp.days.length > 0) switchTab('plan'); else sendCommand('/plan'); });
     var qst = document.getElementById('quest-summary-toggle'); if (qst) qst.addEventListener('click', function() { questExpanded = !questExpanded; renderActiveTab(); });
-    var hxp = document.getElementById('home-xp-area'); if (hxp) hxp.addEventListener('click', function() { switchTab('quest'); });
+    var hxp = document.getElementById('home-xp-area'); if (hxp) hxp.addEventListener('click', function() { switchTab('level'); });
+    var gqp = document.getElementById('go-quest-path'); if (gqp) gqp.addEventListener('click', function(e) { e.stopPropagation(); switchTab('quest'); });
     var bth = document.getElementById('back-to-home'); if (bth) bth.addEventListener('click', function() { switchTab('home'); });
     var dcb = document.getElementById('btn-disconnect'); if (dcb) dcb.addEventListener('click', async function() {
       if (!confirm('연동을 해제하면 데이터 동기화가 중단됩니다. 해제하시겠습니까?')) return;

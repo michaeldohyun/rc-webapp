@@ -36,6 +36,7 @@
     -webkit-font-smoothing: antialiased;
     padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 24px);
   }
+  body.plan-dirty { padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 80px); }
 
   .container { max-width: 480px; margin: 0 auto; padding: 0 16px; }
   .tab-content { display: none; padding-top: 12px; padding-bottom: 16px; }
@@ -770,24 +771,12 @@
     };
   }
 
-  function updatePlanSummary() {
-    var wp = appData.home.weekly_plan;
-    if (!wp || !wp.days) return;
-    var totalDist = 0, sessions = 0;
-    for (var i = 0; i < wp.days.length; i++) {
-      var chipEl = document.querySelector('.pe-type-chip.selected[data-day="' + i + '"]');
-      var typeVal = chipEl ? chipEl.dataset.value : wp.days[i].type;
-      if (typeVal !== 'rest') sessions++;
-      var distEl = document.getElementById('pe-dist-' + i);
-      if (distEl && distEl.value) totalDist += parseFloat(distEl.value) || 0;
-    }
-    var sv = document.getElementById('plan-stat-runs'); if (sv) sv.textContent = sessions + '회';
-    var sd = document.getElementById('plan-stat-km'); if (sd) sd.textContent = (Math.round(totalDist * 10) / 10) + 'km';
-  }
+  function updatePlanSummary() { /* summary card removed */ }
 
   function markPlanDirty() {
     if (planEditDirty) return;
     planEditDirty = true;
+    document.body.classList.add('plan-dirty');
     var existing = document.getElementById('plan-save-bar');
     if (existing) return;
     var bar = document.createElement('div');
@@ -855,6 +844,7 @@
         setTimeout(function() {
           var bar = document.getElementById('plan-save-bar');
           if (bar) bar.remove();
+          document.body.classList.remove('plan-dirty');
         }, 1200);
       } else {
         if (errEl) { errEl.textContent = result.error || '저장 실패'; errEl.style.display = 'block'; }
@@ -877,16 +867,6 @@
       return html;
     }
     var days = wp.days;
-    var totalRuns = days.filter(function(d){return !d.is_rest;}).length;
-    var totalKm = Math.round(days.reduce(function(a,d){return a+(d.distance_km||0);},0)*10)/10;
-    var ws = wp.weekly_summary;
-    var intensityLabel = ws && ws.intensity_distribution ? ws.intensity_distribution : '-';
-
-    html += '<div class="plan-summary">' +
-      '<div class="plan-stat"><div class="plan-stat-value" id="plan-stat-runs">' + totalRuns + '회</div><div class="plan-stat-label">훈련 횟수</div></div>' +
-      '<div class="plan-stat"><div class="plan-stat-value" id="plan-stat-km">' + totalKm + 'km</div><div class="plan-stat-label">총 거리</div></div>' +
-      '<div class="plan-stat"><div class="plan-stat-value">' + intensityLabel + '</div><div class="plan-stat-label">강도 분배</div></div>' +
-    '</div>';
 
     var nowKst = new Date(new Date().getTime() + 9*60*60*1000);
     var todayIdx = nowKst.getUTCDay() === 0 ? 6 : nowKst.getUTCDay() - 1;
@@ -1125,6 +1105,7 @@
       planEditDirty = false;
       planEditOpen = {};
       var bar = document.getElementById('plan-save-bar'); if (bar) bar.remove();
+      document.body.classList.remove('plan-dirty');
     }
     if (tab !== 'plan') { planEditOpen = {}; planEditDirty = false; }
     activeTab = tab;

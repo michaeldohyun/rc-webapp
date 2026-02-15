@@ -302,6 +302,14 @@
       <div class="category-title"><span class="icon">🔗</span> 데이터 연동</div>
       <div class="faq-list">
         <details>
+          <summary>왜 intervals.icu를 통해 연동하나요?</summary>
+          <div class="answer">
+            <p>Garmin은 개인용 API를 공식적으로 제공하지 않습니다.</p>
+            <p>그래서 <span class="highlight">전 세계 12만명+</span>이 사용하는 무료 러닝 분석 플랫폼 <a href="https://intervals.icu" target="_blank">intervals.icu</a>를 브릿지로 사용합니다. intervals.icu는 Garmin 데이터를 안전하게 가져올 수 있는 검증된 서비스예요.</p>
+            <p><span class="highlight">처음 한 번만 연동</span>하면 이후 자동으로 데이터가 동기화됩니다. 언제든지 intervals.icu에서 API 키를 재발급하여 연동을 해제할 수 있어요.</p>
+          </div>
+        </details>
+        <details>
           <summary>Garmin 데이터는 어떻게 연동하나요?</summary>
           <div class="answer">
             <p>intervals.icu <span class="highlight">웹사이트</span>에서 직접 연동해야 합니다. (봇에서는 연동 불가)</p>
@@ -554,7 +562,7 @@
           <summary>데이터는 안전한가요?</summary>
           <div class="answer">
             <p><span class="highlight">네, 안전합니다.</span></p>
-            <p>Running Coach는 intervals.icu API 키만 저장하며, 러닝 데이터는 분석 시에만 조회합니다. 데이터를 수정하거나 제3자에게 공유하지 않습니다.</p>
+            <p>Running Coach는 12만명이 사용하는 intervals.icu의 API 키만 저장하며, 러닝 데이터는 분석 시에만 조회합니다. 데이터를 수정하거나 제3자에게 공유하지 않습니다.</p>
             <p>API 키는 언제든지 intervals.icu에서 재발급하여 기존 키를 무효화할 수 있습니다.</p>
           </div>
         </details>

@@ -656,21 +656,30 @@
     }
     html += '</div>';
 
-    // intervals.icu 연동
+    // Garmin 데이터 연동
     var iv = d.intervals || {};
-    html += '<div class="card"><div class="roadmap-title">' + icon('link') + ' intervals.icu 연동</div>';
+    html += '<div class="card"><div class="roadmap-title">' + icon('link') + ' Garmin 데이터 연동</div>';
     html += '<div style="display:flex;align-items:center;gap:10px;padding:4px 0">';
     if (iv.connected) {
       html += '<span class="ic" style="color:var(--success)">' + icon('checkCircle') + '</span>';
       html += '<div><div style="font-size:14px;font-weight:600">연동됨</div>';
-      if (iv.api_key_masked) html += '<div style="font-size:12px;color:var(--hint)">API Key: ' + esc(iv.api_key_masked) + '</div>';
+      var connInfo = [];
+      if (iv.connected_at) {
+        var cd = new Date(iv.connected_at);
+        connInfo.push(cd.getFullYear() + '.' + (cd.getMonth()+1) + '.' + cd.getDate() + ' 연동');
+      }
+      if (connInfo.length > 0) html += '<div style="font-size:12px;color:var(--hint)">' + connInfo.join(' · ') + '</div>';
       html += '</div>';
     } else {
       html += '<span class="ic" style="color:var(--hint)">' + icon('x') + '</span>';
       html += '<div style="font-size:14px;color:var(--hint)">미연동</div>';
     }
     html += '</div>';
-    if (!iv.connected) {
+    if (iv.connected) {
+      html += '<button class="settings-link" id="btn-disconnect" style="margin-top:8px;color:var(--hint)">';
+      html += '<span class="sl-icon" style="color:var(--hint)">' + icon('x') + '</span>연동 해제';
+      html += '<span class="sl-arrow">' + icon('chevronRight') + '</span></button>';
+    } else {
       html += '<a href="' + ONBOARDING_URL + '" class="settings-link" style="margin-top:8px">';
       html += '<span class="sl-icon">' + icon('link') + '</span>연동하기';
       html += '<span class="sl-arrow">' + icon('chevronRight') + '</span></a>';
@@ -746,6 +755,15 @@
     document.querySelectorAll('.period-btn').forEach(function(b) { b.addEventListener('click', function() { statsPeriod = this.dataset.period; renderActiveTab(); }); });
     var cb = document.getElementById('btn-close'); if (cb) cb.addEventListener('click', function() { if (tg) tg.close(); });
     var cpb = document.getElementById('btn-create-plan'); if (cpb) cpb.addEventListener('click', function() { sendCommand('/plan'); });
+    var dcb = document.getElementById('btn-disconnect'); if (dcb) dcb.addEventListener('click', async function() {
+      if (!confirm('연동을 해제하면 데이터 동기화가 중단됩니다. 해제하시겠습니까?')) return;
+      try {
+        var res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'disconnect', telegram_user_id: userId, init_data: initData }) });
+        var data = await res.json();
+        if (data.success) { alert('연동이 해제되었습니다.'); location.reload(); }
+        else alert(data.error || '연동 해제에 실패했습니다.');
+      } catch (e) { alert('오류가 발생했습니다.'); }
+    });
   }
 
   async function init() {

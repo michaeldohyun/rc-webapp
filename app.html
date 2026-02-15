@@ -128,8 +128,8 @@
   .home-profile-goal .ic { color: var(--btn); }
   .home-profile-goal .ic svg { width: 15px; height: 15px; }
   .home-profile-meta { font-size: 12px; color: var(--hint); display: flex; align-items: center; gap: 0; }
-  .home-profile-edit { margin-left: auto; color: var(--link); display: flex; align-self: flex-start; margin-top: 2px; }
-  .home-profile-edit svg { width: 14px; height: 14px; }
+  .home-profile-edit { margin-left: auto; color: var(--hint); display: flex; align-self: center; }
+  .home-profile-edit svg { width: 16px; height: 16px; }
   .home-profile-empty { font-size: 12px; color: var(--hint); text-align: center; padding: 2px 0; }
   .home-profile-empty a { color: var(--link); text-decoration: none; font-weight: 600; }
 
@@ -597,7 +597,7 @@
       if (sv.target_date) metaParts.push('목표일 ' + sv.target_date);
       if (metaParts.length) html += '<div class="home-profile-meta">' + metaParts.join(' &middot; ') + '</div>';
       html += '</div>';
-      html += '<a href="' + SURVEY_URL + '&tab=home" class="home-profile-edit">' + icon('edit') + '</a>';
+      html += '<a href="' + SURVEY_URL + '&tab=home" class="home-profile-edit">' + icon('chevronRight') + '</a>';
       html += '</div></div>';
     } else {
       html += '<div class="home-profile"><div class="home-profile-empty"><a href="' + SURVEY_URL + '&tab=home">러닝 프로필 설정하기</a></div></div>';

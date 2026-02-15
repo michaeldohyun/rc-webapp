@@ -193,7 +193,6 @@
   .plan-mini-day { flex: 1; text-align: center; padding: 4px 0; border-radius: 6px; font-size: 10px; }
   .plan-mini-day.rest { background: var(--secondary-bg); color: var(--hint); }
   .plan-mini-day.active { background: rgba(var(--btn-rgb,38,120,182),0.12); color: var(--btn); font-weight: 600; }
-  .plan-mini-dist { font-size: 9px; font-weight: 700; }
 
   /* Plan Today Hero */
   .plan-today {
@@ -705,7 +704,9 @@
     if (wp && wp.days && wp.days.length > 0) {
       var planRuns = wp.days.filter(function(d){return !d.is_rest;}).length;
       var planKm = wp.days.reduce(function(a,d){return a+(d.distance_km||0);},0);
-      html += '<div class="plan-slim" id="plan-slim-card"><div class="plan-slim-head"><span class="ps-icon">' + icon('clipboard') + '</span><span class="ps-title">이번 주 계획</span><span class="ps-stats">' + planRuns + '회·' + (Math.round(planKm*10)/10) + 'km</span><span class="ps-chevron">' + icon('chevronRight') + '</span></div>';
+      var planMin = wp.days.reduce(function(a,d){return a+(d.duration_min||0);},0);
+      var statsText = planKm > 0 ? (Math.round(planKm*10)/10) + 'km' : (planMin > 0 ? planMin + '분' : '');
+      html += '<div class="plan-slim" id="plan-slim-card"><div class="plan-slim-head"><span class="ps-icon">' + icon('clipboard') + '</span><span class="ps-title">이번 주 계획</span><span class="ps-stats">' + planRuns + '회' + (statsText ? '·' + statsText : '') + '</span><span class="ps-chevron">' + icon('chevronRight') + '</span></div>';
 
       // Today hero section
       var now = new Date(); var kstOff = 9*60*60*1000; var kst = new Date(now.getTime() + now.getTimezoneOffset()*60000 + kstOff);
@@ -713,14 +714,30 @@
       var todayDay = wp.days[todayIdx];
       if (todayDay && !todayDay.is_rest) {
         var details = [];
-        if (todayDay.hr_zone) details.push(todayDay.hr_zone);
+        if (todayDay.target_hr_zone) details.push(todayDay.target_hr_zone);
         if (todayDay.target_pace) details.push(todayDay.target_pace);
-        html += '<div class="plan-today"><div class="plan-today-badge run">' + DAY_SHORT[todayIdx] + '</div><div class="plan-today-info"><div class="plan-today-label">TODAY</div><div class="plan-today-title">' + (todayDay.title || todayDay.type || '런닝') + '</div>' + (details.length ? '<div class="plan-today-detail">' + details.join(' · ') + '</div>' : '') + '</div>' + (todayDay.distance_km ? '<div class="plan-today-km">' + todayDay.distance_km + 'km</div>' : '') + '</div>';
+        // 오른쪽 메트릭: distance > duration > hr_zone 우선순위
+        var metric = '';
+        if (todayDay.distance_km) {
+          metric = '<div class="plan-today-km">' + todayDay.distance_km + 'km</div>';
+          if (todayDay.duration_min) details.push(todayDay.duration_min + '분');
+        } else if (todayDay.duration_min) {
+          metric = '<div class="plan-today-km">' + todayDay.duration_min + '분</div>';
+        } else if (todayDay.target_hr_zone) {
+          metric = '<div class="plan-today-km">' + todayDay.target_hr_zone + '</div>';
+        }
+        html += '<div class="plan-today"><div class="plan-today-badge run">' + DAY_SHORT[todayIdx] + '</div><div class="plan-today-info"><div class="plan-today-label">TODAY</div><div class="plan-today-title">' + (todayDay.title || todayDay.type || '런닝') + '</div>' + (details.length ? '<div class="plan-today-detail">' + details.join(' · ') + '</div>' : '') + '</div>' + metric + '</div>';
       } else if (todayDay) {
         // 휴식일 - 다음 훈련 찾기
         var nextRun = null; var nextLabel = '';
         for (var j = 1; j < 7; j++) { var ni = (todayIdx + j) % 7; if (!wp.days[ni].is_rest) { nextRun = wp.days[ni]; nextLabel = DAY_SHORT[ni]; break; } }
-        var restDetail = nextRun ? '다음 훈련: ' + nextLabel + ' ' + (nextRun.title || nextRun.type || '런닝') + (nextRun.distance_km ? ' ' + nextRun.distance_km + 'km' : '') : '';
+        var nextMetric = '';
+        if (nextRun) {
+          if (nextRun.distance_km) nextMetric = ' ' + nextRun.distance_km + 'km';
+          else if (nextRun.duration_min) nextMetric = ' ' + nextRun.duration_min + '분';
+          else if (nextRun.target_hr_zone) nextMetric = ' ' + nextRun.target_hr_zone;
+        }
+        var restDetail = nextRun ? '다음 훈련: ' + nextLabel + ' ' + (nextRun.title || nextRun.type || '런닝') + nextMetric : '';
         html += '<div class="plan-today rest"><div class="plan-today-badge rest-badge">' + DAY_SHORT[todayIdx] + '</div><div class="plan-today-info"><div class="plan-today-label">TODAY</div><div class="plan-today-title">오늘은 휴식</div>' + (restDetail ? '<div class="plan-today-detail">' + restDetail + '</div>' : '') + '</div></div>';
       }
 
@@ -729,7 +746,7 @@
       wp.days.forEach(function(d,i) {
         var cls = d.is_rest ? 'rest' : 'active';
         if (i === todayIdx) cls += ' today';
-        html += '<div class="plan-mini-day ' + cls + '">' + (DAY_SHORT[i]||'') + (d.distance_km && !d.is_rest ? '<div class="plan-mini-dist">' + d.distance_km + '</div>' : '') + '</div>';
+        html += '<div class="plan-mini-day ' + cls + '">' + (DAY_SHORT[i]||'') + '</div>';
       });
       html += '</div></div>';
     } else {

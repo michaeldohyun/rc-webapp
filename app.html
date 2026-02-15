@@ -300,7 +300,45 @@
   .plan-day-km { font-size: 15px; font-weight: 700; color: var(--btn); text-align: right; white-space: nowrap; }
   .plan-empty { text-align: center; padding: 30px 16px; color: var(--hint); background: var(--bg); border-radius: var(--card-radius); font-size: 13px; line-height: 1.6; border: 1px solid var(--secondary-bg); }
   .plan-empty a { color: var(--link); text-decoration: none; font-weight: 600; }
-  /* plan-edit-link removed — edit action moved to page-header */
+  /* Plan Editable Day Card */
+  .plan-day-card.expandable { cursor: pointer; -webkit-tap-highlight-color: transparent; flex-wrap: wrap; }
+  .plan-day-card.expandable:active { background: var(--secondary-bg); }
+  .plan-day-toggle { color: var(--hint); display: flex; align-items: center; margin-left: auto; transition: transform 0.2s; flex-shrink: 0; }
+  .plan-day-toggle svg { width: 16px; height: 16px; }
+  .plan-day-card.open .plan-day-toggle { transform: rotate(180deg); }
+  .plan-day-edit { display: none; width: 100%; padding-top: 12px; border-top: 1px solid var(--secondary-bg); margin-top: 12px; }
+  .plan-day-card.open .plan-day-edit { display: block; animation: fadeIn 0.2s ease; }
+  .pe-type-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .pe-type-chip {
+    padding: 5px 10px; border: 1.5px solid var(--secondary-bg); border-radius: 20px;
+    font-size: 12px; cursor: pointer; transition: all 0.2s; color: var(--text); opacity: 0.6;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pe-type-chip.selected { border-color: var(--btn); background: rgba(var(--btn-rgb,38,120,182),0.08); opacity: 1; font-weight: 600; }
+  .pe-field-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .pe-field { flex: 1; }
+  .pe-field label { display: block; font-size: 11px; font-weight: 600; color: var(--hint); margin-bottom: 4px; }
+  .pe-field input, .pe-field textarea {
+    width: 100%; padding: 8px 10px; border: 1.5px solid var(--secondary-bg); border-radius: 8px;
+    font-size: 14px; background: var(--bg); color: var(--text); font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .pe-field input:focus, .pe-field textarea:focus { outline: none; border-color: var(--btn); box-shadow: 0 0 0 3px rgba(var(--btn-rgb,38,120,182),0.12); }
+  .pe-field textarea { resize: vertical; min-height: 36px; font-size: 13px; }
+  .plan-save-bar {
+    position: fixed; bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 16px);
+    left: 0; right: 0; z-index: 40; padding: 0 16px; animation: fadeIn 0.2s ease;
+  }
+  .plan-save-bar-inner { max-width: 480px; margin: 0 auto; }
+  .plan-save-btn {
+    display: block; width: 100%; padding: 14px; border: none; border-radius: 12px;
+    font-size: 16px; font-weight: 600; cursor: pointer; text-align: center;
+    background: var(--btn); color: var(--btn-text); transition: opacity 0.2s, transform 0.1s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .plan-save-btn:active { transform: scale(0.98); opacity: 0.85; }
+  .plan-save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .plan-save-error { color: #e74c3c; font-size: 13px; text-align: center; margin-top: 6px; }
 
   /* Plan Slim Card */
   .plan-slim { background: var(--bg); border-radius: var(--card-radius); padding: 12px 14px; margin-bottom: 12px; border: 1px solid var(--secondary-bg); cursor: pointer; -webkit-tap-highlight-color: transparent; }
@@ -462,7 +500,6 @@
 (function() {
   var API_URL = 'https://dotsosqsftympgdescvz.supabase.co/functions/v1/rc-onboarding';
   var SURVEY_URL = 'https://michaeldohyun.github.io/rc-webapp/survey.html?from=app';
-  var PLAN_URL = 'https://michaeldohyun.github.io/rc-webapp/plan.html?from=app';
   var ONBOARDING_URL = 'https://michaeldohyun.github.io/rc-webapp/?from=app';
 
   var QUEST_XP = { core: 30, method: 40, stretch: 50 };
@@ -514,11 +551,23 @@
   // Milestone category → icon key
   var MS_ICONS = { volume: 'barChart', endurance: 'mountain', consistency: 'flame', speed: 'zap', fitness: 'heart' };
 
+  var PLAN_TYPES = [
+    { value: 'rest', label: '휴식' }, { value: 'easy_run', label: '이지런' },
+    { value: 'recovery_run', label: '회복런' }, { value: 'long_run', label: '장거리' },
+    { value: 'tempo_run', label: '템포런' }, { value: 'threshold_run', label: '역치런' },
+    { value: 'interval', label: '인터벌' }, { value: 'fartlek', label: '파틀렉' },
+    { value: 'hill_run', label: '언덕런' }, { value: 'race_pace', label: '레이스페이스' },
+    { value: 'cross_training', label: '크로스' }, { value: 'walk_run', label: '걷기/달리기' },
+  ];
+  var PLAN_TYPE_MAP = {}; PLAN_TYPES.forEach(function(t) { PLAN_TYPE_MAP[t.value] = t.label; });
+
   var appData = null;
   var activeTab = 'home';
   var expandedStage = null;
   var statsPeriod = 'week';
   var questExpanded = false;
+  var planEditDirty = false;
+  var planEditOpen = {};
 
   function buildQuestAccordionHtml(wq) {
     var html = '<div class="quest-accordion">';
@@ -658,14 +707,171 @@
   }
 
   // ---- PLAN TAB ----
+  function getIntensityForType(type) {
+    if (type === 'rest') return 'rest';
+    if (['easy_run','recovery_run','walk_run'].indexOf(type) !== -1) return 'low';
+    if (['long_run','tempo_run','fartlek','cross_training'].indexOf(type) !== -1) return 'moderate';
+    return 'high';
+  }
+
+  function renderDayEditForm(i, day) {
+    var html = '<div class="plan-day-edit"><div class="pe-type-chips">';
+    PLAN_TYPES.forEach(function(t) {
+      html += '<div class="pe-type-chip' + (t.value === day.type ? ' selected' : '') + '" data-value="' + t.value + '" data-day="' + i + '">' + t.label + '</div>';
+    });
+    html += '</div>';
+    html += '<div class="pe-field-row"><div class="pe-field"><label>거리 (km)</label><input type="number" step="0.1" id="pe-dist-' + i + '" value="' + (day.distance_km || '') + '"></div>';
+    html += '<div class="pe-field"><label>시간 (분)</label><input type="number" id="pe-dur-' + i + '" value="' + (day.duration_min || '') + '"></div></div>';
+    html += '<div class="pe-field-row"><div class="pe-field"><label>목표 페이스</label><input type="text" id="pe-pace-' + i + '" value="' + (day.target_pace || '') + '" placeholder="6:00-6:30"></div>';
+    html += '<div class="pe-field"><label>심박존</label><input type="text" id="pe-hr-' + i + '" value="' + (day.target_hr_zone || '') + '" placeholder="Z2"></div></div>';
+    html += '<div class="pe-field"><label>메모</label><textarea id="pe-notes-' + i + '" rows="1" placeholder="자유 메모">' + (day.notes || '') + '</textarea></div>';
+    html += '</div>';
+    return html;
+  }
+
+  function collectPlanEditData() {
+    var wp = appData.home.weekly_plan;
+    if (!wp || !wp.days) return null;
+    var DAY_LABELS = ['월','화','수','목','금','토','일'];
+    var days = wp.days.map(function(original, i) {
+      var chipEl = document.querySelector('.pe-type-chip.selected[data-day="' + i + '"]');
+      var typeVal = chipEl ? chipEl.dataset.value : original.type;
+      var isRest = typeVal === 'rest';
+      var distEl = document.getElementById('pe-dist-' + i);
+      var durEl = document.getElementById('pe-dur-' + i);
+      var distVal = distEl ? distEl.value : '';
+      var durVal = durEl ? durEl.value : '';
+      return {
+        day_index: i,
+        date: original.date,
+        day_label: original.day_label || DAY_LABELS[i],
+        type: typeVal,
+        title: isRest ? '휴식' : (PLAN_TYPE_MAP[typeVal] || original.title),
+        description: '',
+        distance_km: distVal ? parseFloat(distVal) : null,
+        duration_min: durVal ? parseInt(durVal) : null,
+        target_pace: (document.getElementById('pe-pace-' + i) || {}).value || null,
+        target_hr_zone: (document.getElementById('pe-hr-' + i) || {}).value || null,
+        intensity: getIntensityForType(typeVal),
+        is_rest: isRest,
+        notes: (document.getElementById('pe-notes-' + i) || {}).value || '',
+      };
+    });
+    var totalDist = 0, sessions = 0;
+    days.forEach(function(d) { if (!d.is_rest) sessions++; if (d.distance_km) totalDist += d.distance_km; });
+    return {
+      days: days,
+      weekly_summary: {
+        total_distance_km: Math.round(totalDist * 10) / 10,
+        total_sessions: sessions,
+        intensity_distribution: wp.weekly_summary ? wp.weekly_summary.intensity_distribution || '' : '',
+        focus: wp.weekly_summary ? wp.weekly_summary.focus || '' : '',
+      },
+    };
+  }
+
+  function updatePlanSummary() {
+    var wp = appData.home.weekly_plan;
+    if (!wp || !wp.days) return;
+    var totalDist = 0, sessions = 0;
+    for (var i = 0; i < wp.days.length; i++) {
+      var chipEl = document.querySelector('.pe-type-chip.selected[data-day="' + i + '"]');
+      var typeVal = chipEl ? chipEl.dataset.value : wp.days[i].type;
+      if (typeVal !== 'rest') sessions++;
+      var distEl = document.getElementById('pe-dist-' + i);
+      if (distEl && distEl.value) totalDist += parseFloat(distEl.value) || 0;
+    }
+    var sv = document.getElementById('plan-stat-runs'); if (sv) sv.textContent = sessions + '회';
+    var sd = document.getElementById('plan-stat-km'); if (sd) sd.textContent = (Math.round(totalDist * 10) / 10) + 'km';
+  }
+
+  function markPlanDirty() {
+    if (planEditDirty) return;
+    planEditDirty = true;
+    var existing = document.getElementById('plan-save-bar');
+    if (existing) return;
+    var bar = document.createElement('div');
+    bar.id = 'plan-save-bar';
+    bar.className = 'plan-save-bar';
+    bar.innerHTML = '<div class="plan-save-bar-inner"><button class="plan-save-btn" id="btn-plan-save">저장하기</button><div class="plan-save-error" id="plan-save-error" style="display:none"></div></div>';
+    document.body.appendChild(bar);
+    document.getElementById('btn-plan-save').addEventListener('click', savePlanEdit);
+  }
+
+  function handlePlanTypeSelect(dayIdx, chipEl) {
+    var container = chipEl.parentNode;
+    container.querySelectorAll('.pe-type-chip').forEach(function(c) { c.classList.remove('selected'); });
+    chipEl.classList.add('selected');
+    var val = chipEl.dataset.value;
+    var isRest = val === 'rest';
+    // Update card title
+    var titleEl = document.getElementById('plan-day-title-' + dayIdx);
+    if (titleEl) titleEl.textContent = isRest ? '휴식' : chipEl.textContent;
+    // Update badge style
+    var badge = document.getElementById('plan-day-badge-' + dayIdx);
+    if (badge) { badge.className = 'plan-day-badge ' + (isRest ? 'rest' : 'run'); }
+    // Update km display
+    var kmEl = document.getElementById('plan-day-km-' + dayIdx);
+    // Update card rest class
+    var card = document.getElementById('plan-day-card-' + dayIdx);
+    if (card) { if (isRest) card.classList.add('rest'); else card.classList.remove('rest'); }
+    // Clear fields for rest
+    if (isRest) {
+      var f = ['pe-dist-','pe-dur-','pe-pace-','pe-hr-'];
+      f.forEach(function(pre) { var el = document.getElementById(pre + dayIdx); if (el) el.value = ''; });
+    }
+    markPlanDirty();
+    updatePlanSummary();
+  }
+
+  async function savePlanEdit() {
+    var btn = document.getElementById('btn-plan-save');
+    if (!btn || btn.disabled) return;
+    btn.disabled = true;
+    btn.textContent = '저장 중...';
+    var errEl = document.getElementById('plan-save-error');
+    if (errEl) errEl.style.display = 'none';
+    var collected = collectPlanEditData();
+    try {
+      var res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'save_plan', telegram_user_id: userId, init_data: initData, plan_data: collected }),
+      });
+      var result = await res.json();
+      if (res.ok && result.success) {
+        btn.textContent = '저장 완료!';
+        planEditDirty = false;
+        // Update appData with new plan
+        if (appData && appData.home && appData.home.weekly_plan) {
+          appData.home.weekly_plan.days = collected.days.map(function(d) {
+            return { day_label: d.day_label, type: d.type, title: d.title, distance_km: d.distance_km || 0, is_rest: d.is_rest, target_hr_zone: d.target_hr_zone, intensity: d.intensity, date: d.date, duration_min: d.duration_min, target_pace: d.target_pace, notes: d.notes };
+          });
+          if (appData.home.weekly_plan.weekly_summary) {
+            appData.home.weekly_plan.weekly_summary.total_distance_km = collected.weekly_summary.total_distance_km;
+            appData.home.weekly_plan.weekly_summary.total_sessions = collected.weekly_summary.total_sessions;
+          }
+        }
+        setTimeout(function() {
+          var bar = document.getElementById('plan-save-bar');
+          if (bar) bar.remove();
+        }, 1200);
+      } else {
+        if (errEl) { errEl.textContent = result.error || '저장 실패'; errEl.style.display = 'block'; }
+        btn.disabled = false;
+        btn.textContent = '저장하기';
+      }
+    } catch (e) {
+      if (errEl) { errEl.textContent = '네트워크 오류'; errEl.style.display = 'block'; }
+      btn.disabled = false;
+      btn.textContent = '저장하기';
+    }
+  }
+
   function renderPlan(d) {
     var wp = d.home.weekly_plan;
     var html = '<div class="back-header" id="back-to-home">' + icon('chevronLeft') + ' 홈으로</div>';
-    html += '<div class="page-header"><div class="page-header-left"><div class="page-title">주간 훈련 계획</div><div class="page-sub">이번 주 훈련 스케줄을 확인하세요</div></div>';
-    if (wp && wp.days && wp.days.length > 0) {
-      html += '<a href="' + PLAN_URL + '" class="page-header-action">' + icon('edit') + ' 수정</a>';
-    }
-    html += '</div>';
+    html += '<div class="page-header"><div class="page-header-left"><div class="page-title">주간 훈련 계획</div><div class="page-sub">요일을 탭하면 수정할 수 있어요</div></div></div>';
     if (!wp || !wp.days || wp.days.length === 0) {
       html += '<div class="plan-empty">아직 이번 주 계획이 없어요<br><br><a href="#" onclick="sendCommand(\'/plan\');return false;">채팅에서 /plan 명령어로 계획 만들기</a></div>';
       return html;
@@ -673,37 +879,41 @@
     var days = wp.days;
     var totalRuns = days.filter(function(d){return !d.is_rest;}).length;
     var totalKm = Math.round(days.reduce(function(a,d){return a+(d.distance_km||0);},0)*10)/10;
-    // 강도 분배 계산
     var ws = wp.weekly_summary;
     var intensityLabel = ws && ws.intensity_distribution ? ws.intensity_distribution : '-';
 
     html += '<div class="plan-summary">' +
-      '<div class="plan-stat"><div class="plan-stat-value">' + totalRuns + '회</div><div class="plan-stat-label">훈련 횟수</div></div>' +
-      '<div class="plan-stat"><div class="plan-stat-value">' + totalKm + 'km</div><div class="plan-stat-label">총 거리</div></div>' +
+      '<div class="plan-stat"><div class="plan-stat-value" id="plan-stat-runs">' + totalRuns + '회</div><div class="plan-stat-label">훈련 횟수</div></div>' +
+      '<div class="plan-stat"><div class="plan-stat-value" id="plan-stat-km">' + totalKm + 'km</div><div class="plan-stat-label">총 거리</div></div>' +
       '<div class="plan-stat"><div class="plan-stat-value">' + intensityLabel + '</div><div class="plan-stat-label">강도 분배</div></div>' +
     '</div>';
 
-    // 오늘 요일 인덱스 (월=0 ~ 일=6)
     var nowKst = new Date(new Date().getTime() + 9*60*60*1000);
     var todayIdx = nowKst.getUTCDay() === 0 ? 6 : nowKst.getUTCDay() - 1;
 
     html += '<div class="plan-days">';
     days.forEach(function(d, i) {
       var isToday = i === todayIdx;
-      var cls = d.is_rest ? ' rest' : '';
+      var isOpen = !!planEditOpen[i];
+      var cls = 'expandable';
+      if (d.is_rest) cls += ' rest';
       if (isToday) cls += ' today';
+      if (isOpen) cls += ' open';
       var badgeCls = d.is_rest ? 'rest' : 'run';
       var dayLabel = d.day_label || ['월','화','수','목','금','토','일'][i] || '';
-      html += '<div class="plan-day-card' + cls + '">' +
-        '<div class="plan-day-badge ' + badgeCls + '">' + esc(dayLabel) + '</div>' +
-        '<div class="plan-day-info"><div class="plan-day-title">' + esc(d.title || (d.is_rest ? '휴식' : d.type || '')) + '</div>';
+      html += '<div class="plan-day-card ' + cls + '" id="plan-day-card-' + i + '" data-day-idx="' + i + '">' +
+        '<div class="plan-day-badge ' + badgeCls + '" id="plan-day-badge-' + i + '">' + esc(dayLabel) + '</div>' +
+        '<div class="plan-day-info"><div class="plan-day-title" id="plan-day-title-' + i + '">' + esc(d.title || (d.is_rest ? '휴식' : d.type || '')) + '</div>';
       if (!d.is_rest) {
         var detail = d.target_hr_zone || '';
         if (d.intensity && !detail) detail = d.intensity;
         if (detail) html += '<div class="plan-day-detail">' + esc(detail) + '</div>';
       }
       html += '</div>';
-      if (!d.is_rest && d.distance_km) html += '<div class="plan-day-km">' + d.distance_km + 'km</div>';
+      if (!d.is_rest && d.distance_km) html += '<div class="plan-day-km" id="plan-day-km-' + i + '">' + d.distance_km + 'km</div>';
+      else html += '<div class="plan-day-km" id="plan-day-km-' + i + '" style="display:none"></div>';
+      html += '<div class="plan-day-toggle">' + icon('chevronDown') + '</div>';
+      html += renderDayEditForm(i, d);
       html += '</div>';
     });
     html += '</div>';
@@ -865,7 +1075,7 @@
     html += '<div class="settings-links">' +
       '<a href="' + SURVEY_URL + '" class="settings-link"><span class="sl-icon">' + icon('user') + '</span>러닝 프로필 수정<span class="sl-arrow">' + icon('chevronRight') + '</span></a>';
     if (hasPlan) {
-      html += '<a href="' + PLAN_URL + '" class="settings-link"><span class="sl-icon">' + icon('clipboard') + '</span>주간 훈련 계획 수정<span class="sl-arrow">' + icon('chevronRight') + '</span></a>';
+      html += '<button class="settings-link" id="btn-edit-plan"><span class="sl-icon">' + icon('clipboard') + '</span>주간 훈련 계획 수정<span class="sl-arrow">' + icon('chevronRight') + '</span></button>';
     } else {
       html += '<button class="settings-link" id="btn-create-plan"><span class="sl-icon">' + icon('clipboard') + '</span>주간 계획 세우기<span class="sl-arrow" style="font-size:11px;color:var(--hint)">채팅에서 /plan</span></button>';
     }
@@ -910,6 +1120,13 @@
   }
 
   function switchTab(tab) {
+    if (activeTab === 'plan' && planEditDirty && tab !== 'plan') {
+      if (!confirm('수정 중인 내용이 저장되지 않았어요. 나가시겠어요?')) return;
+      planEditDirty = false;
+      planEditOpen = {};
+      var bar = document.getElementById('plan-save-bar'); if (bar) bar.remove();
+    }
+    if (tab !== 'plan') { planEditOpen = {}; planEditDirty = false; }
     activeTab = tab;
     renderActiveTab();
     // quest는 홈 서브뷰이므로 홈 탭 하이라이트
@@ -951,6 +1168,30 @@
     var hxp = document.getElementById('home-xp-area'); if (hxp) hxp.addEventListener('click', function() { switchTab('level'); });
     var gqp = document.getElementById('go-quest-path'); if (gqp) gqp.addEventListener('click', function(e) { e.stopPropagation(); switchTab('quest'); });
     var bth = document.getElementById('back-to-home'); if (bth) bth.addEventListener('click', function() { switchTab('home'); });
+    // Plan tab: day card accordion toggle
+    document.querySelectorAll('.plan-day-card.expandable').forEach(function(card) {
+      card.addEventListener('click', function(e) {
+        var t = e.target;
+        if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'LABEL' || t.closest('.pe-type-chip') || t.closest('.pe-field') || t.closest('.pe-type-chips')) return;
+        var idx = parseInt(card.dataset.dayIdx);
+        planEditOpen[idx] = !planEditOpen[idx];
+        card.classList.toggle('open', !!planEditOpen[idx]);
+      });
+    });
+    // Plan tab: type chip click
+    document.querySelectorAll('.pe-type-chip').forEach(function(chip) {
+      chip.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var dayIdx = parseInt(chip.dataset.day);
+        handlePlanTypeSelect(dayIdx, chip);
+      });
+    });
+    // Plan tab: input change → dirty + summary update
+    document.querySelectorAll('.plan-day-edit input, .plan-day-edit textarea').forEach(function(el) {
+      el.addEventListener('input', function() { markPlanDirty(); updatePlanSummary(); });
+    });
+    // Plan tab: edit plan button in settings
+    var bep = document.getElementById('btn-edit-plan'); if (bep) bep.addEventListener('click', function() { switchTab('plan'); });
     var dcb = document.getElementById('btn-disconnect'); if (dcb) dcb.addEventListener('click', async function() {
       if (!confirm('연동을 해제하면 데이터 동기화가 중단됩니다. 해제하시겠습니까?')) return;
       try {

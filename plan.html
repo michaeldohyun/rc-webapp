@@ -394,6 +394,10 @@
 
     const tg = window.Telegram?.WebApp;
     const _fromParam = new URLSearchParams(window.location.search).get('from');
+    // from=app인 경우 app.html의 통합된 Plan 탭으로 리다이렉트
+    if (_fromParam === 'app') {
+      window.location.replace('https://michaeldohyun.github.io/rc-webapp/app.html?tab=plan');
+    }
     if (tg) {
       tg.ready();
       tg.expand();

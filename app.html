@@ -122,6 +122,17 @@
   .hs-value { font-size: 15px; font-weight: 700; }
   .hs-label { font-size: 10px; color: var(--hint); margin-top: 1px; }
 
+  .home-profile { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--secondary-bg); }
+  .home-profile-row { display: flex; align-items: center; gap: 4px; }
+  .home-profile-goal { font-size: 14px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
+  .home-profile-goal .ic { color: var(--btn); }
+  .home-profile-goal .ic svg { width: 15px; height: 15px; }
+  .home-profile-meta { font-size: 12px; color: var(--hint); display: flex; align-items: center; gap: 0; }
+  .home-profile-edit { margin-left: auto; color: var(--link); display: flex; align-self: flex-start; margin-top: 2px; }
+  .home-profile-edit svg { width: 14px; height: 14px; }
+  .home-profile-empty { font-size: 12px; color: var(--hint); text-align: center; padding: 2px 0; }
+  .home-profile-empty a { color: var(--link); text-decoration: none; font-weight: 600; }
+
   .section-title {
     font-size: 16px; font-weight: 600; margin: 16px 0 10px;
     display: flex; align-items: center; gap: 6px;
@@ -519,36 +530,33 @@
         '<div class="hs-item"><div class="hs-value">' + fmtNum(Math.round(p.total_distance_km)) + '</div><div class="hs-label">km</div></div>' +
         '<div class="hs-item"><div class="hs-value">' + p.current_streak + '</div><div class="hs-label">연속(주)</div></div>' +
         '<div class="hs-item"><div class="hs-value">' + fmtNum(p.total_xp) + '</div><div class="hs-label">XP</div></div>' +
-      '</div></div>';
+      '</div>';
 
-    // Survey + Plan summary
+    // Profile section (integrated into avatar card)
     var sv = h.survey_summary;
-    var wp = h.weekly_plan;
-    var PRIORITY_LABELS = { health: '건강 관리', distance: '거리 늘리기', speed: '속도 향상', habit: '습관 형성', race: '대회 준비' };
+    var PRIORITY_LABELS = { health: '건강 관리', distance: '거리 늘리기', speed: '속도 향상', habit: '습관 형성', race: '대회 준비', race_prep: '대회 준비' };
     var FREQ_LABELS = { '1-2': '주 1~2회', '3-4': '주 3~4회', '5+': '주 5회 이상' };
-    var DAY_SHORT = ['월','화','수','목','금','토','일'];
 
-    html += '<div class="summary-row">';
-    // Profile summary
-    html += '<div class="summary-card"><div class="summary-card-head"><span class="sc-icon">' + icon('user') + '</span><span class="sc-title">러닝 프로필</span><a href="' + SURVEY_URL + '" class="sc-edit">' + icon('edit') + '</a></div>';
     if (sv && (sv.goal_text || sv.weekly_frequency || sv.priority)) {
-      html += '<div class="sc-content">';
-      if (sv.goal_text) html += '<div class="sc-row"><span class="sc-value">' + esc(sv.goal_text) + '</span></div>';
-      if (sv.weekly_frequency || sv.priority) {
-        html += '<div class="sc-row">';
-        if (sv.weekly_frequency) html += '<span class="sc-label">' + (FREQ_LABELS[sv.weekly_frequency] || sv.weekly_frequency) + '</span>';
-        if (sv.weekly_frequency && sv.priority) html += '<span class="sc-label"> · </span>';
-        if (sv.priority) html += '<span class="sc-label">' + (PRIORITY_LABELS[sv.priority] || sv.priority) + '</span>';
-        html += '</div>';
-      }
-      if (sv.target_date) html += '<div class="sc-row"><span class="sc-label">목표일 ' + esc(sv.target_date) + '</span></div>';
+      html += '<div class="home-profile"><div class="home-profile-row">';
+      html += '<div style="flex:1">';
+      if (sv.goal_text) html += '<div class="home-profile-goal"><span class="ic">' + icon('target') + '</span>' + esc(sv.goal_text) + '</div>';
+      var metaParts = [];
+      if (sv.weekly_frequency) metaParts.push(FREQ_LABELS[sv.weekly_frequency] || sv.weekly_frequency);
+      if (sv.priority) metaParts.push(PRIORITY_LABELS[sv.priority] || sv.priority);
+      if (sv.target_date) metaParts.push('목표일 ' + sv.target_date);
+      if (metaParts.length) html += '<div class="home-profile-meta">' + metaParts.join(' &middot; ') + '</div>';
       html += '</div>';
+      html += '<a href="' + SURVEY_URL + '" class="home-profile-edit">' + icon('edit') + '</a>';
+      html += '</div></div>';
     } else {
-      html += '<div class="sc-empty"><a href="' + SURVEY_URL + '">프로필 설정하기</a></div>';
+      html += '<div class="home-profile"><div class="home-profile-empty"><a href="' + SURVEY_URL + '">러닝 프로필 설정하기</a></div></div>';
     }
-    html += '</div>';
+    html += '</div>'; // close card
 
     // Plan summary
+    var wp = h.weekly_plan;
+    var DAY_SHORT = ['월','화','수','목','금','토','일'];
     html += '<div class="summary-card"><div class="summary-card-head"><span class="sc-icon">' + icon('clipboard') + '</span><span class="sc-title">이번 주 계획</span><a href="' + PLAN_URL + '" class="sc-edit">' + icon('edit') + '</a></div>';
     if (wp && wp.days && wp.days.length > 0) {
       var planRuns = wp.days.filter(function(d){return !d.is_rest;}).length;
@@ -563,7 +571,7 @@
     } else {
       html += '<div class="sc-empty"><a href="#" onclick="sendCommand(\'/plan\');return false;">계획 만들기</a></div>';
     }
-    html += '</div></div>';
+    html += '</div>';
 
     // Weekly quests
     var wq = h.weekly_quests;

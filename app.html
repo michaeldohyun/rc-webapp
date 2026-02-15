@@ -320,9 +320,8 @@
   .quest-summary-head .qs-icon svg { width: 16px; height: 16px; }
   .quest-summary-head .qs-title { font-size: 13px; font-weight: 600; }
   .quest-summary-head .qs-count { font-size: 12px; color: var(--hint); font-weight: 500; }
-  .quest-summary-head .qs-chevron { margin-left: auto; color: var(--hint); display: flex; transition: transform 0.2s; }
+  .quest-summary-head .qs-chevron { margin-left: auto; color: var(--hint); display: flex; }
   .quest-summary-head .qs-chevron svg { width: 16px; height: 16px; }
-  .quest-summary-head .qs-chevron.open { transform: rotate(180deg); }
   .quest-summary-bar { margin-top: 10px; height: 8px; background: var(--secondary-bg); border-radius: 4px; overflow: hidden; }
   .quest-summary-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--btn), var(--link)); transition: width 0.6s ease; }
   .quest-summary-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; font-size: 11px; color: var(--hint); }
@@ -521,6 +520,22 @@
   var statsPeriod = 'week';
   var questExpanded = false;
 
+  function buildQuestAccordionHtml(wq) {
+    var html = '<div class="quest-accordion">';
+    wq.forEach(function(q) {
+      var barCls = q.completed ? 'done' : q.quest_type;
+      html += '<div class="quest-inline-item"><div class="quest-inline-bar ' + barCls + '"></div><div class="quest-inline-info"><div class="quest-inline-title' + (q.completed ? ' done' : '') + '">' + esc(q.title) + '</div>';
+      if (!q.completed) html += '<div class="quest-inline-progress">' + q.current_value + '/' + q.target_value + '</div>';
+      html += '</div>';
+      if (q.completed) html += '<span class="quest-inline-check">' + icon('checkCircle') + '</span>';
+      else html += '<span class="quest-inline-xp">+' + (QUEST_XP[q.quest_type]||30) + '</span>';
+      html += '</div>';
+    });
+    html += '<div class="quest-see-more" id="go-quest-path">퀘스트 경로 보기 ' + icon('chevronRight') + '</div>';
+    html += '</div>';
+    return html;
+  }
+
   var tg = window.Telegram && window.Telegram.WebApp;
   var initData = '';
   var userId = null;
@@ -633,23 +648,10 @@
     } else {
       var qPct = Math.round((completed / wq.length) * 100);
       var remainXP = wq.filter(function(q){return !q.completed;}).reduce(function(a,q){return a+(QUEST_XP[q.quest_type]||30);},0);
-      html += '<div class="quest-summary-card"><div class="quest-summary-head" id="quest-summary-toggle"><span class="qs-icon">' + icon('swords') + '</span><span class="qs-title">이번 주 퀘스트</span><span class="qs-count">' + completed + '/' + wq.length + '</span><span class="qs-chevron' + (questExpanded ? ' open' : '') + '">' + icon('chevronDown') + '</span></div>';
+      html += '<div class="quest-summary-card"><div class="quest-summary-head" id="quest-summary-toggle"><span class="qs-icon">' + icon('swords') + '</span><span class="qs-title">이번 주 퀘스트</span><span class="qs-count">' + completed + '/' + wq.length + '</span><span class="qs-chevron">' + (questExpanded ? icon('chevronDown') : icon('chevronRight')) + '</span></div>';
       html += '<div class="quest-summary-bar"><div class="quest-summary-fill" style="width:' + qPct + '%"></div></div>';
       html += '<div class="quest-summary-meta"><span>완료 ' + completed + '/' + wq.length + '</span><span class="quest-summary-xp">남은 XP: +' + remainXP + '</span></div>';
-      if (questExpanded) {
-        html += '<div class="quest-accordion">';
-        wq.forEach(function(q) {
-          var barCls = q.completed ? 'done' : q.quest_type;
-          html += '<div class="quest-inline-item"><div class="quest-inline-bar ' + barCls + '"></div><div class="quest-inline-info"><div class="quest-inline-title' + (q.completed ? ' done' : '') + '">' + esc(q.title) + '</div>';
-          if (!q.completed) html += '<div class="quest-inline-progress">' + q.current_value + '/' + q.target_value + '</div>';
-          html += '</div>';
-          if (q.completed) html += '<span class="quest-inline-check">' + icon('checkCircle') + '</span>';
-          else html += '<span class="quest-inline-xp">+' + (QUEST_XP[q.quest_type]||30) + '</span>';
-          html += '</div>';
-        });
-        html += '<div class="quest-see-more" id="go-quest-path">퀘스트 경로 보기 ' + icon('chevronRight') + '</div>';
-        html += '</div>';
-      }
+      html += '<div id="quest-accordion-container">' + (questExpanded ? buildQuestAccordionHtml(wq) : '') + '</div>';
       html += '</div>';
     }
     return html;
@@ -937,7 +939,15 @@
     var cb = document.getElementById('btn-close'); if (cb) cb.addEventListener('click', function() { if (tg) tg.close(); });
     var cpb = document.getElementById('btn-create-plan'); if (cpb) cpb.addEventListener('click', function() { sendCommand('/plan'); });
     var psc = document.getElementById('plan-slim-card'); if (psc) psc.addEventListener('click', function() { var wp = appData && appData.home && appData.home.weekly_plan; if (wp && wp.days && wp.days.length > 0) switchTab('plan'); else sendCommand('/plan'); });
-    var qst = document.getElementById('quest-summary-toggle'); if (qst) qst.addEventListener('click', function() { questExpanded = !questExpanded; renderActiveTab(); });
+    var qst = document.getElementById('quest-summary-toggle'); if (qst) qst.addEventListener('click', function() {
+      questExpanded = !questExpanded;
+      var chevron = qst.querySelector('.qs-chevron');
+      if (chevron) chevron.innerHTML = questExpanded ? icon('chevronDown') : icon('chevronRight');
+      var container = document.getElementById('quest-accordion-container');
+      if (container) container.innerHTML = questExpanded ? buildQuestAccordionHtml(appData.home.weekly_quests) : '';
+      var gqp = document.getElementById('go-quest-path');
+      if (gqp) gqp.addEventListener('click', function(e) { e.stopPropagation(); switchTab('quest'); });
+    });
     var hxp = document.getElementById('home-xp-area'); if (hxp) hxp.addEventListener('click', function() { switchTab('level'); });
     var gqp = document.getElementById('go-quest-path'); if (gqp) gqp.addEventListener('click', function(e) { e.stopPropagation(); switchTab('quest'); });
     var bth = document.getElementById('back-to-home'); if (bth) bth.addEventListener('click', function() { switchTab('home'); });

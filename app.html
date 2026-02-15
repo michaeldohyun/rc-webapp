@@ -839,11 +839,11 @@
     }
     html += '</div>';
     if (iv.connected) {
-      html += '<button class="settings-link" id="btn-disconnect" style="margin-top:8px;color:var(--hint)">';
+      html += '<button class="settings-link" id="btn-disconnect" style="margin:8px -16px 0;width:calc(100% + 32px);color:var(--hint)">';
       html += '<span class="sl-icon" style="color:var(--hint)">' + icon('x') + '</span>연동 해제';
-      html += '<span class="sl-arrow">' + icon('chevronRight') + '</span></button>';
+      html += '<span class="sl-arrow">' + icon('x') + '</span></button>';
     } else {
-      html += '<a href="' + ONBOARDING_URL + '" class="settings-link" style="margin-top:8px">';
+      html += '<a href="' + ONBOARDING_URL + '" class="settings-link" style="margin:8px -16px 0;width:calc(100% + 32px)">';
       html += '<span class="sl-icon">' + icon('link') + '</span>연동하기';
       html += '<span class="sl-arrow">' + icon('chevronRight') + '</span></a>';
     }

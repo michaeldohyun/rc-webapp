@@ -652,7 +652,8 @@
   // ---- PLAN TAB ----
   function renderPlan(d) {
     var wp = d.home.weekly_plan;
-    var html = '<div class="page-header"><div class="page-header-left"><div class="page-title">주간 훈련 계획</div><div class="page-sub">이번 주 훈련 스케줄을 확인하세요</div></div>';
+    var html = '<div class="back-header" id="back-to-home">' + icon('chevronLeft') + ' 홈으로</div>';
+    html += '<div class="page-header"><div class="page-header-left"><div class="page-title">주간 훈련 계획</div><div class="page-sub">이번 주 훈련 스케줄을 확인하세요</div></div>';
     if (wp && wp.days && wp.days.length > 0) {
       html += '<a href="' + PLAN_URL + '" class="page-header-action">' + icon('edit') + ' 수정</a>';
     }

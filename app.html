@@ -257,7 +257,8 @@
   .period-toggle { display: flex; border-radius: 12px; background: var(--bg); padding: 3px; margin-bottom: 16px; }
   .period-btn { flex: 1; padding: 8px 0; border: none; border-radius: 10px; background: transparent; font-size: 13px; font-weight: 500; color: var(--hint); cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
   .period-btn.active { background: var(--btn); color: var(--btn-text); font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
-  .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
+  .stats-row-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
   .stats-card { background: var(--bg); border-radius: 14px; padding: 14px; border: 1px solid var(--secondary-bg); }
   .stats-card-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
   .stats-card-icon svg { width: 16px; height: 16px; }
@@ -752,21 +753,31 @@
       '<button class="period-btn' + (statsPeriod==='month'?' active':'') + '" data-period="month">이번 달</button>' +
       '<button class="period-btn' + (statsPeriod==='total'?' active':'') + '" data-period="total">전체</button></div>';
 
-    var dv, tv, rv, pv;
+    var dv, tv, rv, pv, hv;
     if (statsPeriod === 'week') {
       dv = s.weekly.reduce(function(a,b){return a+b.distance;},0).toFixed(1);
-      tv = s.weekly.reduce(function(a,b){return a+b.time;},0);
-      rv = s.weekly.filter(function(d){return d.distance>0;}).length;
-      pv = s.totals.avg_pace;
+      tv = s.period && s.period.week ? s.period.week.time_min : s.weekly.reduce(function(a,b){return a+b.time;},0);
+      rv = s.period && s.period.week ? s.period.week.runs : s.weekly.filter(function(d){return d.distance>0;}).length;
+      pv = s.period && s.period.week ? s.period.week.avg_pace : s.totals.avg_pace;
+      hv = s.period && s.period.week ? s.period.week.avg_hr : null;
     } else if (statsPeriod === 'month') {
-      var mD = s.monthly[s.monthly.length-1]; dv = mD ? mD.distance : 0; tv = '-'; rv = '-'; pv = s.totals.avg_pace;
-    } else { dv = s.totals.distance_km; tv = s.totals.time_min; rv = s.totals.runs; pv = s.totals.avg_pace; }
+      var mD = s.monthly[s.monthly.length-1]; dv = mD ? mD.distance : 0;
+      tv = s.period && s.period.month ? s.period.month.time_min : '-';
+      rv = s.period && s.period.month ? s.period.month.runs : '-';
+      pv = s.period && s.period.month ? s.period.month.avg_pace : s.totals.avg_pace;
+      hv = s.period && s.period.month ? s.period.month.avg_hr : null;
+    } else {
+      dv = s.totals.distance_km; tv = s.totals.time_min; rv = s.totals.runs; pv = s.totals.avg_pace;
+      hv = s.totals.avg_hr || null;
+    }
 
     html += '<div class="stats-grid">' +
       '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(var(--btn-rgb,38,120,182),0.1);color:var(--btn)">' + icon('pin') + '</div><div class="stats-card-value">' + dv + '</div><div class="stats-card-label">총 거리 (km)</div></div>' +
       '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(168,85,247,0.1);color:#a855f7">' + icon('clock') + '</div><div class="stats-card-value">' + (typeof tv==='number'?fmtMin(tv):tv) + '</div><div class="stats-card-label">총 시간</div></div>' +
-      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(239,68,68,0.1);color:#ef4444">' + icon('calendar') + '</div><div class="stats-card-value">' + rv + '</div><div class="stats-card-label">러닝 횟수</div></div>' +
-      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(34,197,94,0.1);color:#22c55e">' + icon('zap') + '</div><div class="stats-card-value">' + pv + '</div><div class="stats-card-label">평균 페이스</div></div></div>';
+      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(239,68,68,0.1);color:#ef4444">' + icon('calendar') + '</div><div class="stats-card-value">' + rv + '</div><div class="stats-card-label">러닝 횟수</div></div></div>' +
+    '<div class="stats-row-2">' +
+      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(34,197,94,0.1);color:#22c55e">' + icon('zap') + '</div><div class="stats-card-value">' + pv + '</div><div class="stats-card-label">평균 페이스</div></div>' +
+      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(239,68,68,0.1);color:#ef4444">' + icon('heart') + '</div><div class="stats-card-value">' + (hv ? hv + ' bpm' : '-') + '</div><div class="stats-card-label">평균 심박수</div></div></div>';
 
     if (statsPeriod === 'week') {
       var mx = Math.max.apply(null, s.weekly.map(function(d){return d.distance;}));

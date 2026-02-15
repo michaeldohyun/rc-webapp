@@ -795,7 +795,8 @@
   // ---- SETTINGS TAB ----
   function renderSettings(d) {
     var p = d.profile;
-    var html = '<div class="page-header"><div class="page-header-left"><div class="page-title">설정</div><div class="page-sub">프로필과 연동 설정을 관리하세요</div></div></div>';
+    var html = '<div class="back-header" id="back-to-home">' + icon('chevronLeft') + ' 홈으로</div>';
+    html += '<div class="page-header"><div class="page-header-left"><div class="page-title">설정</div><div class="page-sub">프로필과 연동 설정을 관리하세요</div></div></div>';
 
     // Setting links
     var hasPlan = !!(d.home.weekly_plan && d.home.weekly_plan.days && d.home.weekly_plan.days.length > 0);

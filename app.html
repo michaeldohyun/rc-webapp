@@ -263,6 +263,37 @@
   .record-label { font-size: 14px; }
   .record-value { font-size: 15px; font-weight: 700; }
 
+  /* ===== PLAN TAB ===== */
+  .plan-page-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .plan-page-sub { font-size: 13px; color: var(--hint); margin-bottom: 16px; }
+  .plan-summary { display: flex; gap: 8px; margin-bottom: 16px; }
+  .plan-stat { flex: 1; background: var(--bg); border-radius: 12px; padding: 12px; text-align: center; border: 1px solid var(--secondary-bg); }
+  .plan-stat-value { font-size: 20px; font-weight: 700; }
+  .plan-stat-label { font-size: 10px; color: var(--hint); margin-top: 2px; }
+  .plan-days { display: flex; flex-direction: column; gap: 8px; }
+  .plan-day-card { background: var(--bg); border-radius: 14px; padding: 14px; border: 1px solid var(--secondary-bg); display: flex; align-items: center; gap: 12px; }
+  .plan-day-card.rest { opacity: 0.6; }
+  .plan-day-card.today { border-color: var(--btn); box-shadow: 0 2px 8px rgba(var(--btn-rgb,38,120,182),0.12); }
+  .plan-day-badge { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+  .plan-day-badge.run { background: rgba(var(--btn-rgb,38,120,182),0.12); color: var(--btn); }
+  .plan-day-badge.rest { background: var(--secondary-bg); color: var(--hint); }
+  .plan-day-info { flex: 1; }
+  .plan-day-title { font-size: 14px; font-weight: 600; }
+  .plan-day-detail { font-size: 12px; color: var(--hint); margin-top: 2px; }
+  .plan-day-km { font-size: 15px; font-weight: 700; color: var(--btn); text-align: right; white-space: nowrap; }
+  .plan-empty { text-align: center; padding: 40px 20px; color: var(--hint); background: var(--bg); border-radius: var(--card-radius); font-size: 13px; line-height: 1.6; }
+  .plan-empty a { color: var(--link); text-decoration: none; font-weight: 600; }
+  .plan-edit-link { display: block; text-align: center; margin-top: 12px; font-size: 13px; color: var(--link); text-decoration: none; font-weight: 500; }
+
+  /* Home quest section clickable */
+  .section-title.clickable { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .section-title .chevron-right { margin-left: auto; color: var(--hint); display: flex; }
+  .section-title .chevron-right svg { width: 16px; height: 16px; }
+
+  /* Quest path back header */
+  .back-header { display: flex; align-items: center; gap: 6px; padding: 8px 0 12px; cursor: pointer; -webkit-tap-highlight-color: transparent; color: var(--link); font-size: 14px; font-weight: 500; }
+  .back-header svg { width: 18px; height: 18px; }
+
   /* ===== SETTINGS TAB ===== */
   .settings-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
   .settings-links { display: flex; flex-direction: column; gap: 1px; background: var(--secondary-bg); border-radius: var(--card-radius); overflow: hidden; margin-bottom: 16px; }
@@ -344,9 +375,9 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span>홈</span>
     </button>
-    <button class="nav-btn" data-tab="quest">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
-      <span>퀘스트</span>
+    <button class="nav-btn" data-tab="plan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>계획</span>
     </button>
     <button class="nav-btn" data-tab="stats">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -401,6 +432,7 @@
     clipboard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>',
     chevronDown: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
     chevronRight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
+    chevronLeft: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>',
     alertTriangle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
     swords: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/><line x1="19" y1="21" x2="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" y1="14" x2="9" y2="18"/><line x1="7" y1="17" x2="4" y2="20"/><line x1="3" y1="19" x2="5" y2="21"/></svg>',
     barChart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
@@ -445,7 +477,7 @@
   var params = new URLSearchParams(window.location.search);
   var tabParam = params.get('tab');
   if (tabParam === 'profile') tabParam = 'settings'; // backwards compat
-  if (tabParam && ['home','quest','stats','settings'].indexOf(tabParam) !== -1) activeTab = tabParam;
+  if (tabParam && ['home','plan','quest','stats','settings'].indexOf(tabParam) !== -1) activeTab = tabParam;
 
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
   function formatDate(ds) { if (!ds) return ''; var d = new Date(ds); return d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'); }
@@ -531,7 +563,7 @@
     // Weekly quests
     var wq = h.weekly_quests;
     var completed = wq.filter(function(q) { return q.completed; }).length;
-    html += '<div class="section-title"><span class="ic">' + icon('swords') + '</span> 이번 주 퀘스트 <span class="count">' + completed + '/' + wq.length + '</span></div>';
+    html += '<div class="section-title clickable" id="quest-section-header"><span class="ic">' + icon('swords') + '</span> 이번 주 퀘스트 <span class="count">' + completed + '/' + wq.length + '</span><span class="chevron-right">' + icon('chevronRight') + '</span></div>';
     if (wq.length === 0) {
       html += '<div class="quest-empty">/plan 명령어로 이번 주 계획을 먼저 만들어주세요</div>';
     } else {
@@ -551,12 +583,62 @@
     return html;
   }
 
+  // ---- PLAN TAB ----
+  function renderPlan(d) {
+    var wp = d.home.weekly_plan;
+    var html = '<div class="plan-page-title">주간 훈련 계획</div><div class="plan-page-sub">이번 주 훈련 스케줄을 확인하세요</div>';
+    if (!wp || !wp.days || wp.days.length === 0) {
+      html += '<div class="plan-empty">아직 이번 주 계획이 없어요<br><br><a href="#" onclick="sendCommand(\'/plan\');return false;">채팅에서 /plan 명령어로 계획 만들기</a></div>';
+      return html;
+    }
+    var days = wp.days;
+    var totalRuns = days.filter(function(d){return !d.is_rest;}).length;
+    var totalKm = Math.round(days.reduce(function(a,d){return a+(d.distance_km||0);},0)*10)/10;
+    // 강도 분배 계산
+    var ws = wp.weekly_summary;
+    var intensityLabel = ws && ws.intensity_distribution ? ws.intensity_distribution : '-';
+
+    html += '<div class="plan-summary">' +
+      '<div class="plan-stat"><div class="plan-stat-value">' + totalRuns + '회</div><div class="plan-stat-label">훈련 횟수</div></div>' +
+      '<div class="plan-stat"><div class="plan-stat-value">' + totalKm + 'km</div><div class="plan-stat-label">총 거리</div></div>' +
+      '<div class="plan-stat"><div class="plan-stat-value">' + intensityLabel + '</div><div class="plan-stat-label">강도 분배</div></div>' +
+    '</div>';
+
+    // 오늘 요일 인덱스 (월=0 ~ 일=6)
+    var nowKst = new Date(new Date().getTime() + 9*60*60*1000);
+    var todayIdx = nowKst.getUTCDay() === 0 ? 6 : nowKst.getUTCDay() - 1;
+
+    html += '<div class="plan-days">';
+    days.forEach(function(d, i) {
+      var isToday = i === todayIdx;
+      var cls = d.is_rest ? ' rest' : '';
+      if (isToday) cls += ' today';
+      var badgeCls = d.is_rest ? 'rest' : 'run';
+      var dayLabel = d.day_label || ['월','화','수','목','금','토','일'][i] || '';
+      html += '<div class="plan-day-card' + cls + '">' +
+        '<div class="plan-day-badge ' + badgeCls + '">' + esc(dayLabel) + '</div>' +
+        '<div class="plan-day-info"><div class="plan-day-title">' + esc(d.title || (d.is_rest ? '휴식' : d.type || '')) + '</div>';
+      if (!d.is_rest) {
+        var detail = d.target_hr_zone || '';
+        if (d.intensity && !detail) detail = d.intensity;
+        if (detail) html += '<div class="plan-day-detail">' + esc(detail) + '</div>';
+      }
+      html += '</div>';
+      if (!d.is_rest && d.distance_km) html += '<div class="plan-day-km">' + d.distance_km + 'km</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '<a href="' + PLAN_URL + '" class="plan-edit-link">계획 수정 →</a>';
+    return html;
+  }
+
   // ---- QUEST PATH TAB ----
   function renderQuestPath(d) {
     var stages = d.quest_path.stages;
     if (!expandedStage) { var cur = stages.find(function(s) { return s.status === 'current'; }); if (cur) expandedStage = cur.id; }
 
-    var html = '<div class="quest-path-title">퀘스트 경로</div><div class="quest-path-sub">단계별 미션을 클리어하며 성장하세요</div>';
+    var html = '<div class="back-header" id="back-to-home">' + icon('chevronLeft') + ' 홈으로</div>';
+    html += '<div class="quest-path-title">퀘스트 경로</div><div class="quest-path-sub">단계별 미션을 클리어하며 성장하세요</div>';
     html += '<div class="path-container"><div class="path-line"></div><div class="path-stages">';
 
     stages.forEach(function(stage) {
@@ -733,7 +815,9 @@
   function switchTab(tab) {
     activeTab = tab;
     renderActiveTab();
-    document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.tab === tab); });
+    // quest는 홈 서브뷰이므로 홈 탭 하이라이트
+    var navHighlight = tab === 'quest' ? 'home' : tab;
+    document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.tab === navHighlight); });
     var url = new URL(window.location); url.searchParams.set('tab', tab); history.replaceState(null, '', url);
     window.scrollTo(0, 0);
   }
@@ -743,6 +827,7 @@
     var app = document.getElementById('app');
     var html = '';
     if (activeTab === 'home') html = renderHome(appData);
+    else if (activeTab === 'plan') html = renderPlan(appData);
     else if (activeTab === 'quest') html = renderQuestPath(appData);
     else if (activeTab === 'stats') html = renderStats(appData);
     else if (activeTab === 'settings') html = renderSettings(appData);
@@ -755,6 +840,8 @@
     document.querySelectorAll('.period-btn').forEach(function(b) { b.addEventListener('click', function() { statsPeriod = this.dataset.period; renderActiveTab(); }); });
     var cb = document.getElementById('btn-close'); if (cb) cb.addEventListener('click', function() { if (tg) tg.close(); });
     var cpb = document.getElementById('btn-create-plan'); if (cpb) cpb.addEventListener('click', function() { sendCommand('/plan'); });
+    var qsh = document.getElementById('quest-section-header'); if (qsh) qsh.addEventListener('click', function() { switchTab('quest'); });
+    var bth = document.getElementById('back-to-home'); if (bth) bth.addEventListener('click', function() { switchTab('home'); });
     var dcb = document.getElementById('btn-disconnect'); if (dcb) dcb.addEventListener('click', async function() {
       if (!confirm('연동을 해제하면 데이터 동기화가 중단됩니다. 해제하시겠습니까?')) return;
       try {

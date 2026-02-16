@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>훈련법 가이드</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: var(--tg-theme-bg-color, #ffffff);
+    --text: var(--tg-theme-text-color, #000000);
+    --hint: var(--tg-theme-hint-color, #999999);
+    --link: var(--tg-theme-link-color, #2678b6);
+    --btn: var(--tg-theme-button-color, #2678b6);
+    --btn-text: var(--tg-theme-button-text-color, #ffffff);
+    --secondary-bg: var(--tg-theme-secondary-bg-color, #f0f0f0);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--secondary-bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 480px; margin: 0 auto; padding: 16px; }
+
+  .page-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .page-sub { font-size: 13px; color: var(--hint); margin-bottom: 16px; }
+
+  /* Method nav pills */
+  .method-nav { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 12px; -webkit-overflow-scrolling: touch; }
+  .method-nav::-webkit-scrollbar { display: none; }
+  .nav-pill {
+    flex-shrink: 0; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
+    background: var(--bg); color: var(--hint); border: 1px solid var(--secondary-bg);
+    cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent;
+  }
+  .nav-pill.active { background: var(--btn); color: var(--btn-text); border-color: var(--btn); }
+
+  /* Method detail card */
+  .method-detail { display: none; animation: fadeIn 0.3s ease; }
+  .method-detail.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { background: var(--bg); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+
+  .method-header { margin-bottom: 12px; }
+  .method-name { font-size: 18px; font-weight: 700; }
+  .method-author { font-size: 13px; color: var(--hint); margin-top: 2px; }
+  .method-tagline { font-size: 14px; color: var(--link); font-weight: 500; margin-top: 6px; line-height: 1.4; }
+
+  .method-level {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 12px; margin-top: 8px;
+  }
+  .level-beginner { background: #dcfce7; color: #15803d; }
+  .level-intermediate { background: #fef9c3; color: #a16207; }
+  .level-advanced { background: #fee2e2; color: #b91c1c; }
+
+  .section-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .section-title .icon { font-size: 16px; }
+
+  .info-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .info-box {
+    flex: 1; padding: 10px; border-radius: 10px; background: var(--secondary-bg); text-align: center;
+  }
+  .info-box-label { font-size: 10px; color: var(--hint); font-weight: 500; }
+  .info-box-value { font-size: 14px; font-weight: 700; margin-top: 2px; }
+
+  .desc-text { font-size: 13px; line-height: 1.6; color: var(--text); }
+  .desc-text strong { font-weight: 600; }
+
+  .workout-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .workout-item {
+    padding: 10px 12px; border-radius: 10px; background: var(--secondary-bg);
+    font-size: 13px; line-height: 1.5;
+  }
+  .workout-item strong { font-weight: 600; }
+
+  .start-tip {
+    padding: 12px 14px; border-radius: 10px; background: rgba(34,197,94,0.08);
+    border-left: 3px solid #22c55e; font-size: 13px; line-height: 1.5;
+  }
+
+  .pace-guide {
+    padding: 12px 14px; border-radius: 10px; background: rgba(38,120,182,0.06);
+    font-size: 13px; line-height: 1.6;
+  }
+
+  .ref-text { font-size: 12px; color: var(--hint); margin-top: 8px; }
+
+  .diff-text { font-size: 13px; line-height: 1.6; color: var(--text); padding: 10px 12px; background: var(--secondary-bg); border-radius: 10px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="page-title">훈련법 가이드</div>
+  <div class="page-sub">나에게 맞는 훈련법을 찾아보세요</div>
+
+  <div class="method-nav" id="method-nav"></div>
+  <div id="method-content"></div>
+</div>
+
+<script>
+var tg = window.Telegram && window.Telegram.WebApp;
+if (tg) {
+  tg.ready();
+  tg.expand();
+  if (tg.BackButton) {
+    tg.BackButton.show();
+    tg.BackButton.onClick(function() { tg.close(); });
+  }
+}
+
+var METHODS = [
+  {
+    id: 'galloway', name: '갤러웨이', author: 'Jeff Galloway',
+    tagline: '달리기+걷기를 번갈아서! 오늘 당장 시작할 수 있어요.',
+    level: 'beginner', levelLabel: '입문',
+    conditions: { ctl: '0~15', weeklyKm: '0~20km', freq: '주 1~3회' },
+    core: '달리기와 걷기를 규칙적으로 교대 (예: 4분 달리기 + 1분 걷기). 걷기 구간이 회복 역할을 하면서 부상 위험을 최소화합니다.',
+    weeklyStructure: 'Run/Walk 2회 (30~45분) + 롱 Run/Walk 1회 (45~60분)',
+    workouts: [
+      '<strong>Run/Walk 비율</strong> 점진적 변경: 4:1 → 5:1 → 8:1 → 연속 러닝',
+    ],
+    paceGuide: '걷기 구간이 회복 역할. 달리기 구간은 대화 가능한 속도. 심박 Z1~Z2.',
+    startTip: '30분 산책 중 5분마다 1분 조깅 삽입 (1분 달리기 + 4분 걷기 x 6세트)',
+    diff: '완전 초보도 첫 날부터 시작 가능. 걷기가 부상을 예방하면서도 지구력 향상.',
+    ref: 'Marathon: You Can Do It!'
+  },
+  {
+    id: 'maf', name: 'MAF 저심박', author: 'Phil Maffetone',
+    tagline: '심박수 하나만 지키면 자연스럽게 빨라져요.',
+    level: 'beginner', levelLabel: '입문~중급',
+    conditions: { ctl: '0~25', weeklyKm: '10km+', freq: '주 2회+' },
+    core: '180-나이 공식으로 MAF 심박수 설정 (예: 35세 → 145bpm), 그 이하로만 훈련. 속도가 아닌 심박수가 기준입니다.',
+    weeklyStructure: 'MAF런 3회 (전부 MAF 심박 이하, 30~60분)',
+    workouts: [
+      '<strong>MAF 테스트</strong> 매월 1회, 동일 코스에서 MAF 심박으로 달려 페이스 변화 추적',
+    ],
+    paceGuide: '180-나이 이하 심박만 준수. 오르막에서 걷기도 OK. 페이스 무시, 심박만!',
+    startTip: '180-나이 심박수를 알람 설정하고, 모든 러닝을 그 이하로만 달려보기.',
+    diff: '가장 단순한 규칙 (심박수 하나). 유산소 기초가 쌓이면 같은 심박에서 페이스가 빨라짐.',
+    ref: 'The Big Book of Endurance Training and Racing'
+  },
+  {
+    id: 'hal_higdon', name: '할 히든', author: 'Hal Higdon',
+    tagline: '매주 조금씩 늘리는 가장 따라하기 쉬운 프로그램.',
+    level: 'beginner', levelLabel: '입문~중급',
+    conditions: { ctl: '5~30', weeklyKm: '10~35km', freq: '주 3~4회' },
+    core: 'Novice → Intermediate → Advanced 단계별 프로그램. 전통적이고 검증된 접근법입니다.',
+    weeklyStructure: '이지런 2회 (짧은 거리) + 크로스트레이닝 1회 + 롱런 1회',
+    workouts: [
+      '<strong>롱런</strong> 점진적 증가: 매주 1~2km씩. 12~18주 사이클로 목표 레이스 거리 도달',
+    ],
+    paceGuide: '이지런과 롱런 모두 편안한 페이스 (Z2). Intermediate부터 템포런 추가.',
+    startTip: '주 3회 러닝 중 1회를 "롱런"으로 지정하고, 평소보다 2km만 더 달려보기.',
+    diff: '가장 따라하기 쉬운 구조. 크로스트레이닝 포함. 레벨별 명확한 가이드 제공.',
+    ref: 'Hal Higdon\'s Marathon Training'
+  },
+  {
+    id: '80_20', name: '80/20 러닝', author: 'Matt Fitzgerald',
+    tagline: '느리게 많이 뛰면 빨라진다! 80%는 편하게, 20%만 빡세게.',
+    level: 'intermediate', levelLabel: '중급',
+    conditions: { ctl: '15+', weeklyKm: '20km+', freq: '주 3회+' },
+    core: '전체 훈련의 80%를 저강도(Z1~Z2), 20%를 고강도(Z4~Z5)로 배분. Zone 3는 최소화합니다.',
+    weeklyStructure: '이지런 Z2 2회 + 롱런 Z2 1회 + 템포 or 인터벌 1회',
+    workouts: [
+      '<strong>템포런</strong> Z4 20~40분 지속',
+      '<strong>크루즈 인터벌</strong> Z4 5~8분 x 3~5세트',
+      '<strong>Z2 롱런</strong> 편안한 페이스로 장거리',
+    ],
+    paceGuide: '이지런은 "대화 가능한 페이스" (Z2). 고강도일은 Z4 역치 or Z5 인터벌.',
+    startTip: '이번 주 러닝 중 1회만 템포런 (20분 Z4)으로 바꾸고, 나머지는 전부 Z2.',
+    diff: '가장 과학적 근거가 많은 강도 배분법. "느리게 많이 뛰면 빨라진다"의 과학적 구현.',
+    ref: '80/20 Running'
+  },
+  {
+    id: 'jack_daniels', name: '잭 다니엘스', author: 'Jack Daniels',
+    tagline: '내 기록에 딱 맞는 훈련 페이스를 계산해주는 과학적 시스템.',
+    level: 'intermediate', levelLabel: '중급~상급',
+    conditions: { ctl: '25+', weeklyKm: '30km+', freq: '주 4회+' },
+    core: 'VDOT 기반 Easy(E) / Marathon(M) / Threshold(T) / Interval(I) / Repetition(R) 5단계 페이스 설정.',
+    weeklyStructure: 'E런 2회 + T런 1회 + I세션 1회 + E롱런 1회',
+    workouts: [
+      '<strong>T페이스 크루즈 인터벌</strong> 5~6분 x 4세트',
+      '<strong>I페이스 인터벌</strong> 3~5분 x 5세트',
+      '<strong>R페이스 레페티션</strong> 200~400m 반복',
+    ],
+    paceGuide: 'VDOT 테이블로 모든 페이스 산출. E런은 59~74% 강도, T런은 83~88%.',
+    startTip: '가장 최근 5km/10km 기록으로 VDOT 계산 후, E페이스를 정해서 이지런에 적용.',
+    diff: '개인 체력(VDOT)에 맞춤화된 정밀 페이스. 4주기 주기화 시스템.',
+    ref: 'Daniels\' Running Formula'
+  },
+  {
+    id: 'hansons', name: '한슨', author: 'Hansons',
+    tagline: '매일 꾸준히 뛰면 마라톤 후반이 강해져요.',
+    level: 'intermediate', levelLabel: '중급~상급',
+    conditions: { ctl: '25~40', weeklyKm: '40km+', freq: '주 5~6회' },
+    core: '누적 피로 철학. 롱런 26km 상한. 주 6일 러닝으로 피로를 쌓아 레이스 후반을 시뮬레이션합니다.',
+    weeklyStructure: 'E런 3회 + 스피드(인터벌) 1회 + 템포 1회 + 롱런 1회. 주 1일 휴식',
+    workouts: [
+      '<strong>템포런</strong> MP+10~20초 페이스 x 10~16km',
+      '<strong>스피드</strong> 1km 인터벌 x 6~12세트',
+      '<strong>롱런</strong> 26km 상한, 누적 피로 속에서 진행',
+    ],
+    paceGuide: '이지런은 MP보다 km당 45~90초 느리게. 템포는 MP보다 10~20초 느리게.',
+    startTip: '주 4회 러너라면 1회 추가 (쉬운 30분)로 빈도를 높여보기.',
+    diff: '롱런 32km+ 불필요. 높은 빈도로 누적 피로를 쌓아 마라톤 후반부 강해짐.',
+    ref: 'Hansons Marathon Method'
+  },
+  {
+    id: 'pfitzinger', name: '피치진저', author: 'Pete Pfitzinger',
+    tagline: '마라톤 기록 갱신을 위한 고급 프로그램.',
+    level: 'advanced', levelLabel: '상급',
+    conditions: { ctl: '35+', weeklyKm: '50km+', freq: '주 5회+' },
+    core: '고볼륨 + 역주기화 (초반 LT 중심 → 후반 VO2max). 주중 미드위크 롱런을 포함합니다.',
+    weeklyStructure: 'E런 2회 + 미드위크 롱런 1회 + LT/VO2max 1회 + 롱런 1회 + 회복런 1회',
+    workouts: [
+      '<strong>LT런</strong> 역치 페이스 40~60분',
+      '<strong>VO2max 인터벌</strong> 800m~1200m x 5~6세트',
+      '<strong>마라톤 페이스 롱런</strong> 32km 중 16km를 MP로',
+    ],
+    paceGuide: 'LT는 하프마라톤 페이스, VO2max는 3~5km 레이스 페이스.',
+    startTip: '주중 수요일에 미드위크 롱런 (평소 롱런의 60~70%) 1회 추가.',
+    diff: '마라톤 특화. 역주기화로 레이스가 가까워질수록 더 날카로운 훈련. 고볼륨 요구.',
+    ref: 'Advanced Marathoning'
+  },
+  {
+    id: 'lydiard', name: '리디어드', author: 'Arthur Lydiard',
+    tagline: '모든 현대 훈련법의 원조. 유산소 베이스의 정석.',
+    level: 'advanced', levelLabel: '상급',
+    conditions: { ctl: '45+', weeklyKm: '60km+', freq: '주 6회+' },
+    core: '유산소 베이스 (10~14주) → 힐 (4주) → 인터벌 (4주) → 샤프닝 (4주) 순서 주기화.',
+    weeklyStructure: '유산소런 5회 + 롱런 1회 (최대 2.5시간) + 회복런 1회',
+    workouts: [
+      '<strong>유산소 베이스</strong> 주 100마일(160km)까지 점진적 증가',
+      '<strong>힐 트레이닝</strong> 바운딩 / 스프링잉',
+      '<strong>인터벌</strong> 트랙 세션, 타임 트라이얼',
+    ],
+    paceGuide: '베이스기는 "강한 유산소" (Z2 상단~Z3 하단). 인터벌기는 레이스 페이스 기반.',
+    startTip: '현재 주간 거리를 유지하되, 모든 러닝을 유산소 강도 (Z2)로 통일.',
+    diff: '모든 현대 훈련법의 원조. 극단적 유산소 베이스 구축 후 스피드 추가. 고볼륨 필수.',
+    ref: 'Running with Lydiard'
+  },
+];
+
+function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function renderNav() {
+  var nav = document.getElementById('method-nav');
+  var html = '';
+  for (var i = 0; i < METHODS.length; i++) {
+    html += '<div class="nav-pill' + (i === 0 ? ' active' : '') + '" data-idx="' + i + '">' + esc(METHODS[i].name) + '</div>';
+  }
+  nav.innerHTML = html;
+  nav.addEventListener('click', function(e) {
+    var pill = e.target.closest('.nav-pill');
+    if (!pill) return;
+    var idx = parseInt(pill.dataset.idx);
+    showMethod(idx);
+    nav.querySelectorAll('.nav-pill').forEach(function(p) { p.classList.remove('active'); });
+    pill.classList.add('active');
+    pill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  });
+}
+
+function renderMethod(m) {
+  var levelClass = m.level === 'beginner' ? 'level-beginner' : m.level === 'intermediate' ? 'level-intermediate' : 'level-advanced';
+
+  var workoutsHtml = '';
+  for (var i = 0; i < m.workouts.length; i++) {
+    workoutsHtml += '<li class="workout-item">' + m.workouts[i] + '</li>';
+  }
+
+  return '<div class="card">' +
+    '<div class="method-header">' +
+      '<div class="method-name">' + esc(m.name) + '</div>' +
+      '<div class="method-author">' + esc(m.author) + '</div>' +
+      '<div class="method-tagline">' + esc(m.tagline) + '</div>' +
+      '<span class="method-level ' + levelClass + '">' + esc(m.levelLabel) + '</span>' +
+    '</div>' +
+    '<div class="info-row">' +
+      '<div class="info-box"><div class="info-box-label">체력지수</div><div class="info-box-value">' + esc(m.conditions.ctl) + '</div></div>' +
+      '<div class="info-box"><div class="info-box-label">주간 거리</div><div class="info-box-value">' + esc(m.conditions.weeklyKm) + '</div></div>' +
+      '<div class="info-box"><div class="info-box-label">빈도</div><div class="info-box-value">' + esc(m.conditions.freq) + '</div></div>' +
+    '</div>' +
+  '</div>' +
+
+  '<div class="card">' +
+    '<div class="section-title"><span class="icon">🎯</span> 핵심 원리</div>' +
+    '<div class="desc-text">' + esc(m.core) + '</div>' +
+  '</div>' +
+
+  '<div class="card">' +
+    '<div class="section-title"><span class="icon">📋</span> 주간 구조</div>' +
+    '<div class="desc-text">' + esc(m.weeklyStructure) + '</div>' +
+    '<div style="margin-top:12px"><div class="section-title"><span class="icon">💪</span> 핵심 워크아웃</div>' +
+    '<ul class="workout-list">' + workoutsHtml + '</ul></div>' +
+  '</div>' +
+
+  '<div class="card">' +
+    '<div class="section-title"><span class="icon">⏱</span> 페이스 가이드</div>' +
+    '<div class="pace-guide">' + esc(m.paceGuide) + '</div>' +
+  '</div>' +
+
+  '<div class="card">' +
+    '<div class="section-title"><span class="icon">🚀</span> 이번 주 시작법</div>' +
+    '<div class="start-tip">' + esc(m.startTip) + '</div>' +
+  '</div>' +
+
+  '<div class="card">' +
+    '<div class="section-title"><span class="icon">✨</span> 차별점</div>' +
+    '<div class="diff-text">' + esc(m.diff) + '</div>' +
+    '<div class="ref-text">참고: ' + esc(m.ref) + '</div>' +
+  '</div>';
+}
+
+function showMethod(idx) {
+  var content = document.getElementById('method-content');
+  content.innerHTML = '<div class="method-detail active">' + renderMethod(METHODS[idx]) + '</div>';
+}
+
+// URL에서 method ID 파라미터 확인
+var params = new URLSearchParams(window.location.search);
+var targetId = params.get('id');
+var startIdx = 0;
+if (targetId) {
+  for (var i = 0; i < METHODS.length; i++) {
+    if (METHODS[i].id === targetId) { startIdx = i; break; }
+  }
+}
+
+renderNav();
+showMethod(startIdx);
+
+// 해당 pill 활성화 + 스크롤
+var pills = document.querySelectorAll('.nav-pill');
+pills.forEach(function(p) { p.classList.remove('active'); });
+if (pills[startIdx]) {
+  pills[startIdx].classList.add('active');
+  setTimeout(function() { pills[startIdx].scrollIntoView({ inline: 'center', block: 'nearest' }); }, 100);
+}
+</script>
+</body>
+</html>

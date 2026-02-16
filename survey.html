@@ -466,6 +466,41 @@
       cursor: pointer;
       margin-left: auto;
     }
+    /* Training method cards (2-column grid) */
+    .method-cards {
+      flex-direction: row !important;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .method-cards .card-option {
+      flex: 1 1 calc(50% - 4px);
+      flex-direction: column;
+      display: flex;
+      align-items: flex-start;
+      text-align: left;
+      padding: 10px 12px;
+    }
+    .method-cards .card-option strong {
+      font-size: 13px;
+    }
+    .card-desc {
+      font-size: 11px;
+      color: var(--tg-theme-hint-color);
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+    .method-cards .card-option.selected .card-desc {
+      color: var(--tg-theme-link-color);
+    }
+    .method-detail-link {
+      display: block;
+      font-size: 13px;
+      color: var(--tg-theme-link-color);
+      text-decoration: none;
+      text-align: right;
+      margin-top: 4px;
+      margin-bottom: 16px;
+    }
   </style>
 </head>
 <body>
@@ -568,22 +603,44 @@
       <div class="step-title">적용하고 싶은 훈련법이 있나요?</div>
       <div class="step-desc">잘 모르겠다면 선택하지 않고 넘어가도 괜찮아요.</div>
 
-      <div class="chip-group">
-        <label>훈련법</label>
-        <div class="chip-options" id="method-chips">
-          <div class="chip" data-value="80_20" onclick="selectSingleChip(this, 'method-chips')">80/20 러닝</div>
-          <div class="chip" data-value="jack_daniels" onclick="selectSingleChip(this, 'method-chips')">잭 다니엘스</div>
-          <div class="chip" data-value="maf" onclick="selectSingleChip(this, 'method-chips')">MAF 저심박</div>
-          <div class="chip" data-value="pfitzinger" onclick="selectSingleChip(this, 'method-chips')">피치진저</div>
-          <div class="chip" data-value="hansons" onclick="selectSingleChip(this, 'method-chips')">한슨</div>
-          <div class="chip" data-value="galloway" onclick="selectSingleChip(this, 'method-chips')">갤러웨이</div>
-          <div class="chip" data-value="hal_higdon" onclick="selectSingleChip(this, 'method-chips')">할 히든</div>
-          <div class="chip" data-value="lydiard" onclick="selectSingleChip(this, 'method-chips')">리디어드</div>
-          <div class="chip chip-recommend" data-value="coach_recommend" onclick="selectSingleChip(this, 'method-chips')">코치에게 추천받기</div>
+      <div class="card-group" id="method-group">
+        <label>훈련법 <span style="font-weight:400; color:var(--tg-theme-hint-color)">(선택)</span></label>
+        <div class="card-options method-cards" id="method-cards">
+          <div class="card-option" data-value="galloway" onclick="selectCard(this, 'method-cards')">
+            <strong>갤러웨이</strong>
+            <span class="card-desc">달리기+걷기 번갈아! 부상 걱정 없이 시작</span>
+          </div>
+          <div class="card-option" data-value="maf" onclick="selectCard(this, 'method-cards')">
+            <strong>MAF 저심박</strong>
+            <span class="card-desc">심박수 하나만 지키면 자연스럽게 빨라져요</span>
+          </div>
+          <div class="card-option" data-value="hal_higdon" onclick="selectCard(this, 'method-cards')">
+            <strong>할 히든</strong>
+            <span class="card-desc">매주 조금씩 늘리는 가장 쉬운 프로그램</span>
+          </div>
+          <div class="card-option" data-value="80_20" onclick="selectCard(this, 'method-cards')">
+            <strong>80/20 러닝</strong>
+            <span class="card-desc">80%는 편하게, 20%만 빡세게</span>
+          </div>
+          <div class="card-option" data-value="jack_daniels" onclick="selectCard(this, 'method-cards')">
+            <strong>잭 다니엘스</strong>
+            <span class="card-desc">내 기록에 맞는 과학적 페이스 시스템</span>
+          </div>
+          <div class="card-option" data-value="hansons" onclick="selectCard(this, 'method-cards')">
+            <strong>한슨</strong>
+            <span class="card-desc">매일 꾸준히! 마라톤 후반이 강해져요</span>
+          </div>
+          <div class="card-option" data-value="pfitzinger" onclick="selectCard(this, 'method-cards')">
+            <strong>피치진저</strong>
+            <span class="card-desc">마라톤 기록 갱신 전용 고급 프로그램</span>
+          </div>
+          <div class="card-option" data-value="lydiard" onclick="selectCard(this, 'method-cards')">
+            <strong>리디어드</strong>
+            <span class="card-desc">모든 훈련법의 원조. 상급자용</span>
+          </div>
         </div>
+        <a href="https://michaeldohyun.github.io/rc-webapp/methods.html" class="method-detail-link">훈련법 자세히 보기 →</a>
       </div>
-
-      <div id="method-desc" style="font-size:13px; color:var(--tg-theme-hint-color); line-height:1.5; margin-bottom:20px; min-height:40px;"></div>
 
       <button class="btn btn-primary" onclick="goToStep(4)">다음</button>
       <div class="nav-row">
@@ -714,18 +771,8 @@
 
         // Step 3: training method
         if (s.training_method && s.training_method !== 'none' && s.training_method !== 'pending_recommend') {
-          const methodChip = document.querySelector(`#method-chips .chip[data-value="${s.training_method}"]`);
-          if (methodChip) {
-            methodChip.classList.add('selected');
-            const descEl = document.getElementById('method-desc');
-            if (descEl) {
-              if (s.training_method === 'coach_recommend') {
-                descEl.textContent = '프로필 완성 후 코치가 맞춤 훈련법을 추천해드려요.';
-              } else if (METHOD_DESCS[s.training_method]) {
-                descEl.textContent = METHOD_DESCS[s.training_method];
-              }
-            }
-          }
+          const methodCard = document.querySelector(`#method-cards .card-option[data-value="${s.training_method}"]`);
+          if (methodCard) methodCard.classList.add('selected');
         }
 
         // Step 4: priority
@@ -1041,8 +1088,8 @@
       }
 
       // Step 3
-      const methodChip = document.querySelector('#method-chips .chip.selected');
-      if (methodChip) data.training_method = methodChip.dataset.value;
+      const methodCard = document.querySelector('#method-cards .card-option.selected');
+      if (methodCard) data.training_method = methodCard.dataset.value;
 
       // Step 4
       const priorityCard = document.querySelector('#priority-cards .card-option.selected');

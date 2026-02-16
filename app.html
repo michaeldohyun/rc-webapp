@@ -1056,6 +1056,18 @@
     var s = d.stats;
     var html = '<div class="page-header"><div class="page-header-left"><div class="page-title">나의 기록</div><div class="page-sub">누적된 러닝 데이터를 확인하세요</div></div></div>';
 
+    // 피트니스 진단 카드
+    var fp = d.fitness_profile;
+    if (fp && fp.current_stage) {
+      var stageNames = {beginner:'입문기',beginner_to_intermediate:'입문→중급 전환기',intermediate:'중급',advanced:'상급'};
+      var stgName = fp.stage_description || stageNames[fp.current_stage] || fp.current_stage;
+      html += '<div class="card" style="margin-bottom:12px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="location.href=\'diagnostic.html?v=\'+Date.now()">' +
+        '<div style="width:44px;height:44px;border-radius:12px;background:rgba(76,175,80,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:20px">📊</span></div>' +
+        '<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px">현재 단계: ' + esc(stgName) + '</div>' +
+        '<div style="font-size:12px;color:var(--hint);margin-top:2px">주간 ' + (fp.weekly_volume_avg_4w||0) + 'km · ' + (fp.weekly_runs_avg_4w||0) + '회 · CTL ' + (fp.ctl_current||0) + '</div></div>' +
+        '<div style="color:var(--hint);flex-shrink:0">' + icon('chevronRight') + '</div></div>';
+    }
+
     html += '<div class="period-toggle">' +
       '<button class="period-btn' + (statsPeriod==='week'?' active':'') + '" data-period="week">이번 주</button>' +
       '<button class="period-btn' + (statsPeriod==='month'?' active':'') + '" data-period="month">이번 달</button>' +

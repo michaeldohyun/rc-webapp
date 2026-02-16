@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>러닝 진단 리포트</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --card: #1a1a1a;
+    --card-border: #2a2a2a;
+    --accent: #4CAF50;
+    --accent-dim: rgba(76, 175, 80, 0.15);
+    --accent-glow: rgba(76, 175, 80, 0.3);
+    --text: #e8e8e8;
+    --text-secondary: #9a9a9a;
+    --text-muted: #666;
+    --bar-bg: #252525;
+    --danger: #ef5350;
+    --warning: #FFA726;
+    --card-radius: 14px;
+    --shimmer-color: rgba(255,255,255,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom) 16px;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 480px; margin: 0 auto; padding-bottom: 100px; }
+
+  /* ── Loading skeleton ── */
+  .skeleton { display: flex; flex-direction: column; gap: 16px; padding-top: 20px; }
+  .skeleton-block {
+    background: var(--card);
+    border-radius: var(--card-radius);
+    position: relative;
+    overflow: hidden;
+  }
+  .skeleton-block::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, var(--shimmer-color) 50%, transparent 100%);
+    animation: shimmer 1.5s infinite;
+  }
+  .sk-header { height: 52px; }
+  .sk-stage { height: 110px; }
+  .sk-metrics { height: 90px; }
+  .sk-chart { height: 180px; }
+  .sk-checklist { height: 160px; }
+  .sk-focus { height: 80px; }
+
+  /* ── Header ── */
+  .page-header {
+    text-align: center;
+    padding: 20px 0 8px;
+    animation: fadeIn 0.4s ease;
+  }
+  .page-header-icon { font-size: 36px; line-height: 1; }
+  .page-header-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 6px;
+    letter-spacing: -0.3px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card);
+    border-radius: var(--card-radius);
+    padding: 18px;
+    margin-top: 14px;
+    border: 1px solid var(--card-border);
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .card-title-icon { font-size: 17px; }
+
+  /* ── Stage card ── */
+  .stage-card {
+    animation: fadeInUp 0.4s ease 0.1s both;
+  }
+  .stage-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .stage-name {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 14px;
+    letter-spacing: -0.5px;
+  }
+  .stage-progress-track {
+    height: 10px;
+    background: var(--bar-bg);
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+  }
+  .stage-progress-fill {
+    height: 100%;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #388E3C, #4CAF50, #66BB6A);
+    position: relative;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .stage-progress-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+    animation: shimmer 2.5s infinite;
+  }
+  .stage-progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .stage-progress-labels span.active {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .stage-description {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* ── Key metrics ── */
+  .metrics-card { animation: fadeInUp 0.4s ease 0.2s both; }
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .metric-item {
+    text-align: center;
+    padding: 12px 6px;
+    background: var(--bg);
+    border-radius: 10px;
+  }
+  .metric-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .metric-unit {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-secondary);
+  }
+  .metric-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+
+  /* ── Weekly volume chart ── */
+  .chart-card { animation: fadeInUp 0.4s ease 0.3s both; }
+  .chart-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 120px;
+    padding-top: 10px;
+  }
+  .chart-bar-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .chart-bar-value {
+    font-size: 10px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    white-space: nowrap;
+  }
+  .chart-bar {
+    width: 100%;
+    max-width: 36px;
+    border-radius: 5px 5px 2px 2px;
+    background: linear-gradient(180deg, var(--accent), #2E7D32);
+    min-height: 4px;
+    transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+  .chart-bar.current {
+    background: linear-gradient(180deg, #66BB6A, var(--accent));
+    box-shadow: 0 0 8px var(--accent-glow);
+  }
+  .chart-bar.low {
+    background: linear-gradient(180deg, var(--warning), #E65100);
+  }
+  .chart-bar-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .chart-no-data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  /* ── Checklist ── */
+  .checklist-card { animation: fadeInUp 0.4s ease 0.4s both; }
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg);
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.4;
+    transition: background 0.3s;
+  }
+  .checklist-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    width: 24px;
+    text-align: center;
+  }
+  .checklist-item.met { color: var(--text); }
+  .checklist-item.unmet { color: var(--text-secondary); }
+  .checklist-item.met .checklist-icon { color: var(--accent); }
+  .checklist-item.unmet .checklist-icon { color: var(--text-muted); }
+
+  /* ── Key focus ── */
+  .focus-card { animation: fadeInUp 0.4s ease 0.5s both; }
+  .focus-text {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text);
+    padding: 12px 14px;
+    background: var(--accent-dim);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+  }
+
+  /* ── Self-report collapsible ── */
+  .self-report-card { animation: fadeInUp 0.4s ease 0.6s both; }
+  .collapse-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .collapse-toggle .card-title { margin-bottom: 0; }
+  .collapse-arrow {
+    font-size: 14px;
+    color: var(--text-secondary);
+    transition: transform 0.3s ease;
+  }
+  .collapse-arrow.open { transform: rotate(180deg); }
+  .collapse-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, margin-top 0.3s ease;
+  }
+  .collapse-content.open {
+    max-height: 500px;
+    margin-top: 16px;
+  }
+
+  .report-section { margin-bottom: 18px; }
+  .report-section:last-child { margin-bottom: 0; }
+  .report-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1.5px solid var(--card-border);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .chip:active { transform: scale(0.95); }
+  .chip.selected {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .report-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 14px;
+    line-height: 1.5;
+    text-align: center;
+  }
+  .report-updating {
+    display: none;
+    text-align: center;
+    padding: 12px;
+    font-size: 13px;
+    color: var(--accent);
+  }
+  .report-updating.visible { display: block; }
+
+  /* ── CTA Button ── */
+  .cta-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    background: linear-gradient(transparent, var(--bg) 30%);
+  }
+  .cta-button {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+  .cta-button:active {
+    transform: scale(0.97);
+    opacity: 0.85;
+  }
+
+  /* ── Insufficient data state ── */
+  .insufficient-container {
+    text-align: center;
+    padding: 40px 16px 20px;
+    animation: fadeIn 0.5s ease;
+  }
+  .insufficient-icon { font-size: 52px; margin-bottom: 16px; }
+  .insufficient-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .insufficient-msg {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  /* ── Error ── */
+  .error-container {
+    text-align: center;
+    padding: 60px 20px;
+    animation: fadeIn 0.4s ease;
+  }
+  .error-icon { font-size: 48px; margin-bottom: 16px; }
+  .error-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .error-msg { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+  .error-retry {
+    margin-top: 20px;
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* ── Animations ── */
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+</style>
+</head>
+<body>
+<div class="container" id="app">
+  <!-- Loading skeleton -->
+  <div class="skeleton" id="loading">
+    <div class="skeleton-block sk-header"></div>
+    <div class="skeleton-block sk-stage"></div>
+    <div class="skeleton-block sk-metrics"></div>
+    <div class="skeleton-block sk-chart"></div>
+    <div class="skeleton-block sk-checklist"></div>
+    <div class="skeleton-block sk-focus"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var SUPABASE_URL = 'https://dotsosqsftympgdescvz.supabase.co';
+  var API_URL = SUPABASE_URL + '/functions/v1/rc-onboarding';
+
+  // ── Stage configuration ──
+  var STAGE_MAP = {
+    beginner: { label: '입문기', pct: 25, idx: 0 },
+    beginner_to_intermediate: { label: '중급 전환 중', pct: 50, idx: 1 },
+    intermediate: { label: '중급', pct: 75, idx: 2 },
+    advanced: { label: '상급', pct: 100, idx: 3 }
+  };
+
+  var STAGE_LABELS = ['입문', '중급 전환', '중급', '상급'];
+
+  // ── All possible transition signals ──
+  var ALL_SIGNALS = [
+    '체력지수 안정화',
+    '주 30km+ 볼륨 안정',
+    '회복력 양호 (연일 러닝 30%+)',
+    '평균 거리 8km+ (10km 가능 추정)',
+    '체력지수 15+ 유지'
+  ];
+
+  // ── Telegram WebApp ──
+  var tg = window.Telegram && window.Telegram.WebApp;
+  var initData = '';
+  var userId = null;
+
+  if (tg) {
+    tg.ready();
+    tg.expand();
+    initData = tg.initData || '';
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+      userId = tg.initDataUnsafe.user.id;
+    }
+  }
+
+  // ── Current profile data (for re-render after self-report) ──
+  var currentProfile = null;
+  var selfReportOpen = false;
+
+  // ── Self-report selections ──
+  var selectedExperience = null;
+  var selectedRaces = new Set();
+
+  // ── API calls ──
+  function apiCall(action, extra) {
+    var payload = {
+      action: action,
+      telegram_user_id: userId,
+      init_data: initData
+    };
+    if (extra) {
+      for (var k in extra) payload[k] = extra[k];
+    }
+    return fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function(res) {
+      if (!res.ok) throw new Error('서버 오류 (' + res.status + ')');
+      return res.json();
+    });
+  }
+
+  function fetchDiagnostic() {
+    return apiCall('get_diagnostic');
+  }
+
+  function updateSelfReport(data) {
+    return apiCall('update_self_report', { survey: data });
+  }
+
+  // ── Helpers ──
+  function esc(str) {
+    var d = document.createElement('div');
+    d.textContent = str || '';
+    return d.innerHTML;
+  }
+
+  function formatKm(v) {
+    if (v == null) return '-';
+    var n = Number(v);
+    return n % 1 === 0 ? n.toFixed(0) : n.toFixed(1);
+  }
+
+  // ── Render functions ──
+  function renderHeader() {
+    return '<div class="page-header">' +
+      '<div class="page-header-icon">\uD83C\uDFC3</div>' +
+      '<div class="page-header-title">\uB0B4 \uB7EC\uB2DD \uC9C4\uB2E8 \uB9AC\uD3EC\uD2B8</div>' +
+    '</div>';
+  }
+
+  function renderStageCard(profile) {
+    var stage = STAGE_MAP[profile.current_stage] || STAGE_MAP.beginner;
+    var desc = profile.stage_description || stage.label;
+
+    var html = '<div class="card stage-card">';
+    html += '<div class="stage-label">\uD604\uC7AC \uB2E8\uACC4</div>';
+    html += '<div class="stage-name">' + esc(desc) + '</div>';
+
+    // Progress bar
+    html += '<div class="stage-progress-track">';
+    html += '<div class="stage-progress-fill" style="width:' + stage.pct + '%"></div>';
+    html += '</div>';
+
+    // Stage labels
+    html += '<div class="stage-progress-labels">';
+    for (var i = 0; i < STAGE_LABELS.length; i++) {
+      var cls = i === stage.idx ? ' class="active"' : '';
+      html += '<span' + cls + '>' + STAGE_LABELS[i] + '</span>';
+    }
+    html += '</div>';
+
+    // CTL trend description
+    if (profile.ctl_current != null) {
+      var trendText = '';
+      if (profile.ctl_trend === 'rising') trendText = '\u2191 \uC0C1\uC2B9 \uC911';
+      else if (profile.ctl_trend === 'declining') trendText = '\u2193 \uD558\uB77D \uC911';
+      else trendText = '\u2192 \uC548\uC815';
+      html += '<div class="stage-description">' +
+        '\uCCB4\uB825\uC9C0\uC218(CTL) ' + Math.round(profile.ctl_current) + ' ' + trendText +
+      '</div>';
+    }
+
+    html += '</div>';
+    return html;
+  }
+
+  function renderMetrics(profile) {
+    var html = '<div class="card metrics-card">';
+    html += '<div class="card-title"><span class="card-title-icon">\uD83D\uDCCA</span> \uD575\uC2EC \uC9C0\uD45C</div>';
+    html += '<div class="metrics-grid">';
+
+    // Weekly volume avg
+    html += '<div class="metric-item">';
+    html += '<div class="metric-value">' + formatKm(profile.weekly_volume_avg_4w) + '<span class="metric-unit">km</span></div>';
+    html += '<div class="metric-label">\uC8FC\uAC04 \uAC70\uB9AC<br>(4\uC8FC \uD3C9\uADE0)</div>';
+    html += '</div>';
+
+    // Weekly runs avg
+    html += '<div class="metric-item">';
+    html += '<div class="metric-value">' + (profile.weekly_runs_avg_4w != null ? Number(profile.weekly_runs_avg_4w).toFixed(1) : '-') + '<span class="metric-unit">\uD68C</span></div>';
+    html += '<div class="metric-label">\uC8FC\uAC04 \uD69F\uC218<br>(4\uC8FC \uD3C9\uADE0)</div>';
+    html += '</div>';
+
+    // Longest run in 4w
+    html += '<div class="metric-item">';
+    html += '<div class="metric-value">' + formatKm(profile.longest_run_4w) + '<span class="metric-unit">km</span></div>';
+    html += '<div class="metric-label">\uCD5C\uC7A5 \uAC70\uB9AC<br>(\uCD5C\uADFC 4\uC8FC)</div>';
+    html += '</div>';
+
+    html += '</div></div>';
+    return html;
+  }
+
+  function renderWeeklyChart(profile) {
+    var volumes = profile.weekly_volumes || [];
+    if (volumes.length === 0) {
+      return '<div class="card chart-card">' +
+        '<div class="card-title"><span class="card-title-icon">\uD83D\uDCC8</span> \uC8FC\uAC04 \uBCFC\uB968 \uCD94\uC774</div>' +
+        '<div class="chart-no-data">\uC544\uC9C1 \uCDA9\uBD84\uD55C \uB370\uC774\uD130\uAC00 \uC5C6\uC5B4\uC694</div>' +
+      '</div>';
+    }
+
+    // Show up to last 8 weeks
+    var data = volumes.slice(-8);
+    var maxKm = Math.max.apply(null, data.map(function(w) { return w.km || 0; }));
+    if (maxKm === 0) maxKm = 1;
+
+    var html = '<div class="card chart-card">';
+    html += '<div class="card-title"><span class="card-title-icon">\uD83D\uDCC8</span> \uC8FC\uAC04 \uBCFC\uB968 \uCD94\uC774 (' + data.length + '\uC8FC)</div>';
+    html += '<div class="chart-container">';
+
+    for (var i = 0; i < data.length; i++) {
+      var w = data[i];
+      var km = w.km || 0;
+      var heightPct = Math.max(4, (km / maxKm) * 100);
+      var isCurrent = i === data.length - 1;
+      var isLow = km < (maxKm * 0.3) && km > 0;
+      var barClass = 'chart-bar' + (isCurrent ? ' current' : '') + (isLow && !isCurrent ? ' low' : '');
+
+      // Week label: extract month/day
+      var weekLabel = '';
+      if (w.week) {
+        var parts = w.week.split('-');
+        if (parts.length >= 2) {
+          weekLabel = parseInt(parts[1]) + '/' + parseInt(parts[2]);
+        }
+      }
+
+      html += '<div class="chart-bar-wrapper">';
+      html += '<div class="chart-bar-value">' + formatKm(km) + '</div>';
+      html += '<div class="' + barClass + '" style="height:' + heightPct + '%"></div>';
+      html += '<div class="chart-bar-label">' + esc(weekLabel) + '</div>';
+      html += '</div>';
+    }
+
+    html += '</div></div>';
+    return html;
+  }
+
+  function renderChecklist(profile) {
+    var signals = profile.transition_signals || [];
+    var signalSet = {};
+    for (var i = 0; i < signals.length; i++) {
+      signalSet[signals[i]] = true;
+    }
+
+    var html = '<div class="card checklist-card">';
+    html += '<div class="card-title"><span class="card-title-icon">\u2705</span> \uC804\uD658 \uC2E0\uD638 \uCCB4\uD06C\uB9AC\uC2A4\uD2B8</div>';
+    html += '<div class="checklist">';
+
+    for (var j = 0; j < ALL_SIGNALS.length; j++) {
+      var sig = ALL_SIGNALS[j];
+      var met = !!signalSet[sig];
+      var itemClass = met ? 'met' : 'unmet';
+      var icon = met ? '\u2611\uFE0F' : '\u2610';
+
+      html += '<div class="checklist-item ' + itemClass + '">';
+      html += '<span class="checklist-icon">' + icon + '</span>';
+      html += '<span>' + esc(sig) + '</span>';
+      html += '</div>';
+    }
+
+    html += '</div></div>';
+    return html;
+  }
+
+  function renderKeyFocus(profile) {
+    if (!profile.key_focus) return '';
+
+    var html = '<div class="card focus-card">';
+    html += '<div class="card-title"><span class="card-title-icon">\uD83D\uDCA1</span> \uD575\uC2EC \uACFC\uC81C</div>';
+    html += '<div class="focus-text">' + esc(profile.key_focus) + '</div>';
+    html += '</div>';
+    return html;
+  }
+
+  function renderSelfReport(profile) {
+    // Determine initial selections from profile or existing survey data
+    var expOptions = [
+      { key: 'beginner', label: '\uCC98\uC74C' },
+      { key: '1year', label: '1\uB144 \uBBF8\uB9CC' },
+      { key: '3year_plus', label: '3\uB144+' },
+      { key: 'returning', label: '\uBCF5\uADC0' }
+    ];
+    var raceOptions = [
+      { key: 'none', label: '\uC5C6\uC74C' },
+      { key: '10k', label: '10K' },
+      { key: 'half', label: '\uD558\uD504' },
+      { key: 'full', label: '\uD480' }
+    ];
+
+    var openClass = selfReportOpen ? ' open' : '';
+
+    var html = '<div class="card self-report-card">';
+    html += '<div class="collapse-toggle" id="selfReportToggle">';
+    html += '<div class="card-title"><span class="card-title-icon">\uD83D\uDE4B</span> \uB098\uC5D0 \uB300\uD574 \uB354 \uC54C\uB824\uC8FC\uAE30</div>';
+    html += '<span class="collapse-arrow' + openClass + '" id="collapseArrow">\u25BC</span>';
+    html += '</div>';
+
+    html += '<div class="collapse-content' + openClass + '" id="selfReportContent">';
+
+    // Running experience
+    html += '<div class="report-section">';
+    html += '<div class="report-label">\uB7EC\uB2DD \uACBD\uB825</div>';
+    html += '<div class="chip-group" id="expChips">';
+    for (var i = 0; i < expOptions.length; i++) {
+      var e = expOptions[i];
+      var sel = selectedExperience === e.key ? ' selected' : '';
+      html += '<div class="chip' + sel + '" data-group="experience" data-value="' + e.key + '">' + e.label + '</div>';
+    }
+    html += '</div></div>';
+
+    // Race history
+    html += '<div class="report-section">';
+    html += '<div class="report-label">\uB300\uD68C \uACBD\uD5D8</div>';
+    html += '<div class="chip-group" id="raceChips">';
+    for (var j = 0; j < raceOptions.length; j++) {
+      var r = raceOptions[j];
+      var rSel = selectedRaces.has(r.key) ? ' selected' : '';
+      html += '<div class="chip' + rSel + '" data-group="race" data-value="' + r.key + '">' + r.label + '</div>';
+    }
+    html += '</div></div>';
+
+    html += '<div class="report-hint">\uC120\uD0DD \uC2DC \uC9C4\uB2E8 \uACB0\uACFC\uAC00 \uC990\uC2DC \uBC18\uC601\uB429\uB2C8\uB2E4</div>';
+    html += '<div class="report-updating" id="reportUpdating">\u2728 \uC9C4\uB2E8 \uACB0\uACFC \uC5C5\uB370\uC774\uD2B8 \uC911...</div>';
+
+    html += '</div></div>';
+    return html;
+  }
+
+  function renderCTA() {
+    return '<div class="cta-bar">' +
+      '<button class="cta-button" id="ctaButton">\uD83D\uDCCB \uB7EC\uB2DD \uD504\uB85C\uD544 \uC124\uC815\uD558\uAE30 \u2192</button>' +
+    '</div>';
+  }
+
+  // ── Insufficient data state ──
+  function renderInsufficientData(profile) {
+    var msg = (profile && profile.data_message) || '\uC544\uC9C1 \uCDA9\uBD84\uD55C \uB7EC\uB2DD \uB370\uC774\uD130\uAC00 \uC5C6\uC5B4\uC694.\n\uBA87 \uBC88\uC758 \uB7EC\uB2DD \uD6C4 \uB2E4\uC2DC \uD655\uC778\uD574\uC8FC\uC138\uC694!';
+
+    selfReportOpen = true; // Expand self-report by default
+
+    var html = '<div class="insufficient-container">';
+    html += '<div class="insufficient-icon">\uD83D\uDCCA</div>';
+    html += '<div class="insufficient-title">\uB370\uC774\uD130 \uC218\uC9D1 \uC911</div>';
+    html += '<div class="insufficient-msg">' + esc(msg).replace(/\n/g, '<br>') + '</div>';
+    html += '</div>';
+
+    // Still show self-report section
+    html += renderSelfReport(profile || {});
+    html += renderCTA();
+
+    return html;
+  }
+
+  // ── Main render ──
+  function renderAll(profile) {
+    var html = '';
+    html += renderHeader();
+    html += renderStageCard(profile);
+    html += renderMetrics(profile);
+    html += renderWeeklyChart(profile);
+    html += renderChecklist(profile);
+    html += renderKeyFocus(profile);
+    html += renderSelfReport(profile);
+    html += renderCTA();
+    return html;
+  }
+
+  function renderError(msg) {
+    return '<div class="error-container">' +
+      '<div class="error-icon">\uD83D\uDE16</div>' +
+      '<div class="error-title">\uBB38\uC81C\uAC00 \uBC1C\uC0DD\uD588\uC5B4\uC694</div>' +
+      '<div class="error-msg">' + esc(msg) + '</div>' +
+      '<button class="error-retry" onclick="location.reload()">\uB2E4\uC2DC \uC2DC\uB3C4</button>' +
+    '</div>';
+  }
+
+  // ── Bind events (called after DOM update) ──
+  function bindEvents() {
+    // Collapse toggle
+    var toggle = document.getElementById('selfReportToggle');
+    if (toggle) {
+      toggle.addEventListener('click', function() {
+        selfReportOpen = !selfReportOpen;
+        var content = document.getElementById('selfReportContent');
+        var arrow = document.getElementById('collapseArrow');
+        if (content) content.classList.toggle('open', selfReportOpen);
+        if (arrow) arrow.classList.toggle('open', selfReportOpen);
+      });
+    }
+
+    // Chip selection
+    var chips = document.querySelectorAll('.chip');
+    for (var i = 0; i < chips.length; i++) {
+      chips[i].addEventListener('click', handleChipClick);
+    }
+
+    // CTA
+    var cta = document.getElementById('ctaButton');
+    if (cta) {
+      cta.addEventListener('click', function() {
+        if (tg) {
+          tg.close();
+        }
+      });
+    }
+  }
+
+  function handleChipClick(e) {
+    var chip = e.currentTarget;
+    var group = chip.getAttribute('data-group');
+    var value = chip.getAttribute('data-value');
+
+    if (group === 'experience') {
+      // Single select
+      selectedExperience = selectedExperience === value ? null : value;
+      var expChips = document.querySelectorAll('[data-group="experience"]');
+      for (var i = 0; i < expChips.length; i++) {
+        expChips[i].classList.toggle('selected', expChips[i].getAttribute('data-value') === selectedExperience);
+      }
+    } else if (group === 'race') {
+      // "none" is exclusive; others can be multi-select
+      if (value === 'none') {
+        if (selectedRaces.has('none')) {
+          selectedRaces.clear();
+        } else {
+          selectedRaces.clear();
+          selectedRaces.add('none');
+        }
+      } else {
+        selectedRaces.delete('none');
+        if (selectedRaces.has(value)) {
+          selectedRaces.delete(value);
+        } else {
+          selectedRaces.add(value);
+        }
+      }
+      var raceChips = document.querySelectorAll('[data-group="race"]');
+      for (var j = 0; j < raceChips.length; j++) {
+        raceChips[j].classList.toggle('selected', selectedRaces.has(raceChips[j].getAttribute('data-value')));
+      }
+    }
+
+    // Send self-report update
+    submitSelfReport();
+  }
+
+  var submitTimer = null;
+  function submitSelfReport() {
+    // Debounce 600ms
+    if (submitTimer) clearTimeout(submitTimer);
+    submitTimer = setTimeout(doSubmitSelfReport, 600);
+  }
+
+  function doSubmitSelfReport() {
+    if (!selectedExperience && selectedRaces.size === 0) return;
+
+    var survey = {};
+    if (selectedExperience) survey.running_experience = selectedExperience;
+    if (selectedRaces.size > 0) survey.race_history = Array.from(selectedRaces);
+
+    // Show updating indicator
+    var updEl = document.getElementById('reportUpdating');
+    if (updEl) updEl.classList.add('visible');
+
+    updateSelfReport(survey).then(function(res) {
+      if (res.success && res.profile) {
+        currentProfile = res.profile;
+        reRenderProfile(res.profile);
+      }
+      if (updEl) updEl.classList.remove('visible');
+    }).catch(function() {
+      if (updEl) updEl.classList.remove('visible');
+    });
+  }
+
+  function reRenderProfile(profile) {
+    // Re-render only the data sections, keep self-report open state
+    var app = document.getElementById('app');
+    if (!app) return;
+
+    var html = '';
+    html += renderHeader();
+
+    if (profile.data_insufficient) {
+      html += renderInsufficientData(profile);
+    } else {
+      html += renderStageCard(profile);
+      html += renderMetrics(profile);
+      html += renderWeeklyChart(profile);
+      html += renderChecklist(profile);
+      html += renderKeyFocus(profile);
+      html += renderSelfReport(profile);
+      html += renderCTA();
+    }
+
+    app.innerHTML = html;
+    bindEvents();
+  }
+
+  // ── Init ──
+  async function init() {
+    var app = document.getElementById('app');
+
+    if (!userId) {
+      app.innerHTML = renderError('\uD154\uB808\uADF8\uB7A8\uC5D0\uC11C \uC5F4\uC5B4\uC8FC\uC138\uC694');
+      return;
+    }
+
+    try {
+      var res = await fetchDiagnostic();
+
+      if (!res.success) {
+        throw new Error(res.error || '\uB370\uC774\uD130\uB97C \uBD88\uB7EC\uC62C \uC218 \uC5C6\uC2B5\uB2C8\uB2E4');
+      }
+
+      var profile = res.profile;
+      currentProfile = profile;
+
+      if (profile.data_insufficient) {
+        app.innerHTML = renderInsufficientData(profile);
+      } else {
+        app.innerHTML = renderAll(profile);
+      }
+
+      bindEvents();
+
+    } catch (e) {
+      app.innerHTML = renderError(e.message || '\uC54C \uC218 \uC5C6\uB294 \uC624\uB958');
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

@@ -1154,7 +1154,6 @@
     }
     html += '</div>';
 
-    html += '<div class="cta-section"><button class="btn-secondary" id="btn-close">' + icon('x') + ' 닫기</button></div>';
     return html;
   }
 
@@ -1197,7 +1196,6 @@
   function attachTabEvents() {
     document.querySelectorAll('.stage-card').forEach(function(c) { c.addEventListener('click', function() { var id = this.dataset.stageId; var st = appData.quest_path.stages.find(function(s){return s.id===id;}); if (st && st.status === 'locked') return; expandedStage = expandedStage===id?null:id; renderActiveTab(); }); });
     document.querySelectorAll('.period-btn').forEach(function(b) { b.addEventListener('click', function() { statsPeriod = this.dataset.period; renderActiveTab(); }); });
-    var cb = document.getElementById('btn-close'); if (cb) cb.addEventListener('click', function() { if (tg) tg.close(); });
     var cpb = document.getElementById('btn-create-plan'); if (cpb) cpb.addEventListener('click', function() { sendCommand('/plan'); });
     var psc = document.getElementById('plan-slim-card'); if (psc) psc.addEventListener('click', function() { var wp = appData && appData.home && appData.home.weekly_plan; if (wp && wp.days && wp.days.length > 0) switchTab('plan'); else sendCommand('/plan'); });
     var qst = document.getElementById('quest-summary-toggle'); if (qst) qst.addEventListener('click', function() {

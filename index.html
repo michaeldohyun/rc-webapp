@@ -299,18 +299,17 @@
     <div class="hero animate">
       <div class="hero-icon">🏃‍♂️</div>
       <h1>Running Coach</h1>
-      <div class="subtitle">AI 러닝 코치가 매일<br>당신의 러닝을 분석합니다</div>
+      <div class="subtitle">내 기록 기반 맞춤 코칭으로<br>꾸준히 건강하게 러닝하세요</div>
       <div class="greeting" id="greeting"></div>
     </div>
 
     <!-- intervals.icu 소개 -->
     <div class="section animate animate-d1">
-      <div class="section-title"><span class="icon">📊</span> intervals.icu란?</div>
+      <div class="section-title"><span class="icon">⌚</span> Garmin 연동 방법</div>
       <div class="icu-intro">
         <p>
-          <b>무료</b> 러닝/사이클링 데이터 분석 플랫폼입니다.
-          Garmin과 자동 연동되어
-          훈련 부하, 심박 존, 페이스 등을 분석해줍니다.
+          Garmin 데이터를 가져오기 위해 <b>무료</b> 플랫폼 intervals.icu를 사용합니다.
+          처음 한 번만 연동하면 돼요!
         </p>
         <div class="icu-tags">
           <span class="icu-tag">Garmin</span>
@@ -323,31 +322,31 @@
       <div class="section-title"><span class="icon">⚡</span> 이런 걸 할 수 있어요</div>
       <div class="feature-cards">
         <div class="feature-card">
-          <div class="card-icon">📋</div>
+          <div class="card-icon">📊</div>
           <div class="card-body">
-            <h3>매일 AI 러닝 리포트</h3>
-            <p>매일 밤 자동으로 러닝 분석 리포트를 보내드려요</p>
+            <h3>현재 상태 진단</h3>
+            <p>연동하면 AI가 러닝 데이터를 분석해 현재 상태를 알려줘요</p>
           </div>
         </div>
         <div class="feature-card">
-          <div class="card-icon">🌤️</div>
+          <div class="card-icon">🏋️</div>
           <div class="card-body">
-            <h3>날씨 기반 러닝 추천</h3>
-            <p>7일 날씨 예보와 함께 최적의 러닝 타이밍을 알려줘요</p>
+            <h3>맞춤 훈련법 추천</h3>
+            <p>내 수준과 목표에 맞는 훈련법을 추천해줘요</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon">📅</div>
+          <div class="card-body">
+            <h3>주간 훈련 계획</h3>
+            <p>요일별 훈련 계획을 세우고 퀘스트로 실행해요</p>
           </div>
         </div>
         <div class="feature-card">
           <div class="card-icon">💬</div>
           <div class="card-body">
-            <h3>자유 질문 Q&A</h3>
-            <p>"지난주 총 거리?" 같은 질문에 바로 답해줘요</p>
-          </div>
-        </div>
-        <div class="feature-card">
-          <div class="card-icon">🎯</div>
-          <div class="card-body">
-            <h3>훈련 목표 관리</h3>
-            <p>목표 설정, 진행 상황 추적, 훈련 이론 안내</p>
+            <h3>자유 질문 & 날씨</h3>
+            <p>궁금한 건 언제든 물어보고, 러닝 날씨도 확인해요</p>
           </div>
         </div>
       </div>
@@ -357,21 +356,22 @@
     <div class="section animate animate-d3">
       <div class="section-title"><span class="icon">💡</span> 사용 예시</div>
       <div class="chat-demo">
-        <div class="chat-bubble user">지난주 총 거리가 얼마야?</div>
+        <div class="chat-bubble user">내 러닝 현재 상태 분석해줘</div>
         <div class="chat-bubble bot">
           <div class="label">Running Coach</div>
-          지난주(1/27~2/2) 러닝 요약이에요 🏃‍♂️<br><br>
-          총 거리: <b>32.4km</b> (4회)<br>
-          평균 페이스: <b>5:23/km</b><br>
-          주간 부하: 적정 ✅<br><br>
-          전주 대비 거리 +12% 증가했어요. 좋은 흐름이에요!
+          최근 4주 러닝을 분석했어요 📊<br><br>
+          주간 평균: <b>28km</b> (3.5회)<br>
+          체력 수준: <b>중급</b><br>
+          훈련 부하: 적정 ✅<br><br>
+          기초 체력이 잘 잡혀 있어요! 인터벌 훈련을 추천드려요.
         </div>
+        <div class="chat-bubble user">/plan</div>
         <div class="chat-bubble bot">
-          <div class="label">자동 리포트 예시</div>
-          오늘의 러닝 분석 🏃‍♂️<br><br>
-          10.2km / 52:18 / 페이스 5:08/km<br>
-          심박존: Z2 68% · Z3 24%<br>
-          컨디션: 좋음 💚
+          <div class="label">주간 훈련 계획</div>
+          이번 주 계획이에요 🗓️<br><br>
+          화: 인터벌 6km<br>
+          목: 이지런 8km<br>
+          토: 장거리 12km
         </div>
       </div>
     </div>
@@ -397,8 +397,8 @@
         <div class="flow-step">
           <div class="flow-step-num">3</div>
           <div class="flow-step-body">
-            <h3>매일 분석 받기</h3>
-            <p>러닝하면 자동으로 분석 리포트가 도착해요</p>
+            <h3>맞춤 코칭 시작</h3>
+            <p>상태 진단, 훈련법 추천, 주간 계획까지 받아보세요</p>
           </div>
         </div>
       </div>

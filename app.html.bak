@@ -17,7 +17,7 @@
     --btn-text: var(--tg-theme-button-text-color, #ffffff);
     --secondary-bg: var(--tg-theme-secondary-bg-color, #f0f0f0);
     --section-bg: var(--tg-theme-section-bg-color, var(--bg));
-    --card-radius: 14px;
+    --card-radius: 16px;
     --shimmer-color: rgba(128,128,128,0.08);
     --success: #22c55e;
     --core-color: #F59E0B;
@@ -36,7 +36,6 @@
     -webkit-font-smoothing: antialiased;
     padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 24px);
   }
-  body.plan-dirty { padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 80px); }
 
   .container { max-width: 480px; margin: 0 auto; padding: 0 16px; }
   .tab-content { display: none; padding-top: 12px; padding-bottom: 16px; }
@@ -72,7 +71,7 @@
   .nav-btn.active span { font-weight: 700; }
 
   /* Card */
-  .card { background: var(--bg); border-radius: var(--card-radius); padding: 16px; margin-bottom: 12px; border: 1px solid var(--secondary-bg); }
+  .card { background: var(--bg); border-radius: var(--card-radius); padding: 16px; margin-bottom: 12px; }
 
   /* Skeleton */
   .skeleton { display: flex; flex-direction: column; gap: 12px; padding-top: 20px; }
@@ -123,27 +122,15 @@
   .hs-value { font-size: 15px; font-weight: 700; }
   .hs-label { font-size: 10px; color: var(--hint); margin-top: 1px; }
 
-  .home-profile { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--secondary-bg); }
-  .home-profile-row { display: flex; align-items: center; gap: 4px; }
-  .home-profile-goal { font-size: 14px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
-  .home-profile-goal .ic { color: var(--btn); }
-  .home-profile-goal .ic svg { width: 15px; height: 15px; }
-  .home-profile-meta { font-size: 12px; color: var(--hint); display: flex; align-items: center; gap: 0; }
-  .method-tag { display: inline-flex; align-items: center; gap: 3px; color: var(--method-color); font-weight: 600; }
-  .home-profile-edit { margin-left: auto; color: var(--hint); display: flex; align-self: center; }
-  .home-profile-edit svg { width: 16px; height: 16px; }
-  .home-profile-empty { font-size: 12px; color: var(--hint); text-align: center; padding: 2px 0; }
-  .home-profile-empty a { color: var(--link); text-decoration: none; font-weight: 600; }
-
   .section-title {
-    font-size: 16px; font-weight: 600; margin: 16px 0 10px;
+    font-size: 16px; font-weight: 700; margin: 16px 0 10px;
     display: flex; align-items: center; gap: 6px;
   }
   .section-title .ic svg { width: 18px; height: 18px; }
   .section-title .count { font-size: 12px; color: var(--hint); font-weight: 500; margin-left: auto; }
 
   .quest-list { display: flex; flex-direction: column; gap: 8px; }
-  .quest-card { background: var(--bg); border-radius: 14px; padding: 12px 12px 12px 16px; position: relative; overflow: hidden; border: 1px solid var(--secondary-bg); }
+  .quest-card { background: var(--bg); border-radius: 12px; padding: 12px 12px 12px 16px; position: relative; overflow: hidden; }
   .quest-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
   .quest-card[data-type="core"]::before { background: var(--core-color); }
   .quest-card[data-type="method"]::before { background: var(--method-color); }
@@ -165,23 +152,15 @@
   .quest-card[data-type="stretch"] .quest-progress-fill { background: var(--stretch-color); }
   .quest-card.completed .quest-progress-fill { background: var(--success); }
   .quest-progress-text { font-size: 11px; color: var(--hint); margin-top: 3px; text-align: right; }
-  .quest-empty { text-align: center; padding: 30px 16px; color: var(--hint); background: var(--bg); border-radius: var(--card-radius); font-size: 13px; border: 1px solid var(--secondary-bg); }
-
-  /* Page Header */
-  .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
-  .page-header-left { flex: 1; }
-  .page-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-  .page-sub { font-size: 13px; color: var(--hint); }
-  .page-header-action { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 500; color: var(--link); text-decoration: none; padding: 6px 10px; border-radius: 8px; background: rgba(var(--btn-rgb,38,120,182),0.08); white-space: nowrap; margin-top: 2px; }
-  .page-header-action svg { width: 14px; height: 14px; }
+  .quest-empty { text-align: center; padding: 24px 16px; color: var(--hint); background: var(--bg); border-radius: var(--card-radius); font-size: 13px; }
 
   /* Home: Summary Cards */
   .summary-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
   .summary-card { flex: 1; background: var(--bg); border-radius: 14px; padding: 14px; border: 1px solid var(--secondary-bg); }
   .summary-card-head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-  .summary-card-head .sc-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: rgba(var(--btn-rgb,38,120,182),0.1); color: var(--btn); }
-  .summary-card-head .sc-icon svg { width: 14px; height: 14px; }
-  .summary-card-head .sc-title { font-size: 13px; font-weight: 600; color: var(--hint); }
+  .summary-card-head .sc-icon { color: var(--btn); display: flex; }
+  .summary-card-head .sc-icon svg { width: 16px; height: 16px; }
+  .summary-card-head .sc-title { font-size: 12px; font-weight: 600; color: var(--hint); }
   .summary-card-head .sc-edit { margin-left: auto; color: var(--link); display: flex; cursor: pointer; }
   .summary-card-head .sc-edit svg { width: 14px; height: 14px; }
   .sc-content { font-size: 13px; line-height: 1.6; }
@@ -194,35 +173,11 @@
   .plan-mini-day { flex: 1; text-align: center; padding: 4px 0; border-radius: 6px; font-size: 10px; }
   .plan-mini-day.rest { background: var(--secondary-bg); color: var(--hint); }
   .plan-mini-day.active { background: rgba(var(--btn-rgb,38,120,182),0.12); color: var(--btn); font-weight: 600; }
-
-  /* Plan Today Hero */
-  .plan-today {
-    margin-top: 10px; padding: 12px;
-    background: rgba(var(--btn-rgb,38,120,182),0.06);
-    border-radius: 12px; display: flex; align-items: center; gap: 12px;
-  }
-  .plan-today.rest { background: var(--secondary-bg); }
-  .plan-today-badge {
-    width: 40px; height: 40px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; font-weight: 700; flex-shrink: 0;
-  }
-  .plan-today-badge.run { background: rgba(var(--btn-rgb,38,120,182),0.15); color: var(--btn); }
-  .plan-today-badge.rest-badge { background: var(--secondary-bg); color: var(--hint); }
-  .plan-today-info { flex: 1; min-width: 0; }
-  .plan-today-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--btn); margin-bottom: 2px; }
-  .plan-today.rest .plan-today-label { color: var(--hint); }
-  .plan-today-title { font-size: 15px; font-weight: 700; }
-  .plan-today-detail { font-size: 12px; color: var(--hint); margin-top: 2px; }
-  .plan-today-km { font-size: 18px; font-weight: 700; color: var(--btn); flex-shrink: 0; }
-  .plan-mini-day.today { position: relative; }
-  .plan-mini-day.today::after {
-    content: ''; position: absolute; bottom: -3px; left: 50%; transform: translateX(-50%);
-    width: 4px; height: 4px; border-radius: 50%; background: var(--btn);
-  }
+  .plan-mini-dist { font-size: 9px; font-weight: 700; }
 
   /* ===== QUEST PATH TAB ===== */
-  /* quest-path uses .page-header */
+  .quest-path-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .quest-path-sub { font-size: 13px; color: var(--hint); margin-bottom: 20px; }
   .path-container { position: relative; }
   .path-line { position: absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: var(--secondary-bg); }
   .path-stages { display: flex; flex-direction: column; gap: 10px; }
@@ -280,16 +235,16 @@
   .trophy-desc { font-size: 12px; color: var(--hint); margin-top: 2px; }
 
   /* ===== STATS TAB ===== */
-  /* stats uses .page-header */
+  .stats-page-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .stats-page-sub { font-size: 13px; color: var(--hint); margin-bottom: 16px; }
   .period-toggle { display: flex; border-radius: 12px; background: var(--bg); padding: 3px; margin-bottom: 16px; }
   .period-btn { flex: 1; padding: 8px 0; border: none; border-radius: 10px; background: transparent; font-size: 13px; font-weight: 500; color: var(--hint); cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
   .period-btn.active { background: var(--btn); color: var(--btn-text); font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
-  .stats-flex { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
-  .stats-flex .stats-card { flex: 1 1 calc(33.33% - 7px); min-width: 90px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
   .stats-card { background: var(--bg); border-radius: 14px; padding: 14px; border: 1px solid var(--secondary-bg); }
-  .stats-card-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
-  .stats-card-icon svg { width: 14px; height: 14px; }
-  .stats-card-value { font-size: 20px; font-weight: 700; white-space: nowrap; }
+  .stats-card-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+  .stats-card-icon svg { width: 16px; height: 16px; }
+  .stats-card-value { font-size: 22px; font-weight: 700; }
   .stats-card-label { font-size: 11px; color: var(--hint); margin-top: 2px; }
   .chart-card { background: var(--bg); border-radius: var(--card-radius); padding: 16px; margin-bottom: 12px; border: 1px solid var(--secondary-bg); }
   .chart-title { font-size: 15px; font-weight: 600; margin-bottom: 14px; }
@@ -301,7 +256,7 @@
   .bar-fill.no-data { background: var(--secondary-bg); height: 4px !important; }
   .bar-label { font-size: 10px; color: var(--hint); }
   .records-list { display: flex; flex-direction: column; gap: 8px; }
-  .record-row { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--bg); border-radius: 14px; border: 1px solid var(--secondary-bg); }
+  .record-row { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--bg); border-radius: 12px; border: 1px solid var(--secondary-bg); }
   .record-left { display: flex; align-items: center; gap: 10px; }
   .record-ic { color: var(--btn); display: flex; }
   .record-ic svg { width: 20px; height: 20px; }
@@ -309,9 +264,10 @@
   .record-value { font-size: 15px; font-weight: 700; }
 
   /* ===== PLAN TAB ===== */
-  /* plan uses .page-header */
+  .plan-page-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .plan-page-sub { font-size: 13px; color: var(--hint); margin-bottom: 16px; }
   .plan-summary { display: flex; gap: 8px; margin-bottom: 16px; }
-  .plan-stat { flex: 1; background: var(--bg); border-radius: 14px; padding: 12px; text-align: center; border: 1px solid var(--secondary-bg); }
+  .plan-stat { flex: 1; background: var(--bg); border-radius: 12px; padding: 12px; text-align: center; border: 1px solid var(--secondary-bg); }
   .plan-stat-value { font-size: 20px; font-weight: 700; }
   .plan-stat-label { font-size: 10px; color: var(--hint); margin-top: 2px; }
   .plan-days { display: flex; flex-direction: column; gap: 8px; }
@@ -325,100 +281,11 @@
   .plan-day-title { font-size: 14px; font-weight: 600; }
   .plan-day-detail { font-size: 12px; color: var(--hint); margin-top: 2px; }
   .plan-day-km { font-size: 15px; font-weight: 700; color: var(--btn); text-align: right; white-space: nowrap; }
-  .plan-empty { text-align: center; padding: 30px 16px; color: var(--hint); background: var(--bg); border-radius: var(--card-radius); font-size: 13px; line-height: 1.6; border: 1px solid var(--secondary-bg); }
+  .plan-empty { text-align: center; padding: 40px 20px; color: var(--hint); background: var(--bg); border-radius: var(--card-radius); font-size: 13px; line-height: 1.6; }
   .plan-empty a { color: var(--link); text-decoration: none; font-weight: 600; }
-  /* Plan Editable Day Card */
-  .plan-day-card.expandable { cursor: pointer; -webkit-tap-highlight-color: transparent; flex-wrap: wrap; }
-  .plan-day-card.expandable:active { background: var(--secondary-bg); }
-  .plan-day-toggle { color: var(--hint); display: flex; align-items: center; margin-left: auto; transition: transform 0.2s; flex-shrink: 0; }
-  .plan-day-toggle svg { width: 16px; height: 16px; }
-  .plan-day-card.open .plan-day-toggle { transform: rotate(180deg); }
-  .plan-day-edit { display: none; width: 100%; padding-top: 12px; border-top: 1px solid var(--secondary-bg); margin-top: 12px; }
-  .plan-day-card.open .plan-day-edit { display: block; animation: fadeIn 0.2s ease; }
-  .pe-type-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-  .pe-type-chip {
-    padding: 5px 10px; border: 1.5px solid var(--secondary-bg); border-radius: 20px;
-    font-size: 12px; cursor: pointer; transition: all 0.2s; color: var(--text); opacity: 0.6;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .pe-type-chip.selected { border-color: var(--btn); background: rgba(var(--btn-rgb,38,120,182),0.08); opacity: 1; font-weight: 600; }
-  .pe-field-row { display: flex; gap: 8px; margin-bottom: 8px; }
-  .pe-field { flex: 1; }
-  .pe-field label { display: block; font-size: 11px; font-weight: 600; color: var(--hint); margin-bottom: 4px; }
-  .pe-field input, .pe-field textarea {
-    width: 100%; padding: 8px 10px; border: 1.5px solid var(--secondary-bg); border-radius: 8px;
-    font-size: 14px; background: var(--bg); color: var(--text); font-family: inherit;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .pe-field input:focus, .pe-field textarea:focus { outline: none; border-color: var(--btn); box-shadow: 0 0 0 3px rgba(var(--btn-rgb,38,120,182),0.12); }
-  .pe-field textarea { resize: vertical; min-height: 36px; font-size: 13px; }
-  .plan-save-bar {
-    position: fixed; bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 16px);
-    left: 0; right: 0; z-index: 40; padding: 0 16px; animation: fadeIn 0.2s ease;
-  }
-  .plan-save-bar-inner { max-width: 480px; margin: 0 auto; }
-  .plan-save-btn {
-    display: block; width: 100%; padding: 14px; border: none; border-radius: 12px;
-    font-size: 16px; font-weight: 600; cursor: pointer; text-align: center;
-    background: var(--btn); color: var(--btn-text); transition: opacity 0.2s, transform 0.1s;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  }
-  .plan-save-btn:active { transform: scale(0.98); opacity: 0.85; }
-  .plan-save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .plan-save-error { color: #e74c3c; font-size: 13px; text-align: center; margin-top: 6px; }
+  .plan-edit-link { display: block; text-align: center; margin-top: 12px; font-size: 13px; color: var(--link); text-decoration: none; font-weight: 500; }
 
-  /* Plan Slim Card */
-  .plan-slim { background: var(--bg); border-radius: var(--card-radius); padding: 12px 14px; margin-bottom: 12px; border: 1px solid var(--secondary-bg); cursor: pointer; -webkit-tap-highlight-color: transparent; }
-  .plan-slim:active { background: var(--secondary-bg); }
-  .plan-slim-head { display: flex; align-items: center; gap: 6px; }
-  .plan-slim-head .ps-icon { color: var(--btn); display: flex; }
-  .plan-slim-head .ps-icon svg { width: 16px; height: 16px; }
-  .plan-slim-head .ps-title { font-size: 13px; font-weight: 600; }
-  .plan-slim-head .ps-stats { font-size: 12px; color: var(--hint); margin-left: 4px; }
-  .plan-slim-head .ps-chevron { margin-left: auto; color: var(--hint); display: flex; }
-  .plan-slim-head .ps-chevron svg { width: 16px; height: 16px; }
-
-  /* Quest Summary Card */
-  .quest-summary-card { background: var(--bg); border-radius: var(--card-radius); padding: 14px; margin-bottom: 12px; border: 1px solid var(--secondary-bg); }
-  .quest-summary-head { display: flex; align-items: center; gap: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-  .quest-summary-head .qs-icon { color: var(--btn); display: flex; }
-  .quest-summary-head .qs-icon svg { width: 16px; height: 16px; }
-  .quest-summary-head .qs-title { font-size: 13px; font-weight: 600; }
-  .quest-summary-head .qs-count { font-size: 12px; color: var(--hint); font-weight: 500; }
-  .quest-summary-head .qs-chevron { margin-left: auto; color: var(--hint); display: flex; }
-  .quest-summary-head .qs-chevron svg { width: 16px; height: 16px; }
-  .quest-summary-bar { margin-top: 10px; height: 8px; background: var(--secondary-bg); border-radius: 4px; overflow: hidden; }
-  .quest-summary-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--btn), var(--link)); transition: width 0.6s ease; }
-  .quest-summary-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; font-size: 11px; color: var(--hint); }
-  .quest-summary-xp { font-weight: 600; color: var(--link); }
-
-  /* Quest Accordion Items */
-  .quest-accordion { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--secondary-bg); display: flex; flex-direction: column; gap: 8px; animation: fadeIn 0.25s ease; }
-  .quest-inline-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
-  .quest-inline-bar { width: 3px; height: 28px; border-radius: 2px; flex-shrink: 0; }
-  .quest-inline-bar.core { background: var(--core-color); }
-  .quest-inline-bar.method { background: var(--method-color); }
-  .quest-inline-bar.stretch { background: var(--stretch-color); }
-  .quest-inline-bar.done { background: var(--success); }
-  .quest-inline-info { flex: 1; min-width: 0; }
-  .quest-inline-title { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .quest-inline-title.done { text-decoration: line-through; color: var(--hint); }
-  .quest-inline-progress { font-size: 11px; color: var(--hint); }
-  .quest-inline-xp { font-size: 10px; font-weight: 600; color: var(--link); white-space: nowrap; }
-  .quest-inline-check { color: var(--success); display: flex; }
-  .quest-inline-check svg { width: 16px; height: 16px; }
-
-  /* Quest see-more link */
-  .quest-see-more { display: flex; align-items: center; justify-content: flex-end; gap: 2px; padding: 6px 0 0; font-size: 12px; font-weight: 500; color: var(--link); cursor: pointer; -webkit-tap-highlight-color: transparent; }
-  .quest-see-more svg { width: 14px; height: 14px; }
-
-  /* XP Area Tappable */
-  .home-xp-row.tappable { cursor: pointer; -webkit-tap-highlight-color: transparent; padding: 4px 0; margin-top: 4px; border-radius: 6px; transition: background 0.15s; }
-  .home-xp-row.tappable:active { background: var(--secondary-bg); }
-  .home-xp-chevron { color: var(--hint); display: flex; align-items: center; margin-left: 4px; }
-  .home-xp-chevron svg { width: 14px; height: 14px; }
-
-  /* Home quest section clickable (legacy) */
+  /* Home quest section clickable */
   .section-title.clickable { cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .section-title .chevron-right { margin-left: auto; color: var(--hint); display: flex; }
   .section-title .chevron-right svg { width: 16px; height: 16px; }
@@ -428,7 +295,7 @@
   .back-header svg { width: 18px; height: 18px; }
 
   /* ===== SETTINGS TAB ===== */
-  /* settings uses .page-header */
+  .settings-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
   .settings-links { display: flex; flex-direction: column; gap: 1px; background: var(--secondary-bg); border-radius: var(--card-radius); overflow: hidden; margin-bottom: 16px; }
   .settings-link {
     display: flex; align-items: center; gap: 12px; padding: 14px 16px;
@@ -464,7 +331,7 @@
   .milestones-title svg { width: 16px; height: 16px; }
   .milestones-title .mcount { font-size: 12px; font-weight: 400; color: var(--hint); margin-left: 4px; }
   .milestone-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .ms-card { background: var(--bg); border-radius: 14px; padding: 10px 6px; text-align: center; position: relative; border: 1px solid rgba(var(--btn-rgb, 38,120,182), 0.12); }
+  .ms-card { background: var(--bg); border-radius: 12px; padding: 10px 6px; text-align: center; position: relative; border: 1px solid rgba(var(--btn-rgb, 38,120,182), 0.12); }
   .ms-card.locked { opacity: 0.5; border-color: transparent; background: var(--secondary-bg); }
   .ms-icon { display: flex; align-items: center; justify-content: center; margin: 0 auto; }
   .ms-icon svg { width: 28px; height: 28px; }
@@ -527,6 +394,7 @@
 (function() {
   var API_URL = 'https://dotsosqsftympgdescvz.supabase.co/functions/v1/rc-onboarding';
   var SURVEY_URL = 'https://michaeldohyun.github.io/rc-webapp/survey.html?from=app';
+  var PLAN_URL = 'https://michaeldohyun.github.io/rc-webapp/plan.html?from=app';
   var ONBOARDING_URL = 'https://michaeldohyun.github.io/rc-webapp/?from=app';
 
   var QUEST_XP = { core: 30, method: 40, stretch: 50 };
@@ -573,45 +441,15 @@
     x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
     user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
     link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>',
-    book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>',
   };
 
   // Milestone category → icon key
   var MS_ICONS = { volume: 'barChart', endurance: 'mountain', consistency: 'flame', speed: 'zap', fitness: 'heart' };
 
-  var PLAN_TYPES = [
-    { value: 'rest', label: '휴식' }, { value: 'easy_run', label: '이지런' },
-    { value: 'recovery_run', label: '회복런' }, { value: 'long_run', label: '장거리' },
-    { value: 'tempo_run', label: '템포런' }, { value: 'threshold_run', label: '역치런' },
-    { value: 'interval', label: '인터벌' }, { value: 'fartlek', label: '파틀렉' },
-    { value: 'hill_run', label: '언덕런' }, { value: 'race_pace', label: '레이스페이스' },
-    { value: 'cross_training', label: '크로스' }, { value: 'walk_run', label: '걷기/달리기' },
-  ];
-  var PLAN_TYPE_MAP = {}; PLAN_TYPES.forEach(function(t) { PLAN_TYPE_MAP[t.value] = t.label; });
-
   var appData = null;
   var activeTab = 'home';
   var expandedStage = null;
   var statsPeriod = 'week';
-  var questExpanded = false;
-  var planEditDirty = false;
-  var planEditOpen = {};
-
-  function buildQuestAccordionHtml(wq) {
-    var html = '<div class="quest-accordion">';
-    wq.forEach(function(q) {
-      var barCls = q.completed ? 'done' : q.quest_type;
-      html += '<div class="quest-inline-item"><div class="quest-inline-bar ' + barCls + '"></div><div class="quest-inline-info"><div class="quest-inline-title' + (q.completed ? ' done' : '') + '">' + esc(q.title) + '</div>';
-      if (!q.completed) html += '<div class="quest-inline-progress">' + q.current_value + '/' + q.target_value + '</div>';
-      html += '</div>';
-      if (q.completed) html += '<span class="quest-inline-check">' + icon('checkCircle') + '</span>';
-      else html += '<span class="quest-inline-xp">+' + (QUEST_XP[q.quest_type]||30) + '</span>';
-      html += '</div>';
-    });
-    html += '<div class="quest-see-more" id="go-quest-path">퀘스트 경로 보기 ' + icon('chevronRight') + '</div>';
-    html += '</div>';
-    return html;
-  }
 
   var tg = window.Telegram && window.Telegram.WebApp;
   var initData = '';
@@ -639,7 +477,7 @@
   var params = new URLSearchParams(window.location.search);
   var tabParam = params.get('tab');
   if (tabParam === 'profile') tabParam = 'settings'; // backwards compat
-  if (tabParam && ['home','plan','quest','level','stats','settings'].indexOf(tabParam) !== -1) activeTab = tabParam;
+  if (tabParam && ['home','plan','quest','stats','settings'].indexOf(tabParam) !== -1) activeTab = tabParam;
 
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
   function formatDate(ds) { if (!ds) return ''; var d = new Date(ds); return d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'); }
@@ -669,300 +507,128 @@
       '<div class="home-sub">Lv.' + lvl.xp_level + ' ' + esc(lvl.title);
     if (h.streak.current_weeks > 0) html += ' <span class="home-streak">' + icon('flame') + ' ' + h.streak.current_weeks + '주</span>';
     html += '</div>' +
-      '<div class="home-xp-row tappable" id="home-xp-area"><div class="home-xp-bar"><div class="home-xp-fill" style="width:' + xpPct + '%"></div></div><span class="home-xp-label">' + lvl.current_xp + '/' + lvl.next_level_xp + '</span><span class="home-xp-chevron">' + icon('chevronRight') + '</span></div>' +
+      '<div class="home-xp-row"><div class="home-xp-bar"><div class="home-xp-fill" style="width:' + xpPct + '%"></div></div><span class="home-xp-label">' + lvl.current_xp + '/' + lvl.next_level_xp + '</span></div>' +
       '</div></div>' +
       '<div class="home-stats">' +
         '<div class="hs-item"><div class="hs-value">' + fmtNum(p.total_runs) + '</div><div class="hs-label">러닝</div></div>' +
         '<div class="hs-item"><div class="hs-value">' + fmtNum(Math.round(p.total_distance_km)) + '</div><div class="hs-label">km</div></div>' +
         '<div class="hs-item"><div class="hs-value">' + p.current_streak + '</div><div class="hs-label">연속(주)</div></div>' +
         '<div class="hs-item"><div class="hs-value">' + fmtNum(p.total_xp) + '</div><div class="hs-label">XP</div></div>' +
-      '</div>';
+      '</div></div>';
 
-    // Profile section (integrated into avatar card)
+    // Survey + Plan summary
     var sv = h.survey_summary;
-    var PRIORITY_LABELS = { health: '건강 관리', distance: '거리 늘리기', speed: '속도 향상', habit: '습관 형성', race: '대회 준비', race_prep: '대회 준비' };
-    var FREQ_LABELS = { '1-2': '주 1~2회', '3-4': '주 3~4회', '5+': '주 5회 이상' };
-
-    if (sv && (sv.goal_text || sv.weekly_frequency || sv.priority || sv.training_method)) {
-      html += '<div class="home-profile"><div class="home-profile-row">';
-      html += '<div style="flex:1">';
-      if (sv.goal_text) html += '<div class="home-profile-goal"><span class="ic">' + icon('target') + '</span>' + esc(sv.goal_text) + '</div>';
-      var metaParts = [];
-      if (sv.training_method) metaParts.push('<span class="method-tag">' + icon('book') + ' ' + esc(sv.training_method) + '</span>');
-      if (sv.weekly_frequency) metaParts.push(FREQ_LABELS[sv.weekly_frequency] || sv.weekly_frequency);
-      if (sv.priority) metaParts.push(PRIORITY_LABELS[sv.priority] || sv.priority);
-      if (sv.target_date) metaParts.push('목표일 ' + sv.target_date);
-      if (metaParts.length) html += '<div class="home-profile-meta">' + metaParts.join(' &middot; ') + '</div>';
-      html += '</div>';
-      html += '<a href="' + SURVEY_URL + '&tab=home" class="home-profile-edit">' + icon('chevronRight') + '</a>';
-      html += '</div></div>';
-    } else {
-      html += '<div class="home-profile"><div class="home-profile-empty"><a href="' + SURVEY_URL + '&tab=home">러닝 프로필 설정하기</a></div></div>';
-    }
-    html += '</div>'; // close card
-
-    // Plan slim card with Today Hero
     var wp = h.weekly_plan;
+    var PRIORITY_LABELS = { health: '건강 관리', distance: '거리 늘리기', speed: '속도 향상', habit: '습관 형성', race: '대회 준비' };
+    var FREQ_LABELS = { '1-2': '주 1~2회', '3-4': '주 3~4회', '5+': '주 5회 이상' };
     var DAY_SHORT = ['월','화','수','목','금','토','일'];
+
+    html += '<div class="summary-row">';
+    // Profile summary
+    html += '<div class="summary-card"><div class="summary-card-head"><span class="sc-icon">' + icon('user') + '</span><span class="sc-title">러닝 프로필</span><a href="' + SURVEY_URL + '" class="sc-edit">' + icon('edit') + '</a></div>';
+    if (sv && (sv.goal_text || sv.weekly_frequency || sv.priority)) {
+      html += '<div class="sc-content">';
+      if (sv.goal_text) html += '<div class="sc-row"><span class="sc-value">' + esc(sv.goal_text) + '</span></div>';
+      if (sv.weekly_frequency || sv.priority) {
+        html += '<div class="sc-row">';
+        if (sv.weekly_frequency) html += '<span class="sc-label">' + (FREQ_LABELS[sv.weekly_frequency] || sv.weekly_frequency) + '</span>';
+        if (sv.weekly_frequency && sv.priority) html += '<span class="sc-label"> · </span>';
+        if (sv.priority) html += '<span class="sc-label">' + (PRIORITY_LABELS[sv.priority] || sv.priority) + '</span>';
+        html += '</div>';
+      }
+      if (sv.target_date) html += '<div class="sc-row"><span class="sc-label">목표일 ' + esc(sv.target_date) + '</span></div>';
+      html += '</div>';
+    } else {
+      html += '<div class="sc-empty"><a href="' + SURVEY_URL + '">프로필 설정하기</a></div>';
+    }
+    html += '</div>';
+
+    // Plan summary
+    html += '<div class="summary-card"><div class="summary-card-head"><span class="sc-icon">' + icon('clipboard') + '</span><span class="sc-title">이번 주 계획</span><a href="' + PLAN_URL + '" class="sc-edit">' + icon('edit') + '</a></div>';
     if (wp && wp.days && wp.days.length > 0) {
       var planRuns = wp.days.filter(function(d){return !d.is_rest;}).length;
       var planKm = wp.days.reduce(function(a,d){return a+(d.distance_km||0);},0);
-      var planMin = wp.days.reduce(function(a,d){return a+(d.duration_min||0);},0);
-      var statsText = planKm > 0 ? (Math.round(planKm*10)/10) + 'km' : (planMin > 0 ? planMin + '분' : '');
-      html += '<div class="plan-slim" id="plan-slim-card"><div class="plan-slim-head"><span class="ps-icon">' + icon('clipboard') + '</span><span class="ps-title">이번 주 계획</span><span class="ps-stats">' + planRuns + '회' + (statsText ? '·' + statsText : '') + '</span><span class="ps-chevron">' + icon('chevronRight') + '</span></div>';
-
-      // Today hero section
-      var now = new Date(); var kstOff = 9*60*60*1000; var kst = new Date(now.getTime() + now.getTimezoneOffset()*60000 + kstOff);
-      var jsDay = kst.getDay(); var todayIdx = jsDay === 0 ? 6 : jsDay - 1; // 월=0 ~ 일=6
-      var todayDay = wp.days[todayIdx];
-      if (todayDay && !todayDay.is_rest) {
-        var details = [];
-        if (todayDay.target_hr_zone) details.push(todayDay.target_hr_zone);
-        if (todayDay.target_pace) details.push(todayDay.target_pace);
-        // 오른쪽 메트릭: distance > duration > hr_zone 우선순위
-        var metric = '';
-        if (todayDay.distance_km) {
-          metric = '<div class="plan-today-km">' + todayDay.distance_km + 'km</div>';
-          if (todayDay.duration_min) details.push(todayDay.duration_min + '분');
-        } else if (todayDay.duration_min) {
-          metric = '<div class="plan-today-km">' + todayDay.duration_min + '분</div>';
-        } else if (todayDay.target_hr_zone) {
-          metric = '<div class="plan-today-km">' + todayDay.target_hr_zone + '</div>';
-        }
-        html += '<div class="plan-today"><div class="plan-today-badge run">' + DAY_SHORT[todayIdx] + '</div><div class="plan-today-info"><div class="plan-today-label">TODAY</div><div class="plan-today-title">' + (todayDay.title || todayDay.type || '런닝') + '</div>' + (details.length ? '<div class="plan-today-detail">' + details.join(' · ') + '</div>' : '') + '</div>' + metric + '</div>';
-      } else if (todayDay) {
-        // 휴식일 - 다음 훈련 찾기
-        var nextRun = null; var nextLabel = '';
-        for (var j = 1; j < 7; j++) { var ni = (todayIdx + j) % 7; if (!wp.days[ni].is_rest) { nextRun = wp.days[ni]; nextLabel = DAY_SHORT[ni]; break; } }
-        var nextMetric = '';
-        if (nextRun) {
-          if (nextRun.distance_km) nextMetric = ' ' + nextRun.distance_km + 'km';
-          else if (nextRun.duration_min) nextMetric = ' ' + nextRun.duration_min + '분';
-          else if (nextRun.target_hr_zone) nextMetric = ' ' + nextRun.target_hr_zone;
-        }
-        var restDetail = nextRun ? '다음 훈련: ' + nextLabel + ' ' + (nextRun.title || nextRun.type || '런닝') + nextMetric : '';
-        html += '<div class="plan-today rest"><div class="plan-today-badge rest-badge">' + DAY_SHORT[todayIdx] + '</div><div class="plan-today-info"><div class="plan-today-label">TODAY</div><div class="plan-today-title">오늘은 휴식</div>' + (restDetail ? '<div class="plan-today-detail">' + restDetail + '</div>' : '') + '</div></div>';
-      }
-
-      // Mini day bar with today indicator
-      html += '<div class="plan-mini" style="margin-top:8px">';
+      html += '<div class="sc-content"><div class="sc-row"><span class="sc-value">' + planRuns + '회</span><span class="sc-label"> · </span><span class="sc-value">' + (Math.round(planKm*10)/10) + 'km</span></div></div>';
+      html += '<div class="plan-mini">';
       wp.days.forEach(function(d,i) {
         var cls = d.is_rest ? 'rest' : 'active';
-        if (i === todayIdx) cls += ' today';
-        html += '<div class="plan-mini-day ' + cls + '">' + (DAY_SHORT[i]||'') + '</div>';
+        html += '<div class="plan-mini-day ' + cls + '">' + (DAY_SHORT[i]||'') + (d.distance_km && !d.is_rest ? '<div class="plan-mini-dist">' + d.distance_km + '</div>' : '') + '</div>';
       });
-      html += '</div></div>';
+      html += '</div>';
     } else {
-      html += '<div class="plan-slim" id="plan-slim-card"><div class="plan-slim-head"><span class="ps-icon">' + icon('clipboard') + '</span><span class="ps-title">이번 주 계획</span><span class="ps-stats">미설정</span><span class="ps-chevron">' + icon('chevronRight') + '</span></div></div>';
+      html += '<div class="sc-empty"><a href="#" onclick="sendCommand(\'/plan\');return false;">계획 만들기</a></div>';
     }
+    html += '</div></div>';
 
-    // Weekly quests - summary card
+    // Weekly quests
     var wq = h.weekly_quests;
     var completed = wq.filter(function(q) { return q.completed; }).length;
+    html += '<div class="section-title clickable" id="quest-section-header"><span class="ic">' + icon('swords') + '</span> 이번 주 퀘스트 <span class="count">' + completed + '/' + wq.length + '</span><span class="chevron-right">' + icon('chevronRight') + '</span></div>';
     if (wq.length === 0) {
-      html += '<div class="quest-summary-card"><div class="quest-summary-head"><span class="qs-icon">' + icon('swords') + '</span><span class="qs-title">이번 주 퀘스트</span></div><div style="font-size:12px;color:var(--hint);text-align:center;padding:8px 0">/plan 명령어로 이번 주 계획을 먼저 만들어주세요</div></div>';
+      html += '<div class="quest-empty">/plan 명령어로 이번 주 계획을 먼저 만들어주세요</div>';
     } else {
-      var qPct = Math.round((completed / wq.length) * 100);
-      var remainXP = wq.filter(function(q){return !q.completed;}).reduce(function(a,q){return a+(QUEST_XP[q.quest_type]||30);},0);
-      html += '<div class="quest-summary-card"><div class="quest-summary-head" id="quest-summary-toggle"><span class="qs-icon">' + icon('swords') + '</span><span class="qs-title">이번 주 퀘스트</span><span class="qs-count">' + completed + '/' + wq.length + '</span><span class="qs-chevron">' + (questExpanded ? icon('chevronDown') : icon('chevronRight')) + '</span></div>';
-      html += '<div class="quest-summary-bar"><div class="quest-summary-fill" style="width:' + qPct + '%"></div></div>';
-      html += '<div class="quest-summary-meta"><span>완료 ' + completed + '/' + wq.length + '</span><span class="quest-summary-xp">남은 XP: +' + remainXP + '</span></div>';
-      html += '<div id="quest-accordion-container">' + (questExpanded ? buildQuestAccordionHtml(wq) : '') + '</div>';
+      html += '<div class="quest-list">';
+      wq.forEach(function(q) {
+        var pct = q.target_value > 0 ? Math.min(100, (q.current_value / q.target_value) * 100) : 0;
+        var cls = q.completed ? ' completed' : '';
+        html += '<div class="quest-card' + cls + '" data-type="' + q.quest_type + '">';
+        if (q.completed) html += '<div class="quest-done-ic">' + icon('checkCircle') + '</div>';
+        html += '<div class="quest-top"><span class="quest-pill ' + q.quest_type + '">' + esc(QUEST_TYPE_LABELS[q.quest_type] || q.quest_type) + '</span><span class="quest-xp">+' + (QUEST_XP[q.quest_type]||30) + ' XP</span></div>' +
+          '<div class="quest-title">' + esc(q.title) + '</div>' +
+          '<div class="quest-progress-bar"><div class="quest-progress-fill" style="width:' + pct + '%"></div></div>' +
+          '<div class="quest-progress-text">' + q.current_value + ' / ' + q.target_value + ' ' + esc(q.unit) + '</div></div>';
+      });
       html += '</div>';
     }
     return html;
   }
 
   // ---- PLAN TAB ----
-  function getIntensityForType(type) {
-    if (type === 'rest') return 'rest';
-    if (['easy_run','recovery_run','walk_run'].indexOf(type) !== -1) return 'low';
-    if (['long_run','tempo_run','fartlek','cross_training'].indexOf(type) !== -1) return 'moderate';
-    return 'high';
-  }
-
-  function renderDayEditForm(i, day) {
-    var html = '<div class="plan-day-edit"><div class="pe-type-chips">';
-    PLAN_TYPES.forEach(function(t) {
-      html += '<div class="pe-type-chip' + (t.value === day.type ? ' selected' : '') + '" data-value="' + t.value + '" data-day="' + i + '">' + t.label + '</div>';
-    });
-    html += '</div>';
-    html += '<div class="pe-field-row"><div class="pe-field"><label>거리 (km)</label><input type="number" step="0.1" id="pe-dist-' + i + '" value="' + (day.distance_km || '') + '"></div>';
-    html += '<div class="pe-field"><label>시간 (분)</label><input type="number" id="pe-dur-' + i + '" value="' + (day.duration_min || '') + '"></div></div>';
-    html += '<div class="pe-field-row"><div class="pe-field"><label>목표 페이스</label><input type="text" id="pe-pace-' + i + '" value="' + (day.target_pace || '') + '" placeholder="6:00-6:30"></div>';
-    html += '<div class="pe-field"><label>심박존</label><input type="text" id="pe-hr-' + i + '" value="' + (day.target_hr_zone || '') + '" placeholder="Z2"></div></div>';
-    html += '<div class="pe-field"><label>메모</label><textarea id="pe-notes-' + i + '" rows="1" placeholder="자유 메모">' + (day.notes || '') + '</textarea></div>';
-    html += '</div>';
-    return html;
-  }
-
-  function collectPlanEditData() {
-    var wp = appData.home.weekly_plan;
-    if (!wp || !wp.days) return null;
-    var DAY_LABELS = ['월','화','수','목','금','토','일'];
-    var days = wp.days.map(function(original, i) {
-      var chipEl = document.querySelector('.pe-type-chip.selected[data-day="' + i + '"]');
-      var typeVal = chipEl ? chipEl.dataset.value : original.type;
-      var isRest = typeVal === 'rest';
-      var distEl = document.getElementById('pe-dist-' + i);
-      var durEl = document.getElementById('pe-dur-' + i);
-      var distVal = distEl ? distEl.value : '';
-      var durVal = durEl ? durEl.value : '';
-      return {
-        day_index: i,
-        date: original.date,
-        day_label: original.day_label || DAY_LABELS[i],
-        type: typeVal,
-        title: isRest ? '휴식' : (PLAN_TYPE_MAP[typeVal] || original.title),
-        description: '',
-        distance_km: distVal ? parseFloat(distVal) : null,
-        duration_min: durVal ? parseInt(durVal) : null,
-        target_pace: (document.getElementById('pe-pace-' + i) || {}).value || null,
-        target_hr_zone: (document.getElementById('pe-hr-' + i) || {}).value || null,
-        intensity: getIntensityForType(typeVal),
-        is_rest: isRest,
-        notes: (document.getElementById('pe-notes-' + i) || {}).value || '',
-      };
-    });
-    var totalDist = 0, sessions = 0;
-    days.forEach(function(d) { if (!d.is_rest) sessions++; if (d.distance_km) totalDist += d.distance_km; });
-    return {
-      days: days,
-      weekly_summary: {
-        total_distance_km: Math.round(totalDist * 10) / 10,
-        total_sessions: sessions,
-        intensity_distribution: wp.weekly_summary ? wp.weekly_summary.intensity_distribution || '' : '',
-        focus: wp.weekly_summary ? wp.weekly_summary.focus || '' : '',
-      },
-    };
-  }
-
-  function updatePlanSummary() { /* summary card removed */ }
-
-  function markPlanDirty() {
-    if (planEditDirty) return;
-    planEditDirty = true;
-    document.body.classList.add('plan-dirty');
-    var existing = document.getElementById('plan-save-bar');
-    if (existing) return;
-    var bar = document.createElement('div');
-    bar.id = 'plan-save-bar';
-    bar.className = 'plan-save-bar';
-    bar.innerHTML = '<div class="plan-save-bar-inner"><button class="plan-save-btn" id="btn-plan-save">저장하기</button><div class="plan-save-error" id="plan-save-error" style="display:none"></div></div>';
-    document.body.appendChild(bar);
-    document.getElementById('btn-plan-save').addEventListener('click', savePlanEdit);
-  }
-
-  function handlePlanTypeSelect(dayIdx, chipEl) {
-    var container = chipEl.parentNode;
-    container.querySelectorAll('.pe-type-chip').forEach(function(c) { c.classList.remove('selected'); });
-    chipEl.classList.add('selected');
-    var val = chipEl.dataset.value;
-    var isRest = val === 'rest';
-    // Update card title
-    var titleEl = document.getElementById('plan-day-title-' + dayIdx);
-    if (titleEl) titleEl.textContent = isRest ? '휴식' : chipEl.textContent;
-    // Update badge style
-    var badge = document.getElementById('plan-day-badge-' + dayIdx);
-    if (badge) { badge.className = 'plan-day-badge ' + (isRest ? 'rest' : 'run'); }
-    // Update km display
-    var kmEl = document.getElementById('plan-day-km-' + dayIdx);
-    // Update card rest class
-    var card = document.getElementById('plan-day-card-' + dayIdx);
-    if (card) { if (isRest) card.classList.add('rest'); else card.classList.remove('rest'); }
-    // Clear fields for rest
-    if (isRest) {
-      var f = ['pe-dist-','pe-dur-','pe-pace-','pe-hr-'];
-      f.forEach(function(pre) { var el = document.getElementById(pre + dayIdx); if (el) el.value = ''; });
-    }
-    markPlanDirty();
-    updatePlanSummary();
-  }
-
-  async function savePlanEdit() {
-    var btn = document.getElementById('btn-plan-save');
-    if (!btn || btn.disabled) return;
-    btn.disabled = true;
-    btn.textContent = '저장 중...';
-    var errEl = document.getElementById('plan-save-error');
-    if (errEl) errEl.style.display = 'none';
-    var collected = collectPlanEditData();
-    try {
-      var res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'save_plan', telegram_user_id: userId, init_data: initData, plan_data: collected }),
-      });
-      var result = await res.json();
-      if (res.ok && result.success) {
-        btn.textContent = '저장 완료!';
-        planEditDirty = false;
-        // Update appData with new plan
-        if (appData && appData.home && appData.home.weekly_plan) {
-          appData.home.weekly_plan.days = collected.days.map(function(d) {
-            return { day_label: d.day_label, type: d.type, title: d.title, distance_km: d.distance_km || 0, is_rest: d.is_rest, target_hr_zone: d.target_hr_zone, intensity: d.intensity, date: d.date, duration_min: d.duration_min, target_pace: d.target_pace, notes: d.notes };
-          });
-          if (appData.home.weekly_plan.weekly_summary) {
-            appData.home.weekly_plan.weekly_summary.total_distance_km = collected.weekly_summary.total_distance_km;
-            appData.home.weekly_plan.weekly_summary.total_sessions = collected.weekly_summary.total_sessions;
-          }
-        }
-        setTimeout(function() {
-          var bar = document.getElementById('plan-save-bar');
-          if (bar) bar.remove();
-          document.body.classList.remove('plan-dirty');
-        }, 1200);
-      } else {
-        if (errEl) { errEl.textContent = result.error || '저장 실패'; errEl.style.display = 'block'; }
-        btn.disabled = false;
-        btn.textContent = '저장하기';
-      }
-    } catch (e) {
-      if (errEl) { errEl.textContent = '네트워크 오류'; errEl.style.display = 'block'; }
-      btn.disabled = false;
-      btn.textContent = '저장하기';
-    }
-  }
-
   function renderPlan(d) {
     var wp = d.home.weekly_plan;
-    var html = '<div class="back-header" id="back-to-home">' + icon('chevronLeft') + ' 홈으로</div>';
-    html += '<div class="page-header"><div class="page-header-left"><div class="page-title">주간 훈련 계획</div><div class="page-sub">요일을 탭하면 수정할 수 있어요</div></div></div>';
+    var html = '<div class="plan-page-title">주간 훈련 계획</div><div class="plan-page-sub">이번 주 훈련 스케줄을 확인하세요</div>';
     if (!wp || !wp.days || wp.days.length === 0) {
       html += '<div class="plan-empty">아직 이번 주 계획이 없어요<br><br><a href="#" onclick="sendCommand(\'/plan\');return false;">채팅에서 /plan 명령어로 계획 만들기</a></div>';
       return html;
     }
     var days = wp.days;
+    var totalRuns = days.filter(function(d){return !d.is_rest;}).length;
+    var totalKm = Math.round(days.reduce(function(a,d){return a+(d.distance_km||0);},0)*10)/10;
+    // 강도 분배 계산
+    var ws = wp.weekly_summary;
+    var intensityLabel = ws && ws.intensity_distribution ? ws.intensity_distribution : '-';
 
+    html += '<div class="plan-summary">' +
+      '<div class="plan-stat"><div class="plan-stat-value">' + totalRuns + '회</div><div class="plan-stat-label">훈련 횟수</div></div>' +
+      '<div class="plan-stat"><div class="plan-stat-value">' + totalKm + 'km</div><div class="plan-stat-label">총 거리</div></div>' +
+      '<div class="plan-stat"><div class="plan-stat-value">' + intensityLabel + '</div><div class="plan-stat-label">강도 분배</div></div>' +
+    '</div>';
+
+    // 오늘 요일 인덱스 (월=0 ~ 일=6)
     var nowKst = new Date(new Date().getTime() + 9*60*60*1000);
     var todayIdx = nowKst.getUTCDay() === 0 ? 6 : nowKst.getUTCDay() - 1;
 
     html += '<div class="plan-days">';
     days.forEach(function(d, i) {
       var isToday = i === todayIdx;
-      var isOpen = !!planEditOpen[i];
-      var cls = 'expandable';
-      if (d.is_rest) cls += ' rest';
+      var cls = d.is_rest ? ' rest' : '';
       if (isToday) cls += ' today';
-      if (isOpen) cls += ' open';
       var badgeCls = d.is_rest ? 'rest' : 'run';
       var dayLabel = d.day_label || ['월','화','수','목','금','토','일'][i] || '';
-      html += '<div class="plan-day-card ' + cls + '" id="plan-day-card-' + i + '" data-day-idx="' + i + '">' +
-        '<div class="plan-day-badge ' + badgeCls + '" id="plan-day-badge-' + i + '">' + esc(dayLabel) + '</div>' +
-        '<div class="plan-day-info"><div class="plan-day-title" id="plan-day-title-' + i + '">' + esc(d.title || (d.is_rest ? '휴식' : d.type || '')) + '</div>';
+      html += '<div class="plan-day-card' + cls + '">' +
+        '<div class="plan-day-badge ' + badgeCls + '">' + esc(dayLabel) + '</div>' +
+        '<div class="plan-day-info"><div class="plan-day-title">' + esc(d.title || (d.is_rest ? '휴식' : d.type || '')) + '</div>';
       if (!d.is_rest) {
         var detail = d.target_hr_zone || '';
         if (d.intensity && !detail) detail = d.intensity;
         if (detail) html += '<div class="plan-day-detail">' + esc(detail) + '</div>';
       }
       html += '</div>';
-      if (!d.is_rest && d.distance_km) html += '<div class="plan-day-km" id="plan-day-km-' + i + '">' + d.distance_km + 'km</div>';
-      else html += '<div class="plan-day-km" id="plan-day-km-' + i + '" style="display:none"></div>';
-      html += '<div class="plan-day-toggle">' + icon('chevronDown') + '</div>';
-      html += renderDayEditForm(i, d);
+      if (!d.is_rest && d.distance_km) html += '<div class="plan-day-km">' + d.distance_km + 'km</div>';
       html += '</div>';
     });
     html += '</div>';
+    html += '<a href="' + PLAN_URL + '" class="plan-edit-link">계획 수정 →</a>';
     return html;
   }
 
@@ -972,7 +638,7 @@
     if (!expandedStage) { var cur = stages.find(function(s) { return s.status === 'current'; }); if (cur) expandedStage = cur.id; }
 
     var html = '<div class="back-header" id="back-to-home">' + icon('chevronLeft') + ' 홈으로</div>';
-    html += '<div class="page-header"><div class="page-header-left"><div class="page-title">퀘스트 경로</div><div class="page-sub">단계별 미션을 클리어하며 성장하세요</div></div></div>';
+    html += '<div class="quest-path-title">퀘스트 경로</div><div class="quest-path-sub">단계별 미션을 클리어하며 성장하세요</div>';
     html += '<div class="path-container"><div class="path-line"></div><div class="path-stages">';
 
     stages.forEach(function(stage) {
@@ -1006,12 +672,101 @@
     return html;
   }
 
-  // ---- LEVEL DETAIL TAB ----
-  function renderLevelDetail(d) {
+  // ---- STATS TAB ----
+  function renderStats(d) {
+    var s = d.stats;
+    var html = '<div class="stats-page-title">나의 기록</div><div class="stats-page-sub">누적된 러닝 데이터를 확인하세요</div>';
+
+    html += '<div class="period-toggle">' +
+      '<button class="period-btn' + (statsPeriod==='week'?' active':'') + '" data-period="week">이번 주</button>' +
+      '<button class="period-btn' + (statsPeriod==='month'?' active':'') + '" data-period="month">이번 달</button>' +
+      '<button class="period-btn' + (statsPeriod==='total'?' active':'') + '" data-period="total">전체</button></div>';
+
+    var dv, tv, rv, pv;
+    if (statsPeriod === 'week') {
+      dv = s.weekly.reduce(function(a,b){return a+b.distance;},0).toFixed(1);
+      tv = s.weekly.reduce(function(a,b){return a+b.time;},0);
+      rv = s.weekly.filter(function(d){return d.distance>0;}).length;
+      pv = s.totals.avg_pace;
+    } else if (statsPeriod === 'month') {
+      var mD = s.monthly[s.monthly.length-1]; dv = mD ? mD.distance : 0; tv = '-'; rv = '-'; pv = s.totals.avg_pace;
+    } else { dv = s.totals.distance_km; tv = s.totals.time_min; rv = s.totals.runs; pv = s.totals.avg_pace; }
+
+    html += '<div class="stats-grid">' +
+      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(var(--btn-rgb,38,120,182),0.1);color:var(--btn)">' + icon('pin') + '</div><div class="stats-card-value">' + dv + '</div><div class="stats-card-label">총 거리 (km)</div></div>' +
+      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(168,85,247,0.1);color:#a855f7">' + icon('clock') + '</div><div class="stats-card-value">' + (typeof tv==='number'?fmtMin(tv):tv) + '</div><div class="stats-card-label">총 시간</div></div>' +
+      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(239,68,68,0.1);color:#ef4444">' + icon('calendar') + '</div><div class="stats-card-value">' + rv + '</div><div class="stats-card-label">러닝 횟수</div></div>' +
+      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(34,197,94,0.1);color:#22c55e">' + icon('zap') + '</div><div class="stats-card-value">' + pv + '</div><div class="stats-card-label">평균 페이스</div></div></div>';
+
+    if (statsPeriod === 'week') {
+      var mx = Math.max.apply(null, s.weekly.map(function(d){return d.distance;}));
+      html += '<div class="chart-card"><div class="chart-title">주간 거리</div><div class="bar-chart">';
+      s.weekly.forEach(function(day) { var h = mx>0?(day.distance/mx)*100:0; var cls = day.distance>0?'has-data':'no-data'; html += '<div class="bar-col">'; if (day.distance>0) html += '<div class="bar-value">'+day.distance+'</div>'; html += '<div class="bar-fill '+cls+'" style="height:'+(day.distance>0?Math.max(h,8)+'%':'4px')+'"></div><div class="bar-label">'+day.day+'</div></div>'; });
+      html += '</div></div>';
+    }
+    if (statsPeriod === 'month') {
+      var mxM = Math.max.apply(null, s.monthly.map(function(m){return m.distance;}));
+      html += '<div class="chart-card"><div class="chart-title">월별 거리</div><div class="bar-chart">';
+      s.monthly.forEach(function(m) { var h = mxM>0?(m.distance/mxM)*100:0; var cls = m.distance>0?'has-data':'no-data'; html += '<div class="bar-col">'; if (m.distance>0) html += '<div class="bar-value">'+m.distance+'</div>'; html += '<div class="bar-fill '+cls+'" style="height:'+(m.distance>0?Math.max(h,8)+'%':'4px')+'"></div><div class="bar-label">'+m.month+'</div></div>'; });
+      html += '</div></div>';
+    }
+    if (statsPeriod === 'total') {
+      var r = s.records;
+      html += '<div class="chart-card"><div class="chart-title">개인 최고 기록</div><div class="records-list">' +
+        '<div class="record-row"><div class="record-left"><span class="record-ic">' + icon('ruler') + '</span><span class="record-label">최장 거리</span></div><span class="record-value">' + r.longest_distance_km + ' km</span></div>' +
+        '<div class="record-row"><div class="record-left"><span class="record-ic" style="color:#ef4444">' + icon('zap') + '</span><span class="record-label">최고 페이스</span></div><span class="record-value">' + r.best_pace + ' /km</span></div>' +
+        '<div class="record-row"><div class="record-left"><span class="record-ic" style="color:#a855f7">' + icon('clock') + '</span><span class="record-label">최장 시간</span></div><span class="record-value">' + fmtMin(r.longest_time_min) + '</span></div>' +
+        '<div class="record-row"><div class="record-left"><span class="record-ic" style="color:#f59e0b">' + icon('flame') + '</span><span class="record-label">최장 연속</span></div><span class="record-value">' + r.longest_streak + '주</span></div>' +
+      '</div></div>';
+    }
+    return html;
+  }
+
+  // ---- SETTINGS TAB ----
+  function renderSettings(d) {
     var p = d.profile;
-    var lvl = d.home.level;
-    var html = '<div class="back-header" id="back-to-home">' + icon('chevronLeft') + ' 홈으로</div>';
-    html += '<div class="page-header"><div class="page-header-left"><div class="page-title">내 레벨</div><div class="page-sub">Lv.' + lvl.xp_level + ' ' + esc(lvl.title) + ' · ' + lvl.current_xp + '/' + lvl.next_level_xp + ' XP</div></div></div>';
+    var html = '<div class="settings-title">설정</div>';
+
+    // Setting links
+    var hasPlan = !!(d.home.weekly_plan && d.home.weekly_plan.days && d.home.weekly_plan.days.length > 0);
+    html += '<div class="settings-links">' +
+      '<a href="' + SURVEY_URL + '" class="settings-link"><span class="sl-icon">' + icon('user') + '</span>러닝 프로필 수정<span class="sl-arrow">' + icon('chevronRight') + '</span></a>';
+    if (hasPlan) {
+      html += '<a href="' + PLAN_URL + '" class="settings-link"><span class="sl-icon">' + icon('clipboard') + '</span>주간 훈련 계획 수정<span class="sl-arrow">' + icon('chevronRight') + '</span></a>';
+    } else {
+      html += '<button class="settings-link" id="btn-create-plan"><span class="sl-icon">' + icon('clipboard') + '</span>주간 계획 세우기<span class="sl-arrow" style="font-size:11px;color:var(--hint)">채팅에서 /plan</span></button>';
+    }
+    html += '</div>';
+
+    // Garmin 데이터 연동
+    var iv = d.intervals || {};
+    html += '<div class="card"><div class="roadmap-title">' + icon('link') + ' Garmin 데이터 연동</div>';
+    html += '<div style="display:flex;align-items:center;gap:10px;padding:4px 0">';
+    if (iv.connected) {
+      html += '<span class="ic" style="color:var(--success)">' + icon('checkCircle') + '</span>';
+      html += '<div><div style="font-size:14px;font-weight:600">연동됨</div>';
+      var connInfo = [];
+      if (iv.connected_at) {
+        var cd = new Date(iv.connected_at);
+        connInfo.push(cd.getFullYear() + '.' + (cd.getMonth()+1) + '.' + cd.getDate() + ' 연동');
+      }
+      if (connInfo.length > 0) html += '<div style="font-size:12px;color:var(--hint)">' + connInfo.join(' · ') + '</div>';
+      html += '</div>';
+    } else {
+      html += '<span class="ic" style="color:var(--hint)">' + icon('x') + '</span>';
+      html += '<div style="font-size:14px;color:var(--hint)">미연동</div>';
+    }
+    html += '</div>';
+    if (iv.connected) {
+      html += '<button class="settings-link" id="btn-disconnect" style="margin-top:8px;color:var(--hint)">';
+      html += '<span class="sl-icon" style="color:var(--hint)">' + icon('x') + '</span>연동 해제';
+      html += '<span class="sl-arrow">' + icon('chevronRight') + '</span></button>';
+    } else {
+      html += '<a href="' + ONBOARDING_URL + '" class="settings-link" style="margin-top:8px">';
+      html += '<span class="sl-icon">' + icon('link') + '</span>연동하기';
+      html += '<span class="sl-arrow">' + icon('chevronRight') + '</span></a>';
+    }
+    html += '</div>';
 
     // Level Roadmap
     html += '<div class="card"><div class="roadmap-title">' + icon('star') + ' 레벨 로드맵</div><div class="level-list">';
@@ -1048,115 +803,8 @@
       });
       html += '</div>';
     }
-    return html;
-  }
 
-  // ---- STATS TAB ----
-  function renderStats(d) {
-    var s = d.stats;
-    var html = '<div class="page-header"><div class="page-header-left"><div class="page-title">나의 기록</div><div class="page-sub">누적된 러닝 데이터를 확인하세요</div></div></div>';
-
-    html += '<div class="period-toggle">' +
-      '<button class="period-btn' + (statsPeriod==='week'?' active':'') + '" data-period="week">이번 주</button>' +
-      '<button class="period-btn' + (statsPeriod==='month'?' active':'') + '" data-period="month">이번 달</button>' +
-      '<button class="period-btn' + (statsPeriod==='total'?' active':'') + '" data-period="total">전체</button></div>';
-
-    var dv, tv, rv, pv, hv;
-    if (statsPeriod === 'week') {
-      dv = s.weekly.reduce(function(a,b){return a+b.distance;},0).toFixed(1);
-      tv = s.period && s.period.week ? s.period.week.time_min : s.weekly.reduce(function(a,b){return a+b.time;},0);
-      rv = s.period && s.period.week ? s.period.week.runs : s.weekly.filter(function(d){return d.distance>0;}).length;
-      pv = s.period && s.period.week ? s.period.week.avg_pace : s.totals.avg_pace;
-      hv = s.period && s.period.week ? s.period.week.avg_hr : null;
-    } else if (statsPeriod === 'month') {
-      var mD = s.monthly[s.monthly.length-1]; dv = mD ? mD.distance : 0;
-      tv = s.period && s.period.month ? s.period.month.time_min : '-';
-      rv = s.period && s.period.month ? s.period.month.runs : '-';
-      pv = s.period && s.period.month ? s.period.month.avg_pace : s.totals.avg_pace;
-      hv = s.period && s.period.month ? s.period.month.avg_hr : null;
-    } else {
-      dv = s.totals.distance_km; tv = s.totals.time_min; rv = s.totals.runs; pv = s.totals.avg_pace;
-      hv = s.totals.avg_hr || null;
-    }
-
-    html += '<div class="stats-flex">' +
-      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(var(--btn-rgb,38,120,182),0.1);color:var(--btn)">' + icon('pin') + '</div><div class="stats-card-value">' + dv + '</div><div class="stats-card-label">총 거리 (km)</div></div>' +
-      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(168,85,247,0.1);color:#a855f7">' + icon('clock') + '</div><div class="stats-card-value">' + (typeof tv==='number'?fmtMin(tv):tv) + '</div><div class="stats-card-label">총 시간</div></div>' +
-      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(239,68,68,0.1);color:#ef4444">' + icon('calendar') + '</div><div class="stats-card-value">' + rv + '</div><div class="stats-card-label">러닝 횟수</div></div>' +
-      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(34,197,94,0.1);color:#22c55e">' + icon('zap') + '</div><div class="stats-card-value">' + pv + '</div><div class="stats-card-label">평균 페이스</div></div>' +
-      '<div class="stats-card"><div class="stats-card-icon" style="background:rgba(239,68,68,0.1);color:#ef4444">' + icon('heart') + '</div><div class="stats-card-value">' + (hv ? hv + ' bpm' : '-') + '</div><div class="stats-card-label">평균 심박수</div></div></div>';
-
-    if (statsPeriod === 'week') {
-      var mx = Math.max.apply(null, s.weekly.map(function(d){return d.distance;}));
-      html += '<div class="chart-card"><div class="chart-title">주간 거리</div><div class="bar-chart">';
-      s.weekly.forEach(function(day) { var h = mx>0?(day.distance/mx)*100:0; var cls = day.distance>0?'has-data':'no-data'; html += '<div class="bar-col">'; if (day.distance>0) html += '<div class="bar-value">'+day.distance+'</div>'; html += '<div class="bar-fill '+cls+'" style="height:'+(day.distance>0?Math.max(h,8)+'%':'4px')+'"></div><div class="bar-label">'+day.day+'</div></div>'; });
-      html += '</div></div>';
-    }
-    if (statsPeriod === 'month') {
-      var mxM = Math.max.apply(null, s.monthly.map(function(m){return m.distance;}));
-      html += '<div class="chart-card"><div class="chart-title">월별 거리</div><div class="bar-chart">';
-      s.monthly.forEach(function(m) { var h = mxM>0?(m.distance/mxM)*100:0; var cls = m.distance>0?'has-data':'no-data'; html += '<div class="bar-col">'; if (m.distance>0) html += '<div class="bar-value">'+m.distance+'</div>'; html += '<div class="bar-fill '+cls+'" style="height:'+(m.distance>0?Math.max(h,8)+'%':'4px')+'"></div><div class="bar-label">'+m.month+'</div></div>'; });
-      html += '</div></div>';
-    }
-    if (statsPeriod === 'total') {
-      var r = s.records;
-      html += '<div class="chart-card"><div class="chart-title">개인 최고 기록</div><div class="records-list">' +
-        '<div class="record-row"><div class="record-left"><span class="record-ic">' + icon('ruler') + '</span><span class="record-label">최장 거리</span></div><span class="record-value">' + r.longest_distance_km + ' km</span></div>' +
-        '<div class="record-row"><div class="record-left"><span class="record-ic" style="color:#ef4444">' + icon('zap') + '</span><span class="record-label">최고 페이스</span></div><span class="record-value">' + r.best_pace + ' /km</span></div>' +
-        '<div class="record-row"><div class="record-left"><span class="record-ic" style="color:#a855f7">' + icon('clock') + '</span><span class="record-label">최장 시간</span></div><span class="record-value">' + fmtMin(r.longest_time_min) + '</span></div>' +
-        '<div class="record-row"><div class="record-left"><span class="record-ic" style="color:#f59e0b">' + icon('flame') + '</span><span class="record-label">최장 연속</span></div><span class="record-value">' + r.longest_streak + '주</span></div>' +
-      '</div></div>';
-    }
-    return html;
-  }
-
-  // ---- SETTINGS TAB ----
-  function renderSettings(d) {
-    var p = d.profile;
-    var html = '<div class="back-header" id="back-to-home">' + icon('chevronLeft') + ' 홈으로</div>';
-    html += '<div class="page-header"><div class="page-header-left"><div class="page-title">설정</div><div class="page-sub">프로필과 연동 설정을 관리하세요</div></div></div>';
-
-    // Setting links
-    var hasPlan = !!(d.home.weekly_plan && d.home.weekly_plan.days && d.home.weekly_plan.days.length > 0);
-    html += '<div class="settings-links">' +
-      '<a href="' + SURVEY_URL + '" class="settings-link"><span class="sl-icon">' + icon('user') + '</span>러닝 프로필 수정<span class="sl-arrow">' + icon('chevronRight') + '</span></a>';
-    if (hasPlan) {
-      html += '<button class="settings-link" id="btn-edit-plan"><span class="sl-icon">' + icon('clipboard') + '</span>주간 훈련 계획 수정<span class="sl-arrow">' + icon('chevronRight') + '</span></button>';
-    } else {
-      html += '<button class="settings-link" id="btn-create-plan"><span class="sl-icon">' + icon('clipboard') + '</span>주간 계획 세우기<span class="sl-arrow" style="font-size:11px;color:var(--hint)">채팅에서 /plan</span></button>';
-    }
-    html += '</div>';
-
-    // Garmin 데이터 연동
-    var iv = d.intervals || {};
-    html += '<div class="card"><div class="roadmap-title">' + icon('link') + ' Garmin 데이터 연동</div>';
-    html += '<div style="display:flex;align-items:center;gap:10px;padding:4px 0">';
-    if (iv.connected) {
-      html += '<span class="ic" style="color:var(--success)">' + icon('checkCircle') + '</span>';
-      html += '<div><div style="font-size:14px;font-weight:600">연동됨</div>';
-      var connInfo = [];
-      if (iv.connected_at) {
-        var cd = new Date(iv.connected_at);
-        connInfo.push(cd.getFullYear() + '.' + (cd.getMonth()+1) + '.' + cd.getDate() + ' 연동');
-      }
-      if (connInfo.length > 0) html += '<div style="font-size:12px;color:var(--hint)">' + connInfo.join(' · ') + '</div>';
-      html += '</div>';
-    } else {
-      html += '<span class="ic" style="color:var(--hint)">' + icon('x') + '</span>';
-      html += '<div style="font-size:14px;color:var(--hint)">미연동</div>';
-    }
-    html += '</div>';
-    if (iv.connected) {
-      html += '<button class="settings-link" id="btn-disconnect" style="margin:8px -16px 0;width:calc(100% + 32px);color:var(--hint)">';
-      html += '<span class="sl-icon" style="color:var(--hint)">' + icon('x') + '</span>연동 해제';
-      html += '</button>';
-    } else {
-      html += '<a href="' + ONBOARDING_URL + '" class="settings-link" style="margin:8px -16px 0;width:calc(100% + 32px)">';
-      html += '<span class="sl-icon">' + icon('link') + '</span>연동하기';
-      html += '<span class="sl-arrow">' + icon('chevronRight') + '</span></a>';
-    }
-    html += '</div>';
-
+    html += '<div class="cta-section"><button class="btn-secondary" id="btn-close">' + icon('x') + ' 닫기</button></div>';
     return html;
   }
 
@@ -1165,18 +813,10 @@
   }
 
   function switchTab(tab) {
-    if (activeTab === 'plan' && planEditDirty && tab !== 'plan') {
-      if (!confirm('수정 중인 내용이 저장되지 않았어요. 나가시겠어요?')) return;
-      planEditDirty = false;
-      planEditOpen = {};
-      var bar = document.getElementById('plan-save-bar'); if (bar) bar.remove();
-      document.body.classList.remove('plan-dirty');
-    }
-    if (tab !== 'plan') { planEditOpen = {}; planEditDirty = false; }
     activeTab = tab;
     renderActiveTab();
     // quest는 홈 서브뷰이므로 홈 탭 하이라이트
-    var navHighlight = (tab === 'quest' || tab === 'level') ? 'home' : tab;
+    var navHighlight = tab === 'quest' ? 'home' : tab;
     document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.tab === navHighlight); });
     var url = new URL(window.location); url.searchParams.set('tab', tab); history.replaceState(null, '', url);
     window.scrollTo(0, 0);
@@ -1189,7 +829,6 @@
     if (activeTab === 'home') html = renderHome(appData);
     else if (activeTab === 'plan') html = renderPlan(appData);
     else if (activeTab === 'quest') html = renderQuestPath(appData);
-    else if (activeTab === 'level') html = renderLevelDetail(appData);
     else if (activeTab === 'stats') html = renderStats(appData);
     else if (activeTab === 'settings') html = renderSettings(appData);
     app.innerHTML = '<div class="tab-content active">' + html + '</div>';
@@ -1199,44 +838,10 @@
   function attachTabEvents() {
     document.querySelectorAll('.stage-card').forEach(function(c) { c.addEventListener('click', function() { var id = this.dataset.stageId; var st = appData.quest_path.stages.find(function(s){return s.id===id;}); if (st && st.status === 'locked') return; expandedStage = expandedStage===id?null:id; renderActiveTab(); }); });
     document.querySelectorAll('.period-btn').forEach(function(b) { b.addEventListener('click', function() { statsPeriod = this.dataset.period; renderActiveTab(); }); });
+    var cb = document.getElementById('btn-close'); if (cb) cb.addEventListener('click', function() { if (tg) tg.close(); });
     var cpb = document.getElementById('btn-create-plan'); if (cpb) cpb.addEventListener('click', function() { sendCommand('/plan'); });
-    var psc = document.getElementById('plan-slim-card'); if (psc) psc.addEventListener('click', function() { var wp = appData && appData.home && appData.home.weekly_plan; if (wp && wp.days && wp.days.length > 0) switchTab('plan'); else sendCommand('/plan'); });
-    var qst = document.getElementById('quest-summary-toggle'); if (qst) qst.addEventListener('click', function() {
-      questExpanded = !questExpanded;
-      var chevron = qst.querySelector('.qs-chevron');
-      if (chevron) chevron.innerHTML = questExpanded ? icon('chevronDown') : icon('chevronRight');
-      var container = document.getElementById('quest-accordion-container');
-      if (container) container.innerHTML = questExpanded ? buildQuestAccordionHtml(appData.home.weekly_quests) : '';
-      var gqp = document.getElementById('go-quest-path');
-      if (gqp) gqp.addEventListener('click', function(e) { e.stopPropagation(); switchTab('quest'); });
-    });
-    var hxp = document.getElementById('home-xp-area'); if (hxp) hxp.addEventListener('click', function() { switchTab('level'); });
-    var gqp = document.getElementById('go-quest-path'); if (gqp) gqp.addEventListener('click', function(e) { e.stopPropagation(); switchTab('quest'); });
+    var qsh = document.getElementById('quest-section-header'); if (qsh) qsh.addEventListener('click', function() { switchTab('quest'); });
     var bth = document.getElementById('back-to-home'); if (bth) bth.addEventListener('click', function() { switchTab('home'); });
-    // Plan tab: day card accordion toggle
-    document.querySelectorAll('.plan-day-card.expandable').forEach(function(card) {
-      card.addEventListener('click', function(e) {
-        var t = e.target;
-        if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'LABEL' || t.closest('.pe-type-chip') || t.closest('.pe-field') || t.closest('.pe-type-chips')) return;
-        var idx = parseInt(card.dataset.dayIdx);
-        planEditOpen[idx] = !planEditOpen[idx];
-        card.classList.toggle('open', !!planEditOpen[idx]);
-      });
-    });
-    // Plan tab: type chip click
-    document.querySelectorAll('.pe-type-chip').forEach(function(chip) {
-      chip.addEventListener('click', function(e) {
-        e.stopPropagation();
-        var dayIdx = parseInt(chip.dataset.day);
-        handlePlanTypeSelect(dayIdx, chip);
-      });
-    });
-    // Plan tab: input change → dirty + summary update
-    document.querySelectorAll('.plan-day-edit input, .plan-day-edit textarea').forEach(function(el) {
-      el.addEventListener('input', function() { markPlanDirty(); updatePlanSummary(); });
-    });
-    // Plan tab: edit plan button in settings
-    var bep = document.getElementById('btn-edit-plan'); if (bep) bep.addEventListener('click', function() { switchTab('plan'); });
     var dcb = document.getElementById('btn-disconnect'); if (dcb) dcb.addEventListener('click', async function() {
       if (!confirm('연동을 해제하면 데이터 동기화가 중단됩니다. 해제하시겠습니까?')) return;
       try {

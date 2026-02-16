@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Running Coach 프로필</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --tg-theme-bg-color: #ffffff;
@@ -21,8 +19,8 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--tg-theme-secondary-bg-color);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--tg-theme-bg-color);
       color: var(--tg-theme-text-color);
       padding: 20px;
       min-height: 100vh;
@@ -51,89 +49,44 @@
     /* Steps */
     .step {
       display: none;
+      animation: fadeIn 0.3s ease;
     }
 
     .step.active {
       display: block;
     }
 
-    /* Step card */
-    .step-card {
-      background: var(--tg-theme-bg-color);
-      border-radius: 16px;
-      padding: 24px 20px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      margin-bottom: 16px;
-    }
-
-    /* fadeInUp animation */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(16px); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
-    }
-
-    .step.active .step-title {
-      animation: fadeInUp 0.3s ease forwards;
-    }
-
-    .step.active .step-desc {
-      animation: fadeInUp 0.3s 0.05s ease forwards;
-      opacity: 0;
-    }
-
-    .step.active .step-card {
-      animation: fadeInUp 0.35s 0.08s ease forwards;
-      opacity: 0;
-    }
-
-    .step.active .step-actions {
-      animation: fadeInUp 0.3s 0.15s ease forwards;
-      opacity: 0;
     }
 
     /* Step indicator */
     .step-indicator {
       display: flex;
       justify-content: center;
-      align-items: center;
-      gap: 0;
-      margin-bottom: 28px;
-      padding: 0 40px;
+      gap: 8px;
+      margin-bottom: 24px;
     }
 
     .step-dot {
-      width: 32px;
-      height: 32px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      font-size: 13px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--tg-theme-secondary-bg-color);
-      color: var(--tg-theme-hint-color);
+      background: var(--tg-theme-hint-color);
+      opacity: 0.3;
       transition: all 0.3s;
-      flex-shrink: 0;
     }
 
     .step-dot.active {
+      opacity: 1;
       background: var(--tg-theme-button-color);
-      color: #fff;
+      width: 24px;
+      border-radius: 4px;
     }
 
     .step-dot.done {
-      background: #4CAF50;
-      color: #fff;
-    }
-
-    .step-connector {
-      height: 2px;
-      flex: 1;
-      background: var(--tg-theme-secondary-bg-color);
-      transition: background 0.3s;
-    }
-
-    .step-connector.done {
+      opacity: 1;
       background: #4CAF50;
     }
 
@@ -161,21 +114,14 @@
       font-weight: 600;
       cursor: pointer;
       text-align: center;
-      transition: opacity 0.2s, transform 0.1s;
+      transition: opacity 0.2s;
     }
+
+    .btn:active { opacity: 0.7; }
 
     .btn-primary {
       background: var(--tg-theme-button-color);
       color: var(--tg-theme-button-text-color);
-    }
-
-    .btn-primary:hover {
-      opacity: 0.92;
-    }
-
-    .btn-primary:active {
-      transform: scale(0.98);
-      opacity: 0.85;
     }
 
     .btn-ghost {
@@ -184,10 +130,6 @@
       font-size: 14px;
       font-weight: 400;
       padding: 10px;
-    }
-
-    .btn-ghost:active {
-      opacity: 0.6;
     }
 
     .btn + .btn { margin-top: 10px; }
@@ -202,10 +144,6 @@
       margin-bottom: 20px;
     }
 
-    .input-group:last-child {
-      margin-bottom: 0;
-    }
-
     .input-group label {
       display: block;
       font-size: 14px;
@@ -217,13 +155,12 @@
     .input-group textarea {
       width: 100%;
       padding: 12px;
-      border: 1.5px solid var(--tg-theme-secondary-bg-color);
+      border: 1px solid var(--tg-theme-hint-color);
       border-radius: 10px;
       font-size: 15px;
       background: var(--tg-theme-bg-color);
       color: var(--tg-theme-text-color);
       font-family: inherit;
-      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     .input-group textarea {
@@ -235,7 +172,6 @@
     .input-group textarea:focus {
       outline: none;
       border-color: var(--tg-theme-button-color);
-      box-shadow: 0 0 0 3px rgba(38, 120, 182, 0.15);
     }
 
     .input-group .hint {
@@ -268,7 +204,7 @@
     .tab-option {
       flex: 1;
       padding: 10px 4px;
-      border: 1.5px solid var(--tg-theme-secondary-bg-color);
+      border: 1.5px solid var(--tg-theme-hint-color);
       border-radius: 10px;
       text-align: center;
       font-size: 14px;
@@ -282,7 +218,6 @@
     .tab-option.selected {
       border-color: var(--tg-theme-button-color);
       background: rgba(38, 120, 182, 0.08);
-      box-shadow: 0 1px 3px rgba(38, 120, 182, 0.1);
       opacity: 1;
       font-weight: 600;
     }
@@ -307,7 +242,7 @@
 
     .chip {
       padding: 8px 14px;
-      border: 1.5px solid var(--tg-theme-secondary-bg-color);
+      border: 1.5px solid var(--tg-theme-hint-color);
       border-radius: 20px;
       font-size: 13px;
       cursor: pointer;
@@ -319,7 +254,6 @@
     .chip.selected {
       border-color: var(--tg-theme-button-color);
       background: rgba(38, 120, 182, 0.08);
-      box-shadow: 0 1px 3px rgba(38, 120, 182, 0.1);
       opacity: 1;
       font-weight: 600;
     }
@@ -327,10 +261,6 @@
     /* Card selector */
     .card-group {
       margin-bottom: 20px;
-    }
-
-    .card-group:last-child {
-      margin-bottom: 0;
     }
 
     .card-group > label {
@@ -348,7 +278,7 @@
 
     .card-option {
       padding: 14px;
-      border: 1.5px solid var(--tg-theme-secondary-bg-color);
+      border: 1.5px solid var(--tg-theme-hint-color);
       border-radius: 12px;
       cursor: pointer;
       transition: all 0.2s;
@@ -360,14 +290,8 @@
     .card-option.selected {
       border-color: var(--tg-theme-button-color);
       background: rgba(38, 120, 182, 0.08);
-      box-shadow: 0 1px 3px rgba(38, 120, 182, 0.1);
       opacity: 1;
       font-weight: 600;
-    }
-
-    /* Step actions (buttons outside card) */
-    .step-actions {
-      margin-top: 0;
     }
 
     /* Navigation row */
@@ -387,36 +311,9 @@
       padding: 32px 0;
     }
 
-    .check-circle {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 20px;
-      animation: scaleIn 0.4s ease forwards;
-    }
-
-    .check-circle circle {
-      fill: #4CAF50;
-    }
-
-    .check-circle path {
-      stroke: #fff;
-      stroke-width: 3;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      fill: none;
-      stroke-dasharray: 50;
-      stroke-dashoffset: 50;
-      animation: checkDraw 0.4s 0.3s ease forwards;
-    }
-
-    @keyframes scaleIn {
-      from { transform: scale(0); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes checkDraw {
-      from { stroke-dashoffset: 50; }
-      to { stroke-dashoffset: 0; }
+    .status .icon {
+      font-size: 56px;
+      margin-bottom: 16px;
     }
 
     .status .message {
@@ -461,7 +358,7 @@
 
     .suggestion-chip {
       padding: 6px 12px;
-      border: 1px solid var(--tg-theme-secondary-bg-color);
+      border: 1px solid var(--tg-theme-hint-color);
       border-radius: 16px;
       font-size: 13px;
       color: var(--tg-theme-hint-color);
@@ -475,6 +372,12 @@
       color: var(--tg-theme-button-color);
     }
 
+    .chip-recommend {
+      border-color: var(--tg-theme-button-color);
+      color: var(--tg-theme-button-color);
+      opacity: 0.85;
+    }
+
     /* Location search */
     #location-search-wrapper {
       position: relative;
@@ -483,19 +386,18 @@
     #location-search {
       width: 100%;
       padding: 12px;
-      border: 1.5px solid var(--tg-theme-secondary-bg-color);
+      border: 1.5px solid var(--tg-theme-hint-color);
       border-radius: 10px;
       font-size: 15px;
       background: var(--tg-theme-bg-color);
       color: var(--tg-theme-text-color);
       font-family: inherit;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s;
     }
 
     #location-search:focus {
       outline: none;
       border-color: var(--tg-theme-button-color);
-      box-shadow: 0 0 0 3px rgba(38, 120, 182, 0.15);
     }
 
     .location-results {
@@ -504,7 +406,7 @@
       left: 0;
       right: 0;
       background: var(--tg-theme-bg-color);
-      border: 1.5px solid var(--tg-theme-secondary-bg-color);
+      border: 1.5px solid var(--tg-theme-hint-color);
       border-top: none;
       border-radius: 0 0 10px 10px;
       max-height: 200px;
@@ -523,15 +425,15 @@
       font-size: 14px;
       cursor: pointer;
       transition: background 0.15s;
-      border-bottom: 1px solid var(--tg-theme-secondary-bg-color);
+      border-bottom: 1px solid var(--tg-theme-hint-color);
+      opacity: 0.7;
     }
 
     .location-result-item:last-child {
       border-bottom: none;
     }
 
-    .location-result-item:active,
-    .location-result-item:hover {
+    .location-result-item:active {
       background: rgba(38, 120, 182, 0.08);
     }
 
@@ -564,60 +466,20 @@
       cursor: pointer;
       margin-left: auto;
     }
-
-    .back-header {
-      display: flex; align-items: center; gap: 6px;
-      padding: 0 0 12px; cursor: pointer;
-      color: var(--tg-theme-link-color); font-size: 14px; font-weight: 500;
-    }
-    .back-header svg { width: 18px; height: 18px; }
-
-    /* Training method cards */
-    .method-cards {
-      flex-direction: row !important;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .method-cards .card-option {
-      flex: 1 1 calc(50% - 4px);
-      flex-direction: column;
-      display: flex;
-      align-items: flex-start;
-      text-align: left;
-      padding: 10px 12px;
-    }
-    .method-cards .card-option strong {
-      font-size: 13px;
-    }
-    .card-desc {
-      font-size: 11px;
-      color: var(--tg-theme-hint-color);
-      margin-top: 2px;
-      line-height: 1.3;
-    }
-    .method-cards .card-option.selected .card-desc {
-      color: var(--tg-theme-button-text-color);
-    }
-
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="back-header" id="back-to-app" style="display:none">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-      홈으로
-    </div>
     <div class="header">
       <h1>러닝 프로필</h1>
       <p>코치가 당신에게 맞는 조언을 드릴 수 있도록</p>
     </div>
 
     <div class="step-indicator">
-      <div class="step-dot active" id="dot-1">1</div>
-      <div class="step-connector" id="conn-1-2"></div>
-      <div class="step-dot" id="dot-2">2</div>
-      <div class="step-connector" id="conn-2-3"></div>
-      <div class="step-dot" id="dot-3">3</div>
+      <div class="step-dot active" id="dot-1"></div>
+      <div class="step-dot" id="dot-2"></div>
+      <div class="step-dot" id="dot-3"></div>
+      <div class="step-dot" id="dot-4"></div>
     </div>
 
     <!-- Step 1: 목표 -->
@@ -625,30 +487,26 @@
       <div class="step-title">어떤 목표를 가지고 계세요?</div>
       <div class="step-desc">자유롭게 적어주세요. 구체적일수록 좋아요.</div>
 
-      <div class="step-card">
-        <div class="input-group">
-          <label>러닝 목표</label>
-          <input type="text" id="goal-text" placeholder="직접 입력하거나 아래에서 선택">
-          <div class="suggestion-chips">
-            <span class="suggestion-chip" onclick="fillGoal(this)">풀마라톤 완주</span>
-            <span class="suggestion-chip" onclick="fillGoal(this)">하프마라톤 완주</span>
-            <span class="suggestion-chip" onclick="fillGoal(this)">10K 기록 단축</span>
-            <span class="suggestion-chip" onclick="fillGoal(this)">5K 기록 단축</span>
-            <span class="suggestion-chip" onclick="fillGoal(this)">꾸준히 건강하게</span>
-            <span class="suggestion-chip" onclick="fillGoal(this)">다이어트</span>
-          </div>
-        </div>
-
-        <div class="input-group">
-          <label>목표 시점</label>
-          <input type="text" id="target-date" placeholder="예: 2025년 3월, 올해 안에, 아직 미정">
-          <div class="hint">비워도 괜찮아요</div>
+      <div class="input-group">
+        <label>러닝 목표</label>
+        <input type="text" id="goal-text" placeholder="직접 입력하거나 아래에서 선택">
+        <div class="suggestion-chips">
+          <span class="suggestion-chip" onclick="fillGoal(this)">풀마라톤 완주</span>
+          <span class="suggestion-chip" onclick="fillGoal(this)">하프마라톤 완주</span>
+          <span class="suggestion-chip" onclick="fillGoal(this)">10K 기록 단축</span>
+          <span class="suggestion-chip" onclick="fillGoal(this)">5K 기록 단축</span>
+          <span class="suggestion-chip" onclick="fillGoal(this)">꾸준히 건강하게</span>
+          <span class="suggestion-chip" onclick="fillGoal(this)">다이어트</span>
         </div>
       </div>
 
-      <div class="step-actions">
-        <button class="btn btn-primary" onclick="goToStep(2)">다음</button>
+      <div class="input-group">
+        <label>목표 시점</label>
+        <input type="text" id="target-date" placeholder="예: 2025년 3월, 올해 안에, 아직 미정">
+        <div class="hint">비워도 괜찮아요</div>
       </div>
+
+      <button class="btn btn-primary" onclick="goToStep(2)">다음</button>
     </div>
 
     <!-- Step 2: 현재 러닝 -->
@@ -656,147 +514,127 @@
       <div class="step-title">지금 러닝은 어떻게 하고 계세요?</div>
       <div class="step-desc">대략적으로만 알려주셔도 돼요.</div>
 
-      <div class="step-card">
-        <div class="tab-selector">
-          <div>
-            <label>주간 러닝 횟수</label>
-            <div class="tab-options">
-              <div class="tab-option" data-value="1-2" onclick="selectTab(this)">1~2회</div>
-              <div class="tab-option" data-value="3-4" onclick="selectTab(this)">3~4회</div>
-              <div class="tab-option" data-value="5+" onclick="selectTab(this)">5회+</div>
-            </div>
+      <div class="tab-selector">
+        <div>
+          <label>주간 러닝 횟수</label>
+          <div class="tab-options">
+            <div class="tab-option" data-value="1-2" onclick="selectTab(this)">1~2회</div>
+            <div class="tab-option" data-value="3-4" onclick="selectTab(this)">3~4회</div>
+            <div class="tab-option" data-value="5+" onclick="selectTab(this)">5회+</div>
           </div>
-        </div>
-
-        <div class="chip-group">
-          <label>주로 뛰는 시간대</label>
-          <div class="chip-options" id="run-time-chips">
-            <div class="chip" data-value="weekday_dawn" onclick="toggleChip(this)">평일 새벽</div>
-            <div class="chip" data-value="weekday_morning" onclick="toggleChip(this)">평일 아침</div>
-            <div class="chip" data-value="weekday_evening" onclick="toggleChip(this)">평일 저녁</div>
-            <div class="chip" data-value="weekend_dawn" onclick="toggleChip(this)">주말 새벽</div>
-            <div class="chip" data-value="weekend_morning" onclick="toggleChip(this)">주말 아침</div>
-            <div class="chip" data-value="weekend_afternoon" onclick="toggleChip(this)">주말 오후</div>
-          </div>
-        </div>
-
-        <div class="chip-group">
-          <label>주로 뛰는 지역</label>
-          <div id="location-search-wrapper">
-            <input type="text" id="location-search" placeholder="도시 또는 구 이름 검색 (예: 안양, 서초구)" autocomplete="off">
-            <div id="location-results" class="location-results"></div>
-          </div>
-          <div id="location-selected" style="display:none">
-            <div class="selected-location">
-              <span id="location-display-name"></span>
-              <span class="change-link" onclick="resetLocationSearch()">변경</span>
-            </div>
-          </div>
-          <div class="hint">날씨 예보에 사용됩니다</div>
-        </div>
-
-        <div class="input-group">
-          <label>메모 (선택)</label>
-          <textarea id="run-pattern-note" placeholder="예: 주말에만 장거리, 존2 위주로 훈련 중" rows="2"></textarea>
         </div>
       </div>
 
-      <div class="step-actions">
-        <button class="btn btn-primary" onclick="goToStep(3)">다음</button>
-        <div class="nav-row">
-          <button class="btn btn-ghost" onclick="goToStep(1)">이전</button>
+      <div class="chip-group">
+        <label>주로 뛰는 시간대</label>
+        <div class="chip-options" id="run-time-chips">
+          <div class="chip" data-value="weekday_dawn" onclick="toggleChip(this)">평일 새벽</div>
+          <div class="chip" data-value="weekday_morning" onclick="toggleChip(this)">평일 아침</div>
+          <div class="chip" data-value="weekday_evening" onclick="toggleChip(this)">평일 저녁</div>
+          <div class="chip" data-value="weekend_dawn" onclick="toggleChip(this)">주말 새벽</div>
+          <div class="chip" data-value="weekend_morning" onclick="toggleChip(this)">주말 아침</div>
+          <div class="chip" data-value="weekend_afternoon" onclick="toggleChip(this)">주말 오후</div>
         </div>
+      </div>
+
+      <div class="chip-group">
+        <label>주로 뛰는 지역</label>
+        <div id="location-search-wrapper">
+          <input type="text" id="location-search" placeholder="도시 또는 구 이름 검색 (예: 안양, 서초구)" autocomplete="off">
+          <div id="location-results" class="location-results"></div>
+        </div>
+        <div id="location-selected" style="display:none">
+          <div class="selected-location">
+            <span id="location-display-name"></span>
+            <span class="change-link" onclick="resetLocationSearch()">변경</span>
+          </div>
+        </div>
+        <div class="hint" style="font-size:12px;color:var(--tg-theme-hint-color);margin-top:4px;">날씨 예보에 사용됩니다</div>
+      </div>
+
+      <div class="input-group">
+        <label>메모 (선택)</label>
+        <textarea id="run-pattern-note" placeholder="예: 주말에만 장거리, 존2 위주로 훈련 중" rows="2"></textarea>
+      </div>
+
+      <button class="btn btn-primary" onclick="goToStep(3)">다음</button>
+      <div class="nav-row">
+        <button class="btn btn-ghost" onclick="goToStep(1)">이전</button>
       </div>
     </div>
 
-    <!-- Step 3: 코칭 선호 -->
+    <!-- Step 3: 훈련법 -->
     <div class="step" id="step-3">
-      <div class="step-title">어떤 코칭을 원하시나요?</div>
-      <div class="step-desc">코칭 방향을 맞추는 데 참고할게요.</div>
+      <div class="step-title">적용하고 싶은 훈련법이 있나요?</div>
+      <div class="step-desc">잘 모르겠다면 선택하지 않고 넘어가도 괜찮아요.</div>
 
-      <div class="step-card">
-        <div class="card-group">
-          <label>가장 중요한 것</label>
-          <div class="card-options" id="priority-cards">
-            <div class="card-option" data-value="injury_prevention" onclick="selectCard(this, 'priority-cards')">부상 없이 안전하게</div>
-            <div class="card-option" data-value="performance" onclick="selectCard(this, 'priority-cards')">기록/페이스 향상</div>
-            <div class="card-option" data-value="consistency" onclick="selectCard(this, 'priority-cards')">꾸준한 습관 만들기</div>
-            <div class="card-option" data-value="race_prep" onclick="selectCard(this, 'priority-cards')">대회 준비</div>
-          </div>
-        </div>
-
-        <div class="card-group">
-          <label>훈련 계획 스타일</label>
-          <div class="card-options" id="style-cards">
-            <div class="card-option" data-value="structured" onclick="selectCard(this, 'style-cards')">계획을 세우고 지키는 편</div>
-            <div class="card-option" data-value="flexible" onclick="selectCard(this, 'style-cards')">그때그때 유연하게</div>
-          </div>
-        </div>
-
-        <div class="card-group" id="method-group">
-          <label>훈련법 <span class="hint" style="font-weight:400">(선택)</span></label>
-          <div class="card-options method-cards" id="method-cards">
-            <div class="card-option" data-value="galloway" onclick="selectCard(this, 'method-cards')">
-              <strong>갤러웨이</strong>
-              <span class="card-desc">달리기+걷기 번갈아! 부상 걱정 없이 시작</span>
-            </div>
-            <div class="card-option" data-value="maf" onclick="selectCard(this, 'method-cards')">
-              <strong>MAF 저심박</strong>
-              <span class="card-desc">심박수 하나만 지키면 자연스럽게 빨라져요</span>
-            </div>
-            <div class="card-option" data-value="hal_higdon" onclick="selectCard(this, 'method-cards')">
-              <strong>할 히든</strong>
-              <span class="card-desc">매주 조금씩 늘리는 가장 쉬운 프로그램</span>
-            </div>
-            <div class="card-option" data-value="80_20" onclick="selectCard(this, 'method-cards')">
-              <strong>80/20 러닝</strong>
-              <span class="card-desc">80%는 편하게, 20%만 빡세게</span>
-            </div>
-            <div class="card-option" data-value="jack_daniels" onclick="selectCard(this, 'method-cards')">
-              <strong>잭 다니엘스</strong>
-              <span class="card-desc">내 기록에 맞는 과학적 페이스 시스템</span>
-            </div>
-            <div class="card-option" data-value="hansons" onclick="selectCard(this, 'method-cards')">
-              <strong>한슨</strong>
-              <span class="card-desc">매일 꾸준히! 마라톤 후반이 강해져요</span>
-            </div>
-            <div class="card-option" data-value="pfitzinger" onclick="selectCard(this, 'method-cards')">
-              <strong>피치진저</strong>
-              <span class="card-desc">마라톤 기록 갱신 전용 고급 프로그램</span>
-            </div>
-            <div class="card-option" data-value="lydiard" onclick="selectCard(this, 'method-cards')">
-              <strong>리디어드</strong>
-              <span class="card-desc">모든 훈련법의 원조. 상급자용</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="input-group">
-          <label>추가 요청 (선택)</label>
-          <textarea id="additional-note" placeholder="코치에게 미리 알려주고 싶은 것이 있다면" rows="2"></textarea>
+      <div class="chip-group">
+        <label>훈련법</label>
+        <div class="chip-options" id="method-chips">
+          <div class="chip" data-value="80_20" onclick="selectSingleChip(this, 'method-chips')">80/20 러닝</div>
+          <div class="chip" data-value="jack_daniels" onclick="selectSingleChip(this, 'method-chips')">잭 다니엘스</div>
+          <div class="chip" data-value="maf" onclick="selectSingleChip(this, 'method-chips')">MAF 저심박</div>
+          <div class="chip" data-value="pfitzinger" onclick="selectSingleChip(this, 'method-chips')">피치진저</div>
+          <div class="chip" data-value="hansons" onclick="selectSingleChip(this, 'method-chips')">한슨</div>
+          <div class="chip" data-value="galloway" onclick="selectSingleChip(this, 'method-chips')">갤러웨이</div>
+          <div class="chip" data-value="hal_higdon" onclick="selectSingleChip(this, 'method-chips')">할 히든</div>
+          <div class="chip" data-value="lydiard" onclick="selectSingleChip(this, 'method-chips')">리디어드</div>
+          <div class="chip chip-recommend" data-value="coach_recommend" onclick="selectSingleChip(this, 'method-chips')">코치에게 추천받기</div>
         </div>
       </div>
 
-      <div class="step-actions">
-        <button class="btn btn-primary" id="btn-submit" onclick="submitSurvey()">완료</button>
-        <div class="error-text" id="error-msg" style="display:none"></div>
-        <div class="nav-row">
-          <button class="btn btn-ghost" onclick="goToStep(2)">이전</button>
+      <div id="method-desc" style="font-size:13px; color:var(--tg-theme-hint-color); line-height:1.5; margin-bottom:20px; min-height:40px;"></div>
+
+      <button class="btn btn-primary" onclick="goToStep(4)">다음</button>
+      <div class="nav-row">
+        <button class="btn btn-ghost" onclick="goToStep(2)">이전</button>
+      </div>
+    </div>
+
+    <!-- Step 4: 코칭 선호 -->
+    <div class="step" id="step-4">
+      <div class="step-title">어떤 코칭을 원하시나요?</div>
+      <div class="step-desc">코칭 방향을 맞추는 데 참고할게요.</div>
+
+      <div class="card-group">
+        <label>가장 중요한 것</label>
+        <div class="card-options" id="priority-cards">
+          <div class="card-option" data-value="injury_prevention" onclick="selectCard(this, 'priority-cards')">부상 없이 안전하게</div>
+          <div class="card-option" data-value="performance" onclick="selectCard(this, 'priority-cards')">기록/페이스 향상</div>
+          <div class="card-option" data-value="consistency" onclick="selectCard(this, 'priority-cards')">꾸준한 습관 만들기</div>
+          <div class="card-option" data-value="race_prep" onclick="selectCard(this, 'priority-cards')">대회 준비</div>
         </div>
+      </div>
+
+      <div class="card-group">
+        <label>훈련 계획 스타일</label>
+        <div class="card-options" id="style-cards">
+          <div class="card-option" data-value="structured" onclick="selectCard(this, 'style-cards')">계획을 세우고 지키는 편</div>
+          <div class="card-option" data-value="flexible" onclick="selectCard(this, 'style-cards')">그때그때 유연하게</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>추가 요청 (선택)</label>
+        <textarea id="additional-note" placeholder="코치에게 미리 알려주고 싶은 것이 있다면" rows="2"></textarea>
+      </div>
+
+      <button class="btn btn-primary" id="btn-submit" onclick="submitSurvey()">완료</button>
+      <div class="error-text" id="error-msg" style="display:none"></div>
+      <div class="nav-row">
+        <button class="btn btn-ghost" onclick="goToStep(3)">이전</button>
+        <button class="btn btn-ghost" onclick="skipToEnd()">건너뛰고 완료</button>
       </div>
     </div>
 
     <!-- Complete -->
     <div class="step" id="step-complete">
       <div class="status">
-        <svg class="check-circle" viewBox="0 0 64 64">
-          <circle cx="32" cy="32" r="32"/>
-          <path d="M20 33 L28 41 L44 25"/>
-        </svg>
+        <div class="icon">&#x1F3C3;</div>
         <div class="step-title">프로필 설정 완료!</div>
         <div class="message">
-          데이터를 분석해서 맞춤 훈련법을 추천해드릴게요.<br>
-          잠시 후 채팅을 확인해주세요!
+          이제 봇에게 자유롭게 말을 걸어보세요.<br>
+          당신에게 맞는 코칭을 시작할게요.
         </div>
       </div>
     </div>
@@ -806,24 +644,15 @@
     const API_URL = 'https://dotsosqsftympgdescvz.supabase.co/functions/v1/rc-onboarding';
 
     const tg = window.Telegram?.WebApp;
-    const _fromApp = new URLSearchParams(window.location.search).get('from');
     if (tg) {
       tg.ready();
       tg.expand();
-      if (_fromApp) {
+      // from=app에서 열렸으면 뒤로가기 버튼 표시
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('from') === 'app' && tg.BackButton) {
         tg.BackButton.show();
-        tg.BackButton.onClick(function() {
-          window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=home';
-        });
+        tg.BackButton.onClick(function() { tg.close(); });
       }
-    }
-
-    var _fromTab = new URLSearchParams(window.location.search).get('tab');
-    if (_fromApp && _fromTab === 'home') {
-      document.getElementById('back-to-app').style.display = 'flex';
-      document.getElementById('back-to-app').addEventListener('click', function() {
-        window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=home';
-      });
     }
 
     let currentStep = 1;
@@ -867,48 +696,51 @@
           });
         }
 
-        // Step 2: location (search autocomplete prefill)
+        // Step 2: pattern note
+        if (s.run_pattern_note) document.getElementById('run-pattern-note').value = s.run_pattern_note;
+
+        // Step 2: location
         if (s.default_location) {
           const locName = s.default_location.name || '';
           if (locName) {
             const found = LOCATION_SEARCH_DATA.find(loc => loc.name === locName);
             if (found) {
               selectLocation(found);
-            } else {
-              // 검색 데이터에 없으면 좌표가 있을 경우 직접 설정
-              selectLocation({
-                name: locName,
-                display: locName,
-                lat: s.default_location.lat || 0,
-                lon: s.default_location.lon || 0,
-                keywords: [locName],
-              });
+            } else if (s.default_location.lat) {
+              selectLocation({ name: locName, display: locName, lat: s.default_location.lat, lon: s.default_location.lon, keywords: [locName] });
             }
           }
         }
 
-        // Step 2: pattern note
-        if (s.run_pattern_note) document.getElementById('run-pattern-note').value = s.run_pattern_note;
+        // Step 3: training method
+        if (s.training_method && s.training_method !== 'none' && s.training_method !== 'pending_recommend') {
+          const methodChip = document.querySelector(`#method-chips .chip[data-value="${s.training_method}"]`);
+          if (methodChip) {
+            methodChip.classList.add('selected');
+            const descEl = document.getElementById('method-desc');
+            if (descEl) {
+              if (s.training_method === 'coach_recommend') {
+                descEl.textContent = '프로필 완성 후 코치가 맞춤 훈련법을 추천해드려요.';
+              } else if (METHOD_DESCS[s.training_method]) {
+                descEl.textContent = METHOD_DESCS[s.training_method];
+              }
+            }
+          }
+        }
 
-        // Step 3: priority
+        // Step 4: priority
         if (s.priority) {
           const card = document.querySelector(`#priority-cards .card-option[data-value="${s.priority}"]`);
           if (card) card.classList.add('selected');
         }
 
-        // Step 3: plan style
+        // Step 4: plan style
         if (s.plan_style) {
           const card = document.querySelector(`#style-cards .card-option[data-value="${s.plan_style}"]`);
           if (card) card.classList.add('selected');
         }
 
-        // Step 3: training method
-        if (s.training_method) {
-          const card = document.querySelector(`#method-cards .card-option[data-value="${s.training_method}"]`);
-          if (card) card.classList.add('selected');
-        }
-
-        // Step 3: additional note
+        // Step 4: additional note
         if (s.additional_note) document.getElementById('additional-note').value = s.additional_note;
 
       } catch (e) {
@@ -920,44 +752,29 @@
 
     // --- Navigation ---
 
-    function updateIndicator(fromStep, toStep) {
-      // Update dots
-      const fromDot = document.getElementById('dot-' + fromStep);
-      const toDot = document.getElementById('dot-' + toStep);
-
-      if (fromDot) fromDot.classList.remove('active');
-      if (toDot) toDot.classList.add('active');
-
-      if (typeof toStep === 'number' && typeof fromStep === 'number') {
-        if (toStep > fromStep) {
-          // Moving forward: mark previous as done
-          if (fromDot) fromDot.classList.add('done');
-          // Mark connector as done
-          const conn = document.getElementById('conn-' + fromStep + '-' + toStep);
-          if (conn) conn.classList.add('done');
-        } else {
-          // Moving backward: remove done from steps after target
-          for (let i = toStep; i <= fromStep; i++) {
-            const dot = document.getElementById('dot-' + i);
-            if (dot && i !== toStep) dot.classList.remove('done');
-          }
-          // Remove done from connectors
-          for (let i = toStep; i < fromStep; i++) {
-            const conn = document.getElementById('conn-' + i + '-' + (i + 1));
-            if (conn) conn.classList.remove('done');
-          }
-        }
-      }
-    }
-
     function goToStep(step) {
       const prev = currentStep;
       document.getElementById('step-' + prev)?.classList.remove('active');
+      document.getElementById('dot-' + prev)?.classList.remove('active');
 
-      updateIndicator(prev, step);
+      if (typeof step === 'number' && typeof prev === 'number' && step < prev) {
+        document.getElementById('dot-' + prev)?.classList.remove('done');
+        for (let i = step; i <= prev; i++) {
+          document.getElementById('dot-' + i)?.classList.remove('done');
+        }
+      } else if (typeof prev === 'number') {
+        document.getElementById('dot-' + prev)?.classList.add('done');
+      }
 
       currentStep = step;
       document.getElementById('step-' + step)?.classList.add('active');
+      if (typeof step === 'number') {
+        document.getElementById('dot-' + step)?.classList.add('active');
+      }
+    }
+
+    function skipToEnd() {
+      submitSurvey();
     }
 
     // --- Tab selector ---
@@ -1026,7 +843,7 @@
       { name: '연천', display: '연천 (경기)', lat: 38.0965, lon: 127.075, keywords: ['연천'] },
       { name: '양평', display: '양평 (경기)', lat: 37.4916, lon: 127.4876, keywords: ['양평'] },
       { name: '가평', display: '가평 (경기)', lat: 37.8315, lon: 127.5096, keywords: ['가평'] },
-      // 강원특별자치도
+      // 강원
       { name: '춘천', display: '춘천 (강원)', lat: 37.8813, lon: 127.73, keywords: ['춘천'] },
       { name: '원주', display: '원주 (강원)', lat: 37.3422, lon: 127.9202, keywords: ['원주'] },
       { name: '강릉', display: '강릉 (강원)', lat: 37.7519, lon: 128.8761, keywords: ['강릉'] },
@@ -1040,24 +857,15 @@
       { name: '평창', display: '평창 (강원)', lat: 37.3704, lon: 128.3906, keywords: ['평창'] },
       { name: '정선', display: '정선 (강원)', lat: 37.3808, lon: 128.6608, keywords: ['정선'] },
       { name: '철원', display: '철원 (강원)', lat: 38.1465, lon: 127.3133, keywords: ['철원'] },
-      { name: '화천', display: '화천 (강원)', lat: 38.1062, lon: 127.7081, keywords: ['화천'] },
-      { name: '양구', display: '양구 (강원)', lat: 38.1096, lon: 127.9897, keywords: ['양구'] },
-      { name: '인제', display: '인제 (강원)', lat: 38.0695, lon: 128.1706, keywords: ['인제'] },
-      { name: '고성', display: '고성 (강원)', lat: 38.3802, lon: 128.4679, keywords: ['고성'] },
-      { name: '양양', display: '양양 (강원)', lat: 38.0754, lon: 128.6189, keywords: ['양양'] },
-      // 충청북도
+      // 충북
       { name: '청주', display: '청주 (충북)', lat: 36.6424, lon: 127.489, keywords: ['청주','상당구','서원구','흥덕구','청원구'] },
       { name: '충주', display: '충주 (충북)', lat: 36.991, lon: 127.9259, keywords: ['충주'] },
       { name: '제천', display: '제천 (충북)', lat: 37.1325, lon: 128.191, keywords: ['제천'] },
       { name: '보은', display: '보은 (충북)', lat: 36.489, lon: 127.7293, keywords: ['보은'] },
       { name: '옥천', display: '옥천 (충북)', lat: 36.306, lon: 127.5714, keywords: ['옥천'] },
       { name: '영동', display: '영동 (충북)', lat: 36.175, lon: 127.7764, keywords: ['영동'] },
-      { name: '증평', display: '증평 (충북)', lat: 36.7853, lon: 127.5817, keywords: ['증평'] },
       { name: '진천', display: '진천 (충북)', lat: 36.8553, lon: 127.4356, keywords: ['진천'] },
-      { name: '괴산', display: '괴산 (충북)', lat: 36.815, lon: 127.7864, keywords: ['괴산'] },
-      { name: '음성', display: '음성 (충북)', lat: 36.94, lon: 127.6903, keywords: ['음성'] },
-      { name: '단양', display: '단양 (충북)', lat: 36.9845, lon: 128.3653, keywords: ['단양'] },
-      // 충청남도
+      // 충남
       { name: '천안', display: '천안 (충남)', lat: 36.8151, lon: 127.1139, keywords: ['천안','동남구','서북구'] },
       { name: '아산', display: '아산 (충남)', lat: 36.7898, lon: 127.0018, keywords: ['아산'] },
       { name: '서산', display: '서산 (충남)', lat: 36.7845, lon: 126.4503, keywords: ['서산'] },
@@ -1065,96 +873,38 @@
       { name: '논산', display: '논산 (충남)', lat: 36.1872, lon: 127.0986, keywords: ['논산'] },
       { name: '공주', display: '공주 (충남)', lat: 36.4465, lon: 127.119, keywords: ['공주'] },
       { name: '보령', display: '보령 (충남)', lat: 36.3334, lon: 126.6128, keywords: ['보령'] },
-      { name: '계룡', display: '계룡 (충남)', lat: 36.2747, lon: 127.2486, keywords: ['계룡'] },
-      { name: '금산', display: '금산 (충남)', lat: 36.1086, lon: 127.4881, keywords: ['금산'] },
-      { name: '부여', display: '부여 (충남)', lat: 36.2756, lon: 126.9098, keywords: ['부여'] },
-      { name: '서천', display: '서천 (충남)', lat: 36.0801, lon: 126.6918, keywords: ['서천'] },
-      { name: '청양', display: '청양 (충남)', lat: 36.4593, lon: 126.8023, keywords: ['청양'] },
       { name: '홍성', display: '홍성 (충남)', lat: 36.6013, lon: 126.6603, keywords: ['홍성'] },
-      { name: '예산', display: '예산 (충남)', lat: 36.6828, lon: 126.8487, keywords: ['예산'] },
-      { name: '태안', display: '태안 (충남)', lat: 36.7457, lon: 126.2979, keywords: ['태안'] },
-      // 전북특별자치도
+      // 전북
       { name: '전주', display: '전주 (전북)', lat: 35.8242, lon: 127.148, keywords: ['전주','완산구','덕진구'] },
       { name: '익산', display: '익산 (전북)', lat: 35.9483, lon: 126.9576, keywords: ['익산'] },
       { name: '군산', display: '군산 (전북)', lat: 35.9676, lon: 126.7369, keywords: ['군산'] },
       { name: '정읍', display: '정읍 (전북)', lat: 35.5699, lon: 126.8558, keywords: ['정읍'] },
       { name: '남원', display: '남원 (전북)', lat: 35.4164, lon: 127.3906, keywords: ['남원'] },
       { name: '김제', display: '김제 (전북)', lat: 35.8037, lon: 126.8808, keywords: ['김제'] },
-      { name: '완주', display: '완주 (전북)', lat: 35.9044, lon: 127.1619, keywords: ['완주'] },
-      { name: '진안', display: '진안 (전북)', lat: 35.7917, lon: 127.4247, keywords: ['진안'] },
-      { name: '무주', display: '무주 (전북)', lat: 35.9222, lon: 127.6608, keywords: ['무주'] },
-      { name: '장수', display: '장수 (전북)', lat: 35.6472, lon: 127.5219, keywords: ['장수'] },
-      { name: '임실', display: '임실 (전북)', lat: 35.6178, lon: 127.2828, keywords: ['임실'] },
-      { name: '순창', display: '순창 (전북)', lat: 35.3742, lon: 127.1372, keywords: ['순창'] },
-      { name: '고창', display: '고창 (전북)', lat: 35.4358, lon: 126.7019, keywords: ['고창'] },
-      { name: '부안', display: '부안 (전북)', lat: 35.7317, lon: 126.7331, keywords: ['부안'] },
-      // 전라남도
+      // 전남
       { name: '여수', display: '여수 (전남)', lat: 34.7604, lon: 127.6622, keywords: ['여수'] },
       { name: '순천', display: '순천 (전남)', lat: 34.9506, lon: 127.4873, keywords: ['순천'] },
       { name: '목포', display: '목포 (전남)', lat: 34.8118, lon: 126.3922, keywords: ['목포'] },
       { name: '광양', display: '광양 (전남)', lat: 34.9407, lon: 127.6957, keywords: ['광양'] },
       { name: '나주', display: '나주 (전남)', lat: 35.0159, lon: 126.7104, keywords: ['나주'] },
-      { name: '담양', display: '담양 (전남)', lat: 35.3211, lon: 126.9883, keywords: ['담양'] },
-      { name: '곡성', display: '곡성 (전남)', lat: 35.2822, lon: 127.2917, keywords: ['곡성'] },
-      { name: '구례', display: '구례 (전남)', lat: 35.2025, lon: 127.4625, keywords: ['구례'] },
-      { name: '고흥', display: '고흥 (전남)', lat: 34.6111, lon: 127.2753, keywords: ['고흥'] },
-      { name: '보성', display: '보성 (전남)', lat: 34.7714, lon: 127.08, keywords: ['보성'] },
-      { name: '화순', display: '화순 (전남)', lat: 35.0644, lon: 126.9867, keywords: ['화순'] },
-      { name: '장흥', display: '장흥 (전남)', lat: 34.6817, lon: 126.9069, keywords: ['장흥'] },
-      { name: '강진', display: '강진 (전남)', lat: 34.6419, lon: 126.7672, keywords: ['강진'] },
-      { name: '해남', display: '해남 (전남)', lat: 34.5736, lon: 126.5992, keywords: ['해남'] },
-      { name: '영암', display: '영암 (전남)', lat: 34.8003, lon: 126.6969, keywords: ['영암'] },
-      { name: '무안', display: '무안 (전남)', lat: 34.9906, lon: 126.4817, keywords: ['무안'] },
-      { name: '함평', display: '함평 (전남)', lat: 35.0656, lon: 126.5167, keywords: ['함평'] },
-      { name: '영광', display: '영광 (전남)', lat: 35.2772, lon: 126.5119, keywords: ['영광'] },
-      { name: '장성', display: '장성 (전남)', lat: 35.3019, lon: 126.7831, keywords: ['장성'] },
-      { name: '완도', display: '완도 (전남)', lat: 34.3108, lon: 126.755, keywords: ['완도'] },
-      { name: '진도', display: '진도 (전남)', lat: 34.4867, lon: 126.2633, keywords: ['진도'] },
-      { name: '신안', display: '신안 (전남)', lat: 34.8322, lon: 126.1072, keywords: ['신안'] },
-      // 경상북도
-      { name: '포항', display: '포항 (경북)', lat: 36.019, lon: 129.3435, keywords: ['포항','남구','북구'] },
+      // 경북
+      { name: '포항', display: '포항 (경북)', lat: 36.019, lon: 129.3435, keywords: ['포항'] },
       { name: '구미', display: '구미 (경북)', lat: 36.1196, lon: 128.3446, keywords: ['구미'] },
       { name: '경주', display: '경주 (경북)', lat: 35.8562, lon: 129.2248, keywords: ['경주'] },
       { name: '김천', display: '김천 (경북)', lat: 36.1398, lon: 128.1136, keywords: ['김천'] },
       { name: '안동', display: '안동 (경북)', lat: 36.5684, lon: 128.7294, keywords: ['안동'] },
       { name: '영주', display: '영주 (경북)', lat: 36.8057, lon: 128.6239, keywords: ['영주'] },
-      { name: '영천', display: '영천 (경북)', lat: 35.9733, lon: 128.9386, keywords: ['영천'] },
-      { name: '상주', display: '상주 (경북)', lat: 36.411, lon: 128.159, keywords: ['상주'] },
-      { name: '문경', display: '문경 (경북)', lat: 36.5866, lon: 128.1867, keywords: ['문경'] },
       { name: '경산', display: '경산 (경북)', lat: 35.8251, lon: 128.7416, keywords: ['경산'] },
-      { name: '의성', display: '의성 (경북)', lat: 36.3528, lon: 128.697, keywords: ['의성'] },
-      { name: '청송', display: '청송 (경북)', lat: 36.4362, lon: 129.0572, keywords: ['청송'] },
-      { name: '영양', display: '영양 (경북)', lat: 36.6667, lon: 129.1122, keywords: ['영양'] },
-      { name: '영덕', display: '영덕 (경북)', lat: 36.415, lon: 129.3656, keywords: ['영덕'] },
-      { name: '청도', display: '청도 (경북)', lat: 35.6472, lon: 128.7342, keywords: ['청도'] },
-      { name: '고령', display: '고령 (경북)', lat: 35.7261, lon: 128.2631, keywords: ['고령'] },
-      { name: '성주', display: '성주 (경북)', lat: 35.9192, lon: 128.2831, keywords: ['성주'] },
-      { name: '칠곡', display: '칠곡 (경북)', lat: 35.9955, lon: 128.4017, keywords: ['칠곡'] },
-      { name: '예천', display: '예천 (경북)', lat: 36.6575, lon: 128.4536, keywords: ['예천'] },
-      { name: '봉화', display: '봉화 (경북)', lat: 36.8931, lon: 128.7328, keywords: ['봉화'] },
-      { name: '울진', display: '울진 (경북)', lat: 36.9933, lon: 129.4006, keywords: ['울진'] },
-      { name: '울릉', display: '울릉 (경북)', lat: 37.4844, lon: 130.9057, keywords: ['울릉','울릉도'] },
-      // 경상남도
-      { name: '창원', display: '창원 (경남)', lat: 35.228, lon: 128.6811, keywords: ['창원','성산구','의창구','마산','진해'] },
+      // 경남
+      { name: '창원', display: '창원 (경남)', lat: 35.228, lon: 128.6811, keywords: ['창원','마산','진해'] },
       { name: '김해', display: '김해 (경남)', lat: 35.2285, lon: 128.8894, keywords: ['김해'] },
       { name: '진주', display: '진주 (경남)', lat: 35.18, lon: 128.1076, keywords: ['진주'] },
       { name: '양산', display: '양산 (경남)', lat: 35.335, lon: 129.0374, keywords: ['양산'] },
       { name: '거제', display: '거제 (경남)', lat: 34.8806, lon: 128.6211, keywords: ['거제'] },
       { name: '통영', display: '통영 (경남)', lat: 34.8545, lon: 128.433, keywords: ['통영'] },
-      { name: '사천', display: '사천 (경남)', lat: 35.0032, lon: 128.0642, keywords: ['사천'] },
-      { name: '밀양', display: '밀양 (경남)', lat: 35.5037, lon: 128.7464, keywords: ['밀양'] },
-      { name: '의령', display: '의령 (경남)', lat: 35.3222, lon: 128.2614, keywords: ['의령'] },
-      { name: '함안', display: '함안 (경남)', lat: 35.2722, lon: 128.4064, keywords: ['함안'] },
-      { name: '창녕', display: '창녕 (경남)', lat: 35.544, lon: 128.4917, keywords: ['창녕'] },
-      { name: '남해', display: '남해 (경남)', lat: 34.8375, lon: 127.8925, keywords: ['남해'] },
-      { name: '하동', display: '하동 (경남)', lat: 35.0672, lon: 127.7514, keywords: ['하동'] },
-      { name: '산청', display: '산청 (경남)', lat: 35.4156, lon: 127.8731, keywords: ['산청'] },
-      { name: '함양', display: '함양 (경남)', lat: 35.52, lon: 127.7253, keywords: ['함양'] },
-      { name: '거창', display: '거창 (경남)', lat: 35.6867, lon: 127.9094, keywords: ['거창'] },
-      { name: '합천', display: '합천 (경남)', lat: 35.5667, lon: 128.1658, keywords: ['합천'] },
     ];
 
-    let selectedLocation = null; // { name, display, lat, lon }
+    let selectedLocation = null;
 
     function searchLocation(query) {
       const q = query.trim().toLowerCase();
@@ -1197,30 +947,61 @@
       selectedLocation = null;
       document.getElementById('location-search-wrapper').style.display = '';
       document.getElementById('location-selected').style.display = 'none';
-      const searchInput = document.getElementById('location-search');
+      var searchInput = document.getElementById('location-search');
       searchInput.value = '';
       searchInput.focus();
     }
 
     document.getElementById('location-search').addEventListener('input', function() {
-      const results = searchLocation(this.value);
+      var results = searchLocation(this.value);
       renderLocationResults(results, this.value);
     });
 
     document.getElementById('location-search').addEventListener('focus', function() {
       if (this.value.trim()) {
-        const results = searchLocation(this.value);
+        var results = searchLocation(this.value);
         renderLocationResults(results, this.value);
       }
     });
 
-    // 외부 클릭 시 결과 닫기
     document.addEventListener('click', function(e) {
-      const wrapper = document.getElementById('location-search-wrapper');
+      var wrapper = document.getElementById('location-search-wrapper');
       if (wrapper && !wrapper.contains(e.target)) {
         document.getElementById('location-results').classList.remove('show');
       }
     });
+
+    // --- Single chip selector ---
+
+    const METHOD_DESCS = {
+      '80_20': '80% 저강도 + 20% 고강도. 부상 없이 꾸준한 기록 향상.',
+      'jack_daniels': 'VDOT 기반 5단계 페이스. 과학적이고 체계적인 훈련.',
+      'maf': '180-나이 심박수 이하로만 훈련. 유산소 기초 체력 구축.',
+      'pfitzinger': '고볼륨 + 역주기화. 마라톤 기록 향상에 집중.',
+      'hansons': '누적 피로 철학. 주 6일, 롱런 26km 상한.',
+      'galloway': '달리기/걷기 교대. 부상 위험 최소화, 초보 친화.',
+      'hal_higdon': '단계별 프로그램. 전통적이고 따라하기 쉬움.',
+      'lydiard': '유산소 베이스 → 스피드 주기화. 엘리트/준엘리트용.',
+    };
+
+    function selectSingleChip(el, groupId) {
+      const group = document.getElementById(groupId);
+      const wasSelected = el.classList.contains('selected');
+      group.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+      if (!wasSelected) {
+        el.classList.add('selected');
+      }
+      // 훈련법 설명 표시
+      const descEl = document.getElementById('method-desc');
+      if (descEl) {
+        const val = el.classList.contains('selected') ? el.dataset.value : null;
+        if (val === 'coach_recommend') {
+          descEl.textContent = '프로필 완성 후 코치가 맞춤 훈련법을 추천해드려요.';
+        } else {
+          descEl.textContent = val ? METHOD_DESCS[val] || '' : '';
+        }
+      }
+    }
 
     // --- Card selector ---
 
@@ -1254,21 +1035,21 @@
       const patternNote = document.getElementById('run-pattern-note').value.trim();
       if (patternNote) data.run_pattern_note = patternNote;
 
-      // Step 2: location (search autocomplete)
+      // Step 2: location
       if (selectedLocation) {
         data.default_location = { name: selectedLocation.name, lat: selectedLocation.lat, lon: selectedLocation.lon };
       }
 
       // Step 3
+      const methodChip = document.querySelector('#method-chips .chip.selected');
+      if (methodChip) data.training_method = methodChip.dataset.value;
+
+      // Step 4
       const priorityCard = document.querySelector('#priority-cards .card-option.selected');
       if (priorityCard) data.priority = priorityCard.dataset.value;
 
       const styleCard = document.querySelector('#style-cards .card-option.selected');
       if (styleCard) data.plan_style = styleCard.dataset.value;
-
-      // Step 3: training method
-      const methodCard = document.querySelector('#method-cards .card-option.selected');
-      if (methodCard) data.training_method = methodCard.dataset.value;
 
       const additionalNote = document.getElementById('additional-note').value.trim();
       if (additionalNote) data.additional_note = additionalNote;
@@ -1324,12 +1105,7 @@
     function showComplete() {
       goToStep('complete');
       setTimeout(() => {
-        var fromApp = new URLSearchParams(window.location.search).get('from') === 'app';
-        if (fromApp) {
-          window.location.href = 'https://michaeldohyun.github.io/rc-webapp/app.html?tab=home';
-        } else if (tg) {
-          tg.close();
-        }
+        if (tg) tg.close();
       }, 2000);
     }
 

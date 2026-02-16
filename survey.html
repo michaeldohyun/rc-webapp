@@ -572,6 +572,33 @@
     }
     .back-header svg { width: 18px; height: 18px; }
 
+    /* Training method cards */
+    .method-cards {
+      flex-direction: row !important;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .method-cards .card-option {
+      flex: 1 1 calc(50% - 4px);
+      flex-direction: column;
+      display: flex;
+      align-items: flex-start;
+      text-align: left;
+      padding: 10px 12px;
+    }
+    .method-cards .card-option strong {
+      font-size: 13px;
+    }
+    .card-desc {
+      font-size: 11px;
+      color: var(--tg-theme-hint-color);
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+    .method-cards .card-option.selected .card-desc {
+      color: var(--tg-theme-button-text-color);
+    }
+
   </style>
 </head>
 <body>
@@ -706,6 +733,44 @@
           </div>
         </div>
 
+        <div class="card-group" id="method-group">
+          <label>훈련법 <span class="hint" style="font-weight:400">(선택)</span></label>
+          <div class="card-options method-cards" id="method-cards">
+            <div class="card-option" data-value="galloway" onclick="selectCard(this, 'method-cards')">
+              <strong>갤러웨이</strong>
+              <span class="card-desc">달리기+걷기 번갈아! 부상 걱정 없이 시작</span>
+            </div>
+            <div class="card-option" data-value="maf" onclick="selectCard(this, 'method-cards')">
+              <strong>MAF 저심박</strong>
+              <span class="card-desc">심박수 하나만 지키면 자연스럽게 빨라져요</span>
+            </div>
+            <div class="card-option" data-value="hal_higdon" onclick="selectCard(this, 'method-cards')">
+              <strong>할 히든</strong>
+              <span class="card-desc">매주 조금씩 늘리는 가장 쉬운 프로그램</span>
+            </div>
+            <div class="card-option" data-value="80_20" onclick="selectCard(this, 'method-cards')">
+              <strong>80/20 러닝</strong>
+              <span class="card-desc">80%는 편하게, 20%만 빡세게</span>
+            </div>
+            <div class="card-option" data-value="jack_daniels" onclick="selectCard(this, 'method-cards')">
+              <strong>잭 다니엘스</strong>
+              <span class="card-desc">내 기록에 맞는 과학적 페이스 시스템</span>
+            </div>
+            <div class="card-option" data-value="hansons" onclick="selectCard(this, 'method-cards')">
+              <strong>한슨</strong>
+              <span class="card-desc">매일 꾸준히! 마라톤 후반이 강해져요</span>
+            </div>
+            <div class="card-option" data-value="pfitzinger" onclick="selectCard(this, 'method-cards')">
+              <strong>피치진저</strong>
+              <span class="card-desc">마라톤 기록 갱신 전용 고급 프로그램</span>
+            </div>
+            <div class="card-option" data-value="lydiard" onclick="selectCard(this, 'method-cards')">
+              <strong>리디어드</strong>
+              <span class="card-desc">모든 훈련법의 원조. 상급자용</span>
+            </div>
+          </div>
+        </div>
+
         <div class="input-group">
           <label>추가 요청 (선택)</label>
           <textarea id="additional-note" placeholder="코치에게 미리 알려주고 싶은 것이 있다면" rows="2"></textarea>
@@ -834,6 +899,12 @@
         // Step 3: plan style
         if (s.plan_style) {
           const card = document.querySelector(`#style-cards .card-option[data-value="${s.plan_style}"]`);
+          if (card) card.classList.add('selected');
+        }
+
+        // Step 3: training method
+        if (s.training_method) {
+          const card = document.querySelector(`#method-cards .card-option[data-value="${s.training_method}"]`);
           if (card) card.classList.add('selected');
         }
 
@@ -1194,6 +1265,10 @@
 
       const styleCard = document.querySelector('#style-cards .card-option.selected');
       if (styleCard) data.plan_style = styleCard.dataset.value;
+
+      // Step 3: training method
+      const methodCard = document.querySelector('#method-cards .card-option.selected');
+      if (methodCard) data.training_method = methodCard.dataset.value;
 
       const additionalNote = document.getElementById('additional-note').value.trim();
       if (additionalNote) data.additional_note = additionalNote;

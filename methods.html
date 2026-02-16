@@ -111,7 +111,10 @@ if (tg) {
   tg.expand();
   if (tg.BackButton) {
     tg.BackButton.show();
-    tg.BackButton.onClick(function() { tg.close(); });
+    tg.BackButton.onClick(function() {
+      if (window.history.length > 1) { window.history.back(); }
+      else { tg.close(); }
+    });
   }
 }
 

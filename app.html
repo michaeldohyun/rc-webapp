@@ -142,30 +142,6 @@
   .section-title .ic svg { width: 18px; height: 18px; }
   .section-title .count { font-size: 12px; color: var(--hint); font-weight: 500; margin-left: auto; }
 
-  .quest-list { display: flex; flex-direction: column; gap: 8px; }
-  .quest-card { background: var(--bg); border-radius: 14px; padding: 12px 12px 12px 16px; position: relative; overflow: hidden; border: 1px solid var(--secondary-bg); }
-  .quest-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
-  .quest-card[data-type="core"]::before { background: var(--core-color); }
-  .quest-card[data-type="method"]::before { background: var(--method-color); }
-  .quest-card[data-type="stretch"]::before { background: var(--stretch-color); }
-  .quest-card.completed { background: rgba(34,197,94,0.06); }
-  .quest-card.completed .quest-done-ic { position: absolute; right: 12px; top: 12px; color: var(--success); }
-  .quest-card.completed .quest-done-ic svg { width: 20px; height: 20px; }
-  .quest-top { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-  .quest-pill { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; color: #fff; }
-  .quest-pill.core { background: var(--core-color); }
-  .quest-pill.method { background: var(--method-color); }
-  .quest-pill.stretch { background: var(--stretch-color); }
-  .quest-xp { font-size: 10px; font-weight: 600; color: var(--link); margin-left: auto; }
-  .quest-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-  .quest-progress-bar { height: 6px; background: var(--secondary-bg); border-radius: 3px; overflow: hidden; }
-  .quest-progress-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
-  .quest-card[data-type="core"] .quest-progress-fill { background: var(--core-color); }
-  .quest-card[data-type="method"] .quest-progress-fill { background: var(--method-color); }
-  .quest-card[data-type="stretch"] .quest-progress-fill { background: var(--stretch-color); }
-  .quest-card.completed .quest-progress-fill { background: var(--success); }
-  .quest-progress-text { font-size: 11px; color: var(--hint); margin-top: 3px; text-align: right; }
-  .quest-empty { text-align: center; padding: 30px 16px; color: var(--hint); background: var(--bg); border-radius: var(--card-radius); font-size: 13px; border: 1px solid var(--secondary-bg); }
 
   /* Page Header */
   .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
@@ -221,63 +197,6 @@
     width: 4px; height: 4px; border-radius: 50%; background: var(--btn);
   }
 
-  /* ===== QUEST PATH TAB ===== */
-  /* quest-path uses .page-header */
-  .path-container { position: relative; }
-  .path-line { position: absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: var(--secondary-bg); }
-  .path-stages { display: flex; flex-direction: column; gap: 10px; }
-  .stage-item { position: relative; }
-  .stage-node {
-    position: absolute; left: 20px; top: 16px; transform: translateX(-50%); z-index: 2;
-    width: 32px; height: 32px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    border: 3px solid var(--secondary-bg); background: var(--bg); color: var(--hint);
-  }
-  .stage-node svg { width: 14px; height: 14px; }
-  .stage-item.completed .stage-node { border-color: var(--btn); background: var(--btn); color: var(--btn-text); }
-  .stage-item.current .stage-node { border-color: var(--btn); color: var(--btn); animation: pulse 2s infinite; }
-  .stage-card {
-    margin-left: 48px; border-radius: 14px; padding: 14px;
-    border: 1px solid var(--secondary-bg); background: var(--bg);
-    cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all 0.2s;
-  }
-  .stage-item.completed .stage-card { border-color: rgba(var(--btn-rgb, 38,120,182), 0.15); background: rgba(var(--btn-rgb, 38,120,182), 0.03); }
-  .stage-item.current .stage-card { border-color: var(--btn); box-shadow: 0 2px 12px rgba(var(--btn-rgb, 38,120,182), 0.1); }
-  .stage-item.locked .stage-card { opacity: 0.5; cursor: default; }
-  .stage-head { display: flex; align-items: center; justify-content: space-between; }
-  .stage-meta { display: flex; align-items: center; gap: 6px; }
-  .stage-lv { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--hint); }
-  .stage-item.completed .stage-lv, .stage-item.current .stage-lv { color: var(--btn); }
-  .stage-now-badge { font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 10px; background: var(--btn); color: var(--btn-text); }
-  .stage-count { font-size: 12px; color: var(--hint); }
-  .stage-chevron { color: var(--hint); transition: transform 0.2s; display: flex; }
-  .stage-chevron svg { width: 16px; height: 16px; }
-  .stage-chevron.open { transform: rotate(180deg); }
-  .stage-title { font-size: 15px; font-weight: 700; margin-top: 4px; }
-  .stage-item.locked .stage-title { color: var(--hint); }
-  .stage-desc { font-size: 12px; color: var(--hint); margin-top: 2px; }
-  .stage-progress-bar { margin-top: 10px; height: 4px; background: var(--secondary-bg); border-radius: 2px; overflow: hidden; }
-  .stage-progress-fill { height: 100%; border-radius: 2px; background: var(--btn); transition: width 0.6s ease; }
-  .stage-missions { margin-top: 8px; padding: 10px; background: var(--secondary-bg); border-radius: 10px; display: flex; flex-direction: column; gap: 6px; }
-  .mission-row { display: flex; align-items: center; gap: 8px; padding: 4px; }
-  .mission-check { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-  .mission-check svg { width: 12px; height: 12px; }
-  .mission-check.done { background: var(--btn); color: var(--btn-text); }
-  .mission-check.pending { border: 2px solid var(--hint); opacity: 0.4; }
-  .mission-name { font-size: 13px; }
-  .mission-row.done .mission-name { font-weight: 500; }
-  .mission-row.pending .mission-name { color: var(--hint); }
-  .trophy-final { position: relative; margin-top: 10px; }
-  .trophy-node {
-    position: absolute; left: 20px; top: 10px; transform: translateX(-50%); z-index: 2;
-    width: 36px; height: 36px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--secondary-bg); color: var(--btn);
-  }
-  .trophy-node svg { width: 18px; height: 18px; }
-  .trophy-card { margin-left: 48px; border-radius: 14px; padding: 14px; border: 1px solid var(--secondary-bg); background: var(--bg); }
-  .trophy-title { font-size: 15px; font-weight: 700; }
-  .trophy-desc { font-size: 12px; color: var(--hint); margin-top: 2px; }
 
   /* ===== STATS TAB ===== */
   /* stats uses .page-header */
@@ -378,52 +297,13 @@
   .plan-slim-head .ps-chevron { margin-left: auto; color: var(--hint); display: flex; }
   .plan-slim-head .ps-chevron svg { width: 16px; height: 16px; }
 
-  /* Quest Summary Card */
-  .quest-summary-card { background: var(--bg); border-radius: var(--card-radius); padding: 14px; margin-bottom: 12px; border: 1px solid var(--secondary-bg); }
-  .quest-summary-head { display: flex; align-items: center; gap: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-  .quest-summary-head .qs-icon { color: var(--btn); display: flex; }
-  .quest-summary-head .qs-icon svg { width: 16px; height: 16px; }
-  .quest-summary-head .qs-title { font-size: 13px; font-weight: 600; }
-  .quest-summary-head .qs-count { font-size: 12px; color: var(--hint); font-weight: 500; }
-  .quest-summary-head .qs-chevron { margin-left: auto; color: var(--hint); display: flex; }
-  .quest-summary-head .qs-chevron svg { width: 16px; height: 16px; }
-  .quest-summary-bar { margin-top: 10px; height: 8px; background: var(--secondary-bg); border-radius: 4px; overflow: hidden; }
-  .quest-summary-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--btn), var(--link)); transition: width 0.6s ease; }
-  .quest-summary-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; font-size: 11px; color: var(--hint); }
-  .quest-summary-xp { font-weight: 600; color: var(--link); }
-
-  /* Quest Accordion Items */
-  .quest-accordion { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--secondary-bg); display: flex; flex-direction: column; gap: 8px; animation: fadeIn 0.25s ease; }
-  .quest-inline-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
-  .quest-inline-bar { width: 3px; height: 28px; border-radius: 2px; flex-shrink: 0; }
-  .quest-inline-bar.core { background: var(--core-color); }
-  .quest-inline-bar.method { background: var(--method-color); }
-  .quest-inline-bar.stretch { background: var(--stretch-color); }
-  .quest-inline-bar.done { background: var(--success); }
-  .quest-inline-info { flex: 1; min-width: 0; }
-  .quest-inline-title { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .quest-inline-title.done { text-decoration: line-through; color: var(--hint); }
-  .quest-inline-progress { font-size: 11px; color: var(--hint); }
-  .quest-inline-xp { font-size: 10px; font-weight: 600; color: var(--link); white-space: nowrap; }
-  .quest-inline-check { color: var(--success); display: flex; }
-  .quest-inline-check svg { width: 16px; height: 16px; }
-
-  /* Quest see-more link */
-  .quest-see-more { display: flex; align-items: center; justify-content: flex-end; gap: 2px; padding: 6px 0 0; font-size: 12px; font-weight: 500; color: var(--link); cursor: pointer; -webkit-tap-highlight-color: transparent; }
-  .quest-see-more svg { width: 14px; height: 14px; }
-
   /* XP Area Tappable */
   .home-xp-row.tappable { cursor: pointer; -webkit-tap-highlight-color: transparent; padding: 4px 0; margin-top: 4px; border-radius: 6px; transition: background 0.15s; }
   .home-xp-row.tappable:active { background: var(--secondary-bg); }
   .home-xp-chevron { color: var(--hint); display: flex; align-items: center; margin-left: 4px; }
   .home-xp-chevron svg { width: 14px; height: 14px; }
 
-  /* Home quest section clickable (legacy) */
-  .section-title.clickable { cursor: pointer; -webkit-tap-highlight-color: transparent; }
-  .section-title .chevron-right { margin-left: auto; color: var(--hint); display: flex; }
-  .section-title .chevron-right svg { width: 16px; height: 16px; }
-
-  /* Quest path back header */
+  /* Back header (level detail) */
   .back-header { display: flex; align-items: center; gap: 6px; padding: 8px 0 12px; cursor: pointer; -webkit-tap-highlight-color: transparent; color: var(--link); font-size: 14px; font-weight: 500; }
   .back-header svg { width: 18px; height: 18px; }
 
@@ -529,8 +409,6 @@
   var SURVEY_URL = 'https://michaeldohyun.github.io/rc-webapp/survey.html?from=app';
   var ONBOARDING_URL = 'https://michaeldohyun.github.io/rc-webapp/?from=app';
 
-  var QUEST_XP = { core: 30, method: 40, stretch: 50 };
-  var QUEST_TYPE_LABELS = { core: '핵심', method: '훈련법', stretch: '도전' };
 
   var XP_LEVELS = [
     { level: 1,  title: '첫 발자국',       min_xp: 0 },
@@ -591,27 +469,9 @@
 
   var appData = null;
   var activeTab = 'home';
-  var expandedStage = null;
   var statsPeriod = 'week';
-  var questExpanded = false;
   var planEditDirty = false;
   var planEditOpen = {};
-
-  function buildQuestAccordionHtml(wq) {
-    var html = '<div class="quest-accordion">';
-    wq.forEach(function(q) {
-      var barCls = q.completed ? 'done' : q.quest_type;
-      html += '<div class="quest-inline-item"><div class="quest-inline-bar ' + barCls + '"></div><div class="quest-inline-info"><div class="quest-inline-title' + (q.completed ? ' done' : '') + '">' + esc(q.title) + '</div>';
-      if (!q.completed) html += '<div class="quest-inline-progress">' + q.current_value + '/' + q.target_value + '</div>';
-      html += '</div>';
-      if (q.completed) html += '<span class="quest-inline-check">' + icon('checkCircle') + '</span>';
-      else html += '<span class="quest-inline-xp">+' + (QUEST_XP[q.quest_type]||30) + '</span>';
-      html += '</div>';
-    });
-    html += '<div class="quest-see-more" id="go-quest-path">퀘스트 경로 보기 ' + icon('chevronRight') + '</div>';
-    html += '</div>';
-    return html;
-  }
 
   var tg = window.Telegram && window.Telegram.WebApp;
   var initData = '';
@@ -639,7 +499,7 @@
   var params = new URLSearchParams(window.location.search);
   var tabParam = params.get('tab');
   if (tabParam === 'profile') tabParam = 'settings'; // backwards compat
-  if (tabParam && ['home','plan','quest','level','stats','settings'].indexOf(tabParam) !== -1) activeTab = tabParam;
+  if (tabParam && ['home','plan','level','stats','settings'].indexOf(tabParam) !== -1) activeTab = tabParam;
 
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
   function formatDate(ds) { if (!ds) return ''; var d = new Date(ds); return d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'); }
@@ -756,20 +616,6 @@
       html += '<div class="plan-slim" id="plan-slim-card"><div class="plan-slim-head"><span class="ps-icon">' + icon('clipboard') + '</span><span class="ps-title">이번 주 계획</span><span class="ps-stats">미설정</span><span class="ps-chevron">' + icon('chevronRight') + '</span></div></div>';
     }
 
-    // Weekly quests - summary card
-    var wq = h.weekly_quests;
-    var completed = wq.filter(function(q) { return q.completed; }).length;
-    if (wq.length === 0) {
-      html += '<div class="quest-summary-card"><div class="quest-summary-head"><span class="qs-icon">' + icon('swords') + '</span><span class="qs-title">이번 주 퀘스트</span></div><div style="font-size:12px;color:var(--hint);text-align:center;padding:8px 0">/plan 명령어로 이번 주 계획을 먼저 만들어주세요</div></div>';
-    } else {
-      var qPct = Math.round((completed / wq.length) * 100);
-      var remainXP = wq.filter(function(q){return !q.completed;}).reduce(function(a,q){return a+(QUEST_XP[q.quest_type]||30);},0);
-      html += '<div class="quest-summary-card"><div class="quest-summary-head" id="quest-summary-toggle"><span class="qs-icon">' + icon('swords') + '</span><span class="qs-title">이번 주 퀘스트</span><span class="qs-count">' + completed + '/' + wq.length + '</span><span class="qs-chevron">' + (questExpanded ? icon('chevronDown') : icon('chevronRight')) + '</span></div>';
-      html += '<div class="quest-summary-bar"><div class="quest-summary-fill" style="width:' + qPct + '%"></div></div>';
-      html += '<div class="quest-summary-meta"><span>완료 ' + completed + '/' + wq.length + '</span><span class="quest-summary-xp">남은 XP: +' + remainXP + '</span></div>';
-      html += '<div id="quest-accordion-container">' + (questExpanded ? buildQuestAccordionHtml(wq) : '') + '</div>';
-      html += '</div>';
-    }
     return html;
   }
 
@@ -966,46 +812,6 @@
     return html;
   }
 
-  // ---- QUEST PATH TAB ----
-  function renderQuestPath(d) {
-    var stages = d.quest_path.stages;
-    if (!expandedStage) { var cur = stages.find(function(s) { return s.status === 'current'; }); if (cur) expandedStage = cur.id; }
-
-    var html = '<div class="back-header" id="back-to-home">' + icon('chevronLeft') + ' 홈으로</div>';
-    html += '<div class="page-header"><div class="page-header-left"><div class="page-title">퀘스트 경로</div><div class="page-sub">단계별 미션을 클리어하며 성장하세요</div></div></div>';
-    html += '<div class="path-container"><div class="path-line"></div><div class="path-stages">';
-
-    stages.forEach(function(stage) {
-      var cm = stage.missions.filter(function(m) { return m.completed; }).length;
-      var tm = stage.missions.length;
-      var isExp = expandedStage === stage.id;
-      var nodeHtml = stage.status === 'completed' ? icon('check') : stage.status === 'current' ? icon('zap') : icon('lock');
-
-      html += '<div class="stage-item ' + stage.status + '"><div class="stage-node">' + nodeHtml + '</div>' +
-        '<div class="stage-card" data-stage-id="' + stage.id + '"><div class="stage-head"><div class="stage-meta"><span class="stage-lv">Lv.' + stage.level + '</span>';
-      if (stage.status === 'current') html += '<span class="stage-now-badge">NOW</span>';
-      html += '</div><div style="display:flex;align-items:center;gap:6px">';
-      if (stage.status !== 'locked') html += '<span class="stage-count">' + cm + '/' + tm + '</span><span class="stage-chevron' + (isExp ? ' open' : '') + '">' + icon('chevronDown') + '</span>';
-      html += '</div></div><div class="stage-title">' + esc(stage.title) + '</div><div class="stage-desc">' + esc(stage.description) + '</div>';
-
-      if (stage.status === 'current') { var pct = tm > 0 ? (cm/tm)*100 : 0; html += '<div class="stage-progress-bar"><div class="stage-progress-fill" style="width:' + pct + '%"></div></div>'; }
-
-      if (isExp && stage.status !== 'locked') {
-        html += '<div class="stage-missions">';
-        stage.missions.forEach(function(m) {
-          var cls = m.completed ? 'done' : 'pending';
-          html += '<div class="mission-row ' + cls + '"><div class="mission-check ' + cls + '">' + (m.completed ? icon('check') : '') + '</div><span class="mission-name">' + esc(m.name) + '</span></div>';
-        });
-        html += '</div>';
-      }
-      html += '</div></div>';
-    });
-
-    html += '<div class="trophy-final"><div class="trophy-node">' + icon('trophy') + '</div><div class="trophy-card"><div class="trophy-title">최종 목표</div><div class="trophy-desc">모든 퀘스트를 클리어하고 러닝 마스터가 되세요!</div></div></div>';
-    html += '</div></div>';
-    return html;
-  }
-
   // ---- LEVEL DETAIL TAB ----
   function renderLevelDetail(d) {
     var p = d.profile;
@@ -1187,8 +993,8 @@
     if (tab !== 'plan') { planEditOpen = {}; planEditDirty = false; }
     activeTab = tab;
     renderActiveTab();
-    // quest는 홈 서브뷰이므로 홈 탭 하이라이트
-    var navHighlight = (tab === 'quest' || tab === 'level') ? 'home' : tab;
+    // level은 홈 서브뷰이므로 홈 탭 하이라이트
+    var navHighlight = tab === 'level' ? 'home' : tab;
     document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.tab === navHighlight); });
     var url = new URL(window.location); url.searchParams.set('tab', tab); history.replaceState(null, '', url);
     window.scrollTo(0, 0);
@@ -1200,7 +1006,6 @@
     var html = '';
     if (activeTab === 'home') html = renderHome(appData);
     else if (activeTab === 'plan') html = renderPlan(appData);
-    else if (activeTab === 'quest') html = renderQuestPath(appData);
     else if (activeTab === 'level') html = renderLevelDetail(appData);
     else if (activeTab === 'stats') html = renderStats(appData);
     else if (activeTab === 'settings') html = renderSettings(appData);
@@ -1209,21 +1014,10 @@
   }
 
   function attachTabEvents() {
-    document.querySelectorAll('.stage-card').forEach(function(c) { c.addEventListener('click', function() { var id = this.dataset.stageId; var st = appData.quest_path.stages.find(function(s){return s.id===id;}); if (st && st.status === 'locked') return; expandedStage = expandedStage===id?null:id; renderActiveTab(); }); });
     document.querySelectorAll('.period-btn').forEach(function(b) { b.addEventListener('click', function() { statsPeriod = this.dataset.period; renderActiveTab(); }); });
     var cpb = document.getElementById('btn-create-plan'); if (cpb) cpb.addEventListener('click', function() { sendCommand('/plan'); });
     var psc = document.getElementById('plan-slim-card'); if (psc) psc.addEventListener('click', function() { var wp = appData && appData.home && appData.home.weekly_plan; if (wp && wp.days && wp.days.length > 0) switchTab('plan'); else sendCommand('/plan'); });
-    var qst = document.getElementById('quest-summary-toggle'); if (qst) qst.addEventListener('click', function() {
-      questExpanded = !questExpanded;
-      var chevron = qst.querySelector('.qs-chevron');
-      if (chevron) chevron.innerHTML = questExpanded ? icon('chevronDown') : icon('chevronRight');
-      var container = document.getElementById('quest-accordion-container');
-      if (container) container.innerHTML = questExpanded ? buildQuestAccordionHtml(appData.home.weekly_quests) : '';
-      var gqp = document.getElementById('go-quest-path');
-      if (gqp) gqp.addEventListener('click', function(e) { e.stopPropagation(); switchTab('quest'); });
-    });
     var hxp = document.getElementById('home-xp-area'); if (hxp) hxp.addEventListener('click', function() { switchTab('level'); });
-    var gqp = document.getElementById('go-quest-path'); if (gqp) gqp.addEventListener('click', function(e) { e.stopPropagation(); switchTab('quest'); });
     var bth = document.getElementById('back-to-home'); if (bth) bth.addEventListener('click', function() { switchTab('home'); });
     // Plan tab: day card accordion toggle
     document.querySelectorAll('.plan-day-card.expandable').forEach(function(card) {

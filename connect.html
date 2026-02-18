@@ -685,12 +685,12 @@
 
         if (response.ok && result.success) {
           document.getElementById('success-msg').textContent =
-            '선수: ' + (result.athlete_name || result.athlete_id) + '\n연동이 완료되었습니다!';
+            '선수: ' + (result.athlete_name || result.athlete_id) + '\n연동 완료! 채팅에서 분석 결과를 확인하세요.';
           goToStep('success');
 
           setTimeout(() => {
-            window.location.href = 'survey.html';
-          }, 1500);
+            if (tg) tg.close();
+          }, 2000);
         } else {
           showError(result.error || '연동에 실패했습니다. 다시 시도해주세요.');
           resetButtons();

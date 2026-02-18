@@ -93,6 +93,25 @@
   .ref-text { font-size: 12px; color: var(--hint); margin-top: 8px; }
 
   .diff-text { font-size: 13px; line-height: 1.6; color: var(--text); padding: 10px 12px; background: var(--secondary-bg); border-radius: 10px; }
+
+  .select-btn-wrap { padding: 0 0 12px; }
+  .select-btn {
+    display: block; width: 100%; padding: 14px 0;
+    border: none; border-radius: 12px;
+    background: var(--btn); color: var(--btn-text);
+    font-family: inherit; font-size: 15px; font-weight: 600;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .select-btn:active { opacity: 0.8; }
+  .select-btn:disabled { opacity: 0.5; cursor: default; }
+  .select-btn.loading { color: transparent; position: relative; }
+  .select-btn.loading::after {
+    content: ''; position: absolute; left: 50%; top: 50%;
+    width: 20px; height: 20px; margin: -10px 0 0 -10px;
+    border: 2px solid var(--btn-text); border-top-color: transparent;
+    border-radius: 50%; animation: spin 0.6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -116,6 +135,31 @@ if (tg) {
       else { tg.close(); }
     });
   }
+}
+
+var userId = null;
+if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) userId = tg.initDataUnsafe.user.id;
+
+var selecting = false;
+function selectMethod(methodId) {
+  if (selecting || !userId) return;
+  selecting = true;
+  var btn = document.getElementById('select-btn');
+  if (btn) { btn.disabled = true; btn.classList.add('loading'); }
+
+  fetch('https://dotsosqsftympgdescvz.supabase.co/functions/v1/running-coach', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ mode:'webapp_command', command:'select_method:'+methodId, telegram_user_id:userId }),
+    keepalive: true,
+  }).then(function(r) {
+    if (!r.ok) throw new Error('HTTP '+r.status);
+    if (tg && tg.showPopup) tg.showPopup({message:'적용 완료! 채팅에서 확인하세요',buttons:[{type:'ok'}]}, function(){tg.close();});
+    else if (tg) tg.close();
+  }).catch(function(e) {
+    selecting = false;
+    if (btn) { btn.disabled = false; btn.classList.remove('loading'); }
+    if (tg && tg.showPopup) tg.showPopup({message:'오류가 발생했어요. 다시 시도해주세요.',buttons:[{type:'ok'}]});
+  });
 }
 
 var METHODS = [
@@ -319,7 +363,9 @@ function renderMethod(m) {
     '<div class="section-title"><span class="icon">✨</span> 차별점</div>' +
     '<div class="diff-text">' + esc(m.diff) + '</div>' +
     '<div class="ref-text">참고: ' + esc(m.ref) + '</div>' +
-  '</div>';
+  '</div>' +
+
+  (userId ? '<div class="select-btn-wrap"><button class="select-btn" id="select-btn" onclick="selectMethod(\'' + m.id + '\')">이 훈련법 선택하기</button></div>' : '');
 }
 
 function showMethod(idx) {

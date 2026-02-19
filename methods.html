@@ -365,7 +365,8 @@ function renderMethod(m) {
     '<div class="ref-text">참고: ' + esc(m.ref) + '</div>' +
   '</div>' +
 
-  (userId ? '<div class="select-btn-wrap"><button class="select-btn" id="select-btn" onclick="selectMethod(\'' + m.id + '\')">' + esc(m.name) + ' 적용하기</button></div>' : '');
+  (userId && !isFromSurvey ? '<div class="select-btn-wrap"><button class="select-btn" id="select-btn" onclick="selectMethod(\'' + m.id + '\')">' + esc(m.name) + ' 적용하기</button></div>' : '') +
+  (isFromSurvey ? '<div class="select-btn-wrap"><button class="select-btn" onclick="history.back()" style="background:#6b7280">설문으로 돌아가기</button></div>' : '');
 }
 
 function showMethod(idx) {
@@ -375,6 +376,7 @@ function showMethod(idx) {
 
 // URL에서 method ID 파라미터 확인
 var params = new URLSearchParams(window.location.search);
+var isFromSurvey = params.get('from') === 'survey';
 var targetId = params.get('id');
 var startIdx = 0;
 if (targetId) {

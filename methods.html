@@ -365,7 +365,7 @@ function renderMethod(m) {
     '<div class="ref-text">참고: ' + esc(m.ref) + '</div>' +
   '</div>' +
 
-  (userId ? '<div class="select-btn-wrap"><button class="select-btn" id="select-btn" onclick="selectMethod(\'' + m.id + '\')">이 훈련법 선택하기</button></div>' : '');
+  (userId ? '<div class="select-btn-wrap"><button class="select-btn" id="select-btn" onclick="selectMethod(\'' + m.id + '\')">' + esc(m.name) + ' 적용하기</button></div>' : '');
 }
 
 function showMethod(idx) {

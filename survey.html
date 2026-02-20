@@ -592,7 +592,7 @@
         <textarea id="run-pattern-note" placeholder="예: 주말에만 장거리, 존2 위주로 훈련 중" rows="2"></textarea>
       </div>
 
-      <button class="btn btn-primary" onclick="goToStep(3)">다음</button>
+      <button class="btn btn-primary" onclick="goToStep(hideMethodStep ? 4 : 3)">다음</button>
       <div class="nav-row">
         <button class="btn btn-ghost" onclick="goToStep(1)">이전</button>
       </div>
@@ -687,7 +687,7 @@
       <button class="btn btn-primary" id="btn-submit" onclick="submitSurvey()">완료</button>
       <div class="error-text" id="error-msg" style="display:none"></div>
       <div class="nav-row">
-        <button class="btn btn-ghost" onclick="goToStep(3)">이전</button>
+        <button class="btn btn-ghost" onclick="goToStep(hideMethodStep ? 2 : 3)">이전</button>
         <button class="btn btn-ghost" onclick="skipToEnd()">건너뛰고 완료</button>
       </div>
     </div>
@@ -721,6 +721,7 @@
     }
 
     let currentStep = 1;
+    let hideMethodStep = true;
 
     // --- Prefill ---
 
@@ -777,8 +778,9 @@
           }
         }
 
-        // Step 3: training method
+        // Step 3: training method — 이미 설정된 경우에만 Step 3 표시
         if (s.training_method && s.training_method !== 'none' && s.training_method !== 'pending_recommend') {
+          hideMethodStep = false;
           const methodCard = document.querySelector(`#method-cards .card-option[data-value="${s.training_method}"]`);
           if (methodCard) methodCard.classList.add('selected');
         }
@@ -803,7 +805,12 @@
       }
     }
 
-    loadExistingSurvey();
+    loadExistingSurvey().then(() => {
+      if (hideMethodStep) {
+        document.getElementById('dot-3').style.display = 'none';
+        document.getElementById('step-3').style.display = 'none';
+      }
+    });
 
     // --- Navigation ---
 

@@ -271,84 +271,8 @@
     border-radius: 0 10px 10px 0;
   }
 
-  /* ── Self-report collapsible ── */
-  .self-report-card { animation: fadeInUp 0.4s ease 0.6s both; }
-  .collapse-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-  }
-  .collapse-toggle .card-title { margin-bottom: 0; }
-  .collapse-arrow {
-    font-size: 14px;
-    color: var(--text-secondary);
-    transition: transform 0.3s ease;
-  }
-  .collapse-arrow.open { transform: rotate(180deg); }
-  .collapse-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease, margin-top 0.3s ease;
-  }
-  .collapse-content.open {
-    max-height: 500px;
-    margin-top: 16px;
-  }
-
-  .report-section { margin-bottom: 18px; }
-  .report-section:last-child { margin-bottom: 0; }
-  .report-label {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
-    font-weight: 600;
-  }
-  .chip-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .chip {
-    padding: 8px 16px;
-    border-radius: 20px;
-    border: 1.5px solid var(--card-border);
-    background: transparent;
-    color: var(--text-secondary);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-  }
-  .chip:active { transform: scale(0.95); }
-  .chip.selected {
-    background: var(--accent-dim);
-    border-color: var(--accent);
-    color: var(--accent);
-    font-weight: 600;
-  }
-  .report-hint {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 14px;
-    line-height: 1.5;
-    text-align: center;
-  }
-  .report-updating {
-    display: none;
-    text-align: center;
-    padding: 12px;
-    font-size: 13px;
-    color: var(--accent);
-  }
-  .report-updating.visible { display: block; }
-
-  /* ── CTA Button ── */
-  .cta-bar {
+  /* ── Share Button ── */
+  .share-bar {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -357,7 +281,7 @@
     padding-bottom: calc(12px + env(safe-area-inset-bottom));
     background: linear-gradient(transparent, var(--bg) 30%);
   }
-  .cta-button {
+  .share-button {
     display: block;
     width: 100%;
     max-width: 480px;
@@ -373,9 +297,34 @@
     -webkit-tap-highlight-color: transparent;
     transition: transform 0.15s, opacity 0.15s;
   }
-  .cta-button:active {
+  .share-button:active {
     transform: scale(0.97);
     opacity: 0.85;
+  }
+  .share-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .share-toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 100;
+  }
+  .share-toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 
   /* ── Insufficient data state ── */
@@ -449,6 +398,7 @@
     <div class="skeleton-block sk-focus"></div>
   </div>
 </div>
+<div class="share-toast" id="shareToast"></div>
 
 <script>
 (function() {
@@ -459,21 +409,21 @@
 
   // ── Stage configuration ──
   var STAGE_MAP = {
-    beginner: { label: '입문기', pct: 25, idx: 0 },
-    beginner_to_intermediate: { label: '중급 전환 중', pct: 50, idx: 1 },
-    intermediate: { label: '중급', pct: 75, idx: 2 },
-    advanced: { label: '상급', pct: 100, idx: 3 }
+    beginner: { label: '\uC785\uBB38\uAE30', pct: 25, idx: 0 },
+    beginner_to_intermediate: { label: '\uC911\uAE09 \uC804\uD658 \uC911', pct: 50, idx: 1 },
+    intermediate: { label: '\uC911\uAE09', pct: 75, idx: 2 },
+    advanced: { label: '\uC0C1\uAE09', pct: 100, idx: 3 }
   };
 
-  var STAGE_LABELS = ['입문', '중급 전환', '중급', '상급'];
+  var STAGE_LABELS = ['\uC785\uBB38', '\uC911\uAE09 \uC804\uD658', '\uC911\uAE09', '\uC0C1\uAE09'];
 
   // ── All possible transition signals ──
   var ALL_SIGNALS = [
-    '체력지수 안정화',
-    '주 30km+ 볼륨 안정',
-    '회복력 양호 (연일 러닝 30%+)',
-    '평균 거리 8km+ (10km 가능 추정)',
-    '체력지수 15+ 유지'
+    '\uCCB4\uB825\uC9C0\uC218 \uC548\uC815\uD654',
+    '\uC8FC 30km+ \uBCFC\uB968 \uC548\uC815',
+    '\uD68C\uBCF5\uB825 \uC591\uD638 (\uC5F0\uC77C \uB7EC\uB2DD 30%+)',
+    '\uD3C9\uADE0 \uAC70\uB9AC 8km+ (10km \uAC00\uB2A5 \uCD94\uC815)',
+    '\uCCB4\uB825\uC9C0\uC218 15+ \uC720\uC9C0'
   ];
 
   // ── Telegram WebApp ──
@@ -490,13 +440,9 @@
     }
   }
 
-  // ── Current profile data (for re-render after self-report) ──
+  // ── Current profile data ──
   var currentProfile = null;
-  var selfReportOpen = false;
-
-  // ── Self-report selections ──
-  var selectedExperience = null;
-  var selectedRaces = new Set();
+  var isSharing = false;
 
   // ── API calls ──
   function apiCall(action, extra) {
@@ -513,7 +459,7 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     }).then(function(res) {
-      if (!res.ok) throw new Error('서버 오류 (' + res.status + ')');
+      if (!res.ok) throw new Error('\uC11C\uBC84 \uC624\uB958 (' + res.status + ')');
       return res.json();
     });
   }
@@ -522,8 +468,8 @@
     return apiCall('get_diagnostic');
   }
 
-  function updateSelfReport(data) {
-    return apiCall('update_self_report', { survey: data });
+  function createShareLink() {
+    return apiCall('create_share');
   }
 
   // ── Helpers ──
@@ -537,6 +483,16 @@
     if (v == null) return '-';
     var n = Number(v);
     return n % 1 === 0 ? n.toFixed(0) : n.toFixed(1);
+  }
+
+  function showToast(msg, duration) {
+    var toast = document.getElementById('shareToast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('visible');
+    setTimeout(function() {
+      toast.classList.remove('visible');
+    }, duration || 2500);
   }
 
   // ── Render functions ──
@@ -693,63 +649,9 @@
     return html;
   }
 
-  function renderSelfReport(profile) {
-    // Determine initial selections from profile or existing survey data
-    var expOptions = [
-      { key: 'beginner', label: '\uCC98\uC74C' },
-      { key: '1year', label: '1\uB144 \uBBF8\uB9CC' },
-      { key: '3year_plus', label: '3\uB144+' },
-      { key: 'returning', label: '\uBCF5\uADC0' }
-    ];
-    var raceOptions = [
-      { key: 'none', label: '\uC5C6\uC74C' },
-      { key: '10k', label: '10K' },
-      { key: 'half', label: '\uD558\uD504' },
-      { key: 'full', label: '\uD480' }
-    ];
-
-    var openClass = selfReportOpen ? ' open' : '';
-
-    var html = '<div class="card self-report-card">';
-    html += '<div class="collapse-toggle" id="selfReportToggle">';
-    html += '<div class="card-title"><span class="card-title-icon">\uD83D\uDE4B</span> \uB098\uC5D0 \uB300\uD574 \uB354 \uC54C\uB824\uC8FC\uAE30</div>';
-    html += '<span class="collapse-arrow' + openClass + '" id="collapseArrow">\u25BC</span>';
-    html += '</div>';
-
-    html += '<div class="collapse-content' + openClass + '" id="selfReportContent">';
-
-    // Running experience
-    html += '<div class="report-section">';
-    html += '<div class="report-label">\uB7EC\uB2DD \uACBD\uB825</div>';
-    html += '<div class="chip-group" id="expChips">';
-    for (var i = 0; i < expOptions.length; i++) {
-      var e = expOptions[i];
-      var sel = selectedExperience === e.key ? ' selected' : '';
-      html += '<div class="chip' + sel + '" data-group="experience" data-value="' + e.key + '">' + e.label + '</div>';
-    }
-    html += '</div></div>';
-
-    // Race history
-    html += '<div class="report-section">';
-    html += '<div class="report-label">\uB300\uD68C \uACBD\uD5D8</div>';
-    html += '<div class="chip-group" id="raceChips">';
-    for (var j = 0; j < raceOptions.length; j++) {
-      var r = raceOptions[j];
-      var rSel = selectedRaces.has(r.key) ? ' selected' : '';
-      html += '<div class="chip' + rSel + '" data-group="race" data-value="' + r.key + '">' + r.label + '</div>';
-    }
-    html += '</div></div>';
-
-    html += '<div class="report-hint">\uC120\uD0DD \uC2DC \uC9C4\uB2E8 \uACB0\uACFC\uAC00 \uC990\uC2DC \uBC18\uC601\uB429\uB2C8\uB2E4</div>';
-    html += '<div class="report-updating" id="reportUpdating">\u2728 \uC9C4\uB2E8 \uACB0\uACFC \uC5C5\uB370\uC774\uD2B8 \uC911...</div>';
-
-    html += '</div></div>';
-    return html;
-  }
-
-  function renderCTA() {
-    return '<div class="cta-bar">' +
-      '<button class="cta-button" id="ctaButton">\uD83D\uDCCB \uB7EC\uB2DD \uD504\uB85C\uD544 \uC124\uC815\uD558\uAE30 \u2192</button>' +
+  function renderShareButton() {
+    return '<div class="share-bar">' +
+      '<button class="share-button" id="shareButton">\uD83D\uDD17 \uACF5\uC720\uD558\uAE30</button>' +
     '</div>';
   }
 
@@ -757,17 +659,11 @@
   function renderInsufficientData(profile) {
     var msg = (profile && profile.data_message) || '\uC544\uC9C1 \uCDA9\uBD84\uD55C \uB7EC\uB2DD \uB370\uC774\uD130\uAC00 \uC5C6\uC5B4\uC694.\n\uBA87 \uBC88\uC758 \uB7EC\uB2DD \uD6C4 \uB2E4\uC2DC \uD655\uC778\uD574\uC8FC\uC138\uC694!';
 
-    selfReportOpen = true; // Expand self-report by default
-
     var html = '<div class="insufficient-container">';
     html += '<div class="insufficient-icon">\uD83D\uDCCA</div>';
     html += '<div class="insufficient-title">\uB370\uC774\uD130 \uC218\uC9D1 \uC911</div>';
     html += '<div class="insufficient-msg">' + esc(msg).replace(/\n/g, '<br>') + '</div>';
     html += '</div>';
-
-    // Still show self-report section
-    html += renderSelfReport(profile || {});
-    html += renderCTA();
 
     return html;
   }
@@ -781,8 +677,7 @@
     html += renderWeeklyChart(profile);
     html += renderChecklist(profile);
     html += renderKeyFocus(profile);
-    html += renderSelfReport(profile);
-    html += renderCTA();
+    html += renderShareButton();
     return html;
   }
 
@@ -795,127 +690,61 @@
     '</div>';
   }
 
-  // ── Bind events (called after DOM update) ──
-  function bindEvents() {
-    // Collapse toggle
-    var toggle = document.getElementById('selfReportToggle');
-    if (toggle) {
-      toggle.addEventListener('click', function() {
-        selfReportOpen = !selfReportOpen;
-        var content = document.getElementById('selfReportContent');
-        var arrow = document.getElementById('collapseArrow');
-        if (content) content.classList.toggle('open', selfReportOpen);
-        if (arrow) arrow.classList.toggle('open', selfReportOpen);
-      });
+  // ── Share handler ──
+  function handleShare() {
+    if (isSharing) return;
+    isSharing = true;
+
+    var btn = document.getElementById('shareButton');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = '\uACF5\uC720 \uB9C1\uD06C \uC0DD\uC131 \uC911...';
     }
 
-    // Chip selection
-    var chips = document.querySelectorAll('.chip');
-    for (var i = 0; i < chips.length; i++) {
-      chips[i].addEventListener('click', handleChipClick);
-    }
-
-    // CTA
-    var cta = document.getElementById('ctaButton');
-    if (cta) {
-      cta.addEventListener('click', function() {
-        if (tg) {
-          tg.close();
-        }
-      });
-    }
-  }
-
-  function handleChipClick(e) {
-    var chip = e.currentTarget;
-    var group = chip.getAttribute('data-group');
-    var value = chip.getAttribute('data-value');
-
-    if (group === 'experience') {
-      // Single select
-      selectedExperience = selectedExperience === value ? null : value;
-      var expChips = document.querySelectorAll('[data-group="experience"]');
-      for (var i = 0; i < expChips.length; i++) {
-        expChips[i].classList.toggle('selected', expChips[i].getAttribute('data-value') === selectedExperience);
-      }
-    } else if (group === 'race') {
-      // "none" is exclusive; others can be multi-select
-      if (value === 'none') {
-        if (selectedRaces.has('none')) {
-          selectedRaces.clear();
+    createShareLink().then(function(res) {
+      if (res.success && res.share_url) {
+        // Telegram WebApp에서 공유 URL을 클립보드에 복사
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(res.share_url).then(function() {
+            showToast('\uACF5\uC720 \uB9C1\uD06C\uAC00 \uBCF5\uC0AC\uB418\uC5C8\uC5B4\uC694!');
+          }).catch(function() {
+            showToast('\uB9C1\uD06C: ' + res.share_url, 4000);
+          });
         } else {
-          selectedRaces.clear();
-          selectedRaces.add('none');
+          showToast('\uB9C1\uD06C: ' + res.share_url, 4000);
+        }
+        if (btn) {
+          btn.textContent = '\u2705 \uBCF5\uC0AC \uC644\uB8CC!';
+          setTimeout(function() {
+            btn.disabled = false;
+            btn.textContent = '\uD83D\uDD17 \uACF5\uC720\uD558\uAE30';
+            isSharing = false;
+          }, 2000);
         }
       } else {
-        selectedRaces.delete('none');
-        if (selectedRaces.has(value)) {
-          selectedRaces.delete(value);
-        } else {
-          selectedRaces.add(value);
+        showToast('\uACF5\uC720 \uB9C1\uD06C \uC0DD\uC131\uC5D0 \uC2E4\uD328\uD588\uC5B4\uC694');
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '\uD83D\uDD17 \uACF5\uC720\uD558\uAE30';
         }
+        isSharing = false;
       }
-      var raceChips = document.querySelectorAll('[data-group="race"]');
-      for (var j = 0; j < raceChips.length; j++) {
-        raceChips[j].classList.toggle('selected', selectedRaces.has(raceChips[j].getAttribute('data-value')));
-      }
-    }
-
-    // Send self-report update
-    submitSelfReport();
-  }
-
-  var submitTimer = null;
-  function submitSelfReport() {
-    // Debounce 600ms
-    if (submitTimer) clearTimeout(submitTimer);
-    submitTimer = setTimeout(doSubmitSelfReport, 600);
-  }
-
-  function doSubmitSelfReport() {
-    if (!selectedExperience && selectedRaces.size === 0) return;
-
-    var survey = {};
-    if (selectedExperience) survey.running_experience = selectedExperience;
-    if (selectedRaces.size > 0) survey.race_history = Array.from(selectedRaces);
-
-    // Show updating indicator
-    var updEl = document.getElementById('reportUpdating');
-    if (updEl) updEl.classList.add('visible');
-
-    updateSelfReport(survey).then(function(res) {
-      if (res.success && res.profile) {
-        currentProfile = res.profile;
-        reRenderProfile(res.profile);
-      }
-      if (updEl) updEl.classList.remove('visible');
     }).catch(function() {
-      if (updEl) updEl.classList.remove('visible');
+      showToast('\uACF5\uC720 \uB9C1\uD06C \uC0DD\uC131\uC5D0 \uC2E4\uD328\uD588\uC5B4\uC694');
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = '\uD83D\uDD17 \uACF5\uC720\uD558\uAE30';
+      }
+      isSharing = false;
     });
   }
 
-  function reRenderProfile(profile) {
-    // Re-render only the data sections, keep self-report open state
-    var app = document.getElementById('app');
-    if (!app) return;
-
-    var html = '';
-    html += renderHeader();
-
-    if (profile.data_insufficient) {
-      html += renderInsufficientData(profile);
-    } else {
-      html += renderStageCard(profile);
-      html += renderMetrics(profile);
-      html += renderWeeklyChart(profile);
-      html += renderChecklist(profile);
-      html += renderKeyFocus(profile);
-      html += renderSelfReport(profile);
-      html += renderCTA();
+  // ── Bind events ──
+  function bindEvents() {
+    var shareBtn = document.getElementById('shareButton');
+    if (shareBtn) {
+      shareBtn.addEventListener('click', handleShare);
     }
-
-    app.innerHTML = html;
-    bindEvents();
   }
 
   // ── Init ──

@@ -501,6 +501,51 @@
       margin-top: 4px;
       margin-bottom: 16px;
     }
+
+    /* Bumper page */
+    .bumper-content {
+      text-align: center;
+      padding: 32px 0 24px;
+    }
+    .bumper-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    .bumper-content h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .bumper-content > p {
+      color: var(--tg-theme-hint-color);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .bumper-list {
+      list-style: none;
+      text-align: left;
+      margin: 0 auto 20px;
+      max-width: 260px;
+    }
+    .bumper-list li {
+      font-size: 14px;
+      padding: 6px 0;
+      position: relative;
+      padding-left: 24px;
+    }
+    .bumper-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--tg-theme-button-color);
+      font-weight: 700;
+    }
+    .bumper-time {
+      font-size: 13px;
+      color: var(--tg-theme-hint-color);
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body>
@@ -515,6 +560,22 @@
       <div class="step-dot" id="dot-2"></div>
       <div class="step-dot" id="dot-3"></div>
       <div class="step-dot" id="dot-4"></div>
+    </div>
+
+    <!-- Bumper: 온보딩 시에만 노출 -->
+    <div class="step" id="step-bumper">
+      <div class="bumper-content">
+        <div class="bumper-icon">📋</div>
+        <h2>맞춤 훈련법을 추천해드릴게요</h2>
+        <p>간단한 프로필을 입력해주시면,<br>당신에게 딱 맞는 훈련법을 찾아드려요.</p>
+        <ul class="bumper-list">
+          <li>러닝 목표와 현재 상태 파악</li>
+          <li>AI가 최적 훈련법 분석</li>
+          <li>개인 맞춤 주간 계획 생성</li>
+        </ul>
+        <p class="bumper-time">약 1~2분이면 충분해요</p>
+      </div>
+      <button class="btn btn-primary" onclick="goToStep(1)">프로필 입력하기</button>
     </div>
 
     <!-- Step 1: 목표 -->
@@ -722,6 +783,8 @@
 
     let currentStep = 1;
     let hideMethodStep = true;
+    const params = new URLSearchParams(window.location.search);
+    const isOnboarding = params.get('from') !== 'app';
 
     // --- Prefill ---
 
@@ -810,6 +873,14 @@
         document.getElementById('dot-3').style.display = 'none';
         document.getElementById('step-3').style.display = 'none';
       }
+      // 온보딩 모드: 범퍼 페이지 먼저 표시
+      if (isOnboarding && hideMethodStep) {
+        document.getElementById('step-1').classList.remove('active');
+        document.getElementById('step-bumper').classList.add('active');
+        document.querySelector('.step-indicator').style.display = 'none';
+        document.querySelector('.header').style.display = 'none';
+        currentStep = 'bumper';
+      }
     });
 
     // --- Navigation ---
@@ -818,6 +889,12 @@
       const prev = currentStep;
       document.getElementById('step-' + prev)?.classList.remove('active');
       document.getElementById('dot-' + prev)?.classList.remove('active');
+
+      // 범퍼에서 step-1로 넘어갈 때 indicator/header 복원
+      if (prev === 'bumper' && typeof step === 'number') {
+        document.querySelector('.step-indicator').style.display = '';
+        document.querySelector('.header').style.display = '';
+      }
 
       if (typeof step === 'number' && typeof prev === 'number' && step < prev) {
         document.getElementById('dot-' + prev)?.classList.remove('done');

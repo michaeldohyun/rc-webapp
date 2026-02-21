@@ -321,9 +321,14 @@
     pointer-events: none;
     transition: opacity 0.3s, transform 0.3s;
     z-index: 100;
+    user-select: text;
+    -webkit-user-select: text;
+    max-width: 90vw;
+    word-break: break-all;
   }
   .share-toast.visible {
     opacity: 1;
+    pointer-events: auto;
     transform: translateX(-50%) translateY(0);
   }
 
@@ -703,18 +708,26 @@
 
     createShareLink().then(function(res) {
       if (res.success && res.share_url) {
-        // Telegram WebApp에서 공유 URL을 클립보드에 복사
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(res.share_url).then(function() {
-            showToast('\uACF5\uC720 \uB9C1\uD06C\uAC00 \uBCF5\uC0AC\uB418\uC5C8\uC5B4\uC694!');
-          }).catch(function() {
-            showToast('\uB9C1\uD06C: ' + res.share_url, 4000);
-          });
+        // textarea fallback으로 클립보드 복사 (Telegram WebApp 호환)
+        var copied = false;
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = res.share_url;
+          ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px';
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          copied = document.execCommand('copy');
+          document.body.removeChild(ta);
+        } catch (e) { copied = false; }
+
+        if (copied) {
+          showToast(res.share_url, 4000);
         } else {
-          showToast('\uB9C1\uD06C: ' + res.share_url, 4000);
+          showToast(res.share_url, 6000);
         }
         if (btn) {
-          btn.textContent = '\u2705 \uBCF5\uC0AC \uC644\uB8CC!';
+          btn.textContent = copied ? '\u2705 \uBCF5\uC0AC \uC644\uB8CC!' : '\uD83D\uDD17 \uB9C1\uD06C \uC0DD\uC131 \uC644\uB8CC';
           setTimeout(function() {
             btn.disabled = false;
             btn.textContent = '\uD83D\uDD17 \uACF5\uC720\uD558\uAE30';

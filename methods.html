@@ -147,19 +147,22 @@ function selectMethod(methodId) {
   var btn = document.getElementById('select-btn');
   if (btn) { btn.disabled = true; btn.classList.add('loading'); }
 
+  // Fire-and-forget: 서버 처리(계획 생성 등)가 오래 걸릴 수 있으므로 응답을 기다리지 않음
+  // keepalive: true → 페이지 닫혀도 요청은 백그라운드에서 완료됨
   fetch('https://dotsosqsftympgdescvz.supabase.co/functions/v1/running-coach', {
     method: 'POST', headers: {'Content-Type':'application/json'},
     body: JSON.stringify({ mode:'webapp_command', command:'select_method:'+methodId, telegram_user_id:userId }),
     keepalive: true,
-  }).then(function(r) {
-    if (!r.ok) throw new Error('HTTP '+r.status);
-    if (tg && tg.showPopup) tg.showPopup({message:'적용 완료! 채팅에서 확인하세요',buttons:[{type:'ok'}]}, function(){tg.close();});
-    else if (tg) tg.close();
-  }).catch(function(e) {
-    selecting = false;
-    if (btn) { btn.disabled = false; btn.classList.remove('loading'); }
-    if (tg && tg.showPopup) tg.showPopup({message:'오류가 발생했어요. 다시 시도해주세요.',buttons:[{type:'ok'}]});
-  });
+  }).catch(function() {});
+
+  // 즉시 성공 표시 → 결과는 텔레그램 채팅에서 확인
+  setTimeout(function() {
+    if (tg && tg.showPopup) {
+      tg.showPopup({message:'적용 완료! 채팅에서 확인하세요',buttons:[{type:'ok'}]}, function(){ tg.close(); });
+    } else if (tg) {
+      tg.close();
+    }
+  }, 300);
 }
 
 var METHODS = [

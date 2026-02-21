@@ -226,6 +226,23 @@ var METHODS = [
     ref: '80/20 Running'
   },
   {
+    id: 'first', name: 'FIRST 런레스', author: 'Furman Institute',
+    tagline: '주 3일만 빡세게 달리고, 나머지는 자전거·수영으로!',
+    level: 'intermediate', levelLabel: '중급',
+    conditions: { ctl: '20~35', weeklyKm: '20~40km', freq: '주 3회 러닝+2회 크로스' },
+    core: '주 3일만 고강도 러닝(템포/인터벌/롱런) + 주 2일 크로스트레이닝(자전거/수영). 이지런 없이 모든 러닝이 목적 러닝입니다.',
+    weeklyStructure: '템포런 1회 + 인터벌 1회 + 롱런 1회 + 크로스트레이닝 2회',
+    workouts: [
+      '<strong>템포런</strong> LT 페이스 3~5km 반복',
+      '<strong>트랙 인터벌</strong> 400m~1600m 반복',
+      '<strong>롱런</strong> 목표 레이스 페이스 +30초/km',
+    ],
+    paceGuide: '이지런 없음! 모든 러닝이 목적 러닝 (T/I/R). 크로스트레이닝이 유산소 베이스 역할.',
+    startTip: '주 러닝 중 1회를 크로스트레이닝 (자전거 40분 Z2)으로 교체하고, 나머지 러닝은 강도 올리기.',
+    diff: '"적게 뛰되 빠르게". 러닝 3회라 관절 부담↓, 크로스트레이닝으로 유산소↑. 시간 효율 최고.',
+    ref: 'Run Less, Run Faster (Furman Institute)'
+  },
+  {
     id: 'jack_daniels', name: '잭 다니엘스', author: 'Jack Daniels',
     tagline: '내 기록에 딱 맞는 훈련 페이스를 계산해주는 과학적 시스템.',
     level: 'intermediate', levelLabel: '중급~상급',
@@ -260,6 +277,23 @@ var METHODS = [
     ref: 'Hansons Marathon Method'
   },
   {
+    id: 'norwegian', name: '노르웨이', author: 'Marius Bakken / Ingebrigtsen',
+    tagline: '하루 두 번 역치 훈련! 노르웨이 국가대표팀의 최신 트렌드.',
+    level: 'intermediate', levelLabel: '중급~상급',
+    conditions: { ctl: '30~50', weeklyKm: '40~60km', freq: '주 5~6회' },
+    core: '이중 역치(Double Threshold) — 하루에 역치 세션 2회 또는 주 2일 역치 집중. 젖산 역치 극대화에 특화된 최신 훈련법입니다.',
+    weeklyStructure: '역치 세션 2일 + 이지런 2회 + 롱런 1회 + 회복런 1회',
+    workouts: [
+      '<strong>역치 인터벌</strong> Z3~Z4, 5분 x 5~6세트 (세트 간 90초 조깅)',
+      '<strong>25분 연속 역치런</strong> Z3~Z4 유지',
+      '<strong>더블 세션</strong> AM 역치런 + PM 이지런',
+    ],
+    paceGuide: '역치 세션은 심박 Z3~Z4 기반 (젖산 측정 불필요). 이지런은 Z1~Z2. "역치에서 충분히 오래 버티기"가 핵심.',
+    startTip: '주 러닝 중 1회를 역치 인터벌 (5분 Z4 x 4세트, 사이 90초 조깅)로 바꿔보기.',
+    diff: '노르웨이 육상 국가대표팀 (인게브릭센 형제)이 사용해 세계적 주목. 역치 능력을 최우선으로 끌어올림.',
+    ref: 'Norwegian Method (Marius Bakken)'
+  },
+  {
     id: 'pfitzinger', name: '피치진저', author: 'Pete Pfitzinger',
     tagline: '마라톤 기록 갱신을 위한 고급 프로그램.',
     level: 'advanced', levelLabel: '상급',
@@ -292,40 +326,6 @@ var METHODS = [
     startTip: '현재 주간 거리를 유지하되, 모든 러닝을 유산소 강도 (Z2)로 통일.',
     diff: '모든 현대 훈련법의 원조. 극단적 유산소 베이스 구축 후 스피드 추가. 고볼륨 필수.',
     ref: 'Running with Lydiard'
-  },
-  {
-    id: 'first', name: 'FIRST 런레스', author: 'Furman Institute',
-    tagline: '주 3일만 빡세게 달리고, 나머지는 자전거·수영으로!',
-    level: 'intermediate', levelLabel: '중급',
-    conditions: { ctl: '20~35', weeklyKm: '20~40km', freq: '주 3회 러닝+2회 크로스' },
-    core: '주 3일만 고강도 러닝(템포/인터벌/롱런) + 주 2일 크로스트레이닝(자전거/수영). 이지런 없이 모든 러닝이 목적 러닝입니다.',
-    weeklyStructure: '템포런 1회 + 인터벌 1회 + 롱런 1회 + 크로스트레이닝 2회',
-    workouts: [
-      '<strong>템포런</strong> LT 페이스 3~5km 반복',
-      '<strong>트랙 인터벌</strong> 400m~1600m 반복',
-      '<strong>롱런</strong> 목표 레이스 페이스 +30초/km',
-    ],
-    paceGuide: '이지런 없음! 모든 러닝이 목적 러닝 (T/I/R). 크로스트레이닝이 유산소 베이스 역할.',
-    startTip: '주 러닝 중 1회를 크로스트레이닝 (자전거 40분 Z2)으로 교체하고, 나머지 러닝은 강도 올리기.',
-    diff: '"적게 뛰되 빠르게". 러닝 3회라 관절 부담↓, 크로스트레이닝으로 유산소↑. 시간 효율 최고.',
-    ref: 'Run Less, Run Faster (Furman Institute)'
-  },
-  {
-    id: 'norwegian', name: '노르웨이', author: 'Marius Bakken / Ingebrigtsen',
-    tagline: '하루 두 번 역치 훈련! 노르웨이 국가대표팀의 최신 트렌드.',
-    level: 'intermediate', levelLabel: '중급~상급',
-    conditions: { ctl: '30~50', weeklyKm: '40~60km', freq: '주 5~6회' },
-    core: '이중 역치(Double Threshold) — 하루에 역치 세션 2회 또는 주 2일 역치 집중. 젖산 역치 극대화에 특화된 최신 훈련법입니다.',
-    weeklyStructure: '역치 세션 2일 + 이지런 2회 + 롱런 1회 + 회복런 1회',
-    workouts: [
-      '<strong>역치 인터벌</strong> Z3~Z4, 5분 x 5~6세트 (세트 간 90초 조깅)',
-      '<strong>25분 연속 역치런</strong> Z3~Z4 유지',
-      '<strong>더블 세션</strong> AM 역치런 + PM 이지런',
-    ],
-    paceGuide: '역치 세션은 심박 Z3~Z4 기반 (젖산 측정 불필요). 이지런은 Z1~Z2. "역치에서 충분히 오래 버티기"가 핵심.',
-    startTip: '주 러닝 중 1회를 역치 인터벌 (5분 Z4 x 4세트, 사이 90초 조깅)로 바꿔보기.',
-    diff: '노르웨이 육상 국가대표팀 (인게브릭센 형제)이 사용해 세계적 주목. 역치 능력을 최우선으로 끌어올림.',
-    ref: 'Norwegian Method (Marius Bakken)'
   },
 ];
 

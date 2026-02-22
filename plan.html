@@ -393,7 +393,9 @@
     ];
 
     const tg = window.Telegram?.WebApp;
-    const _fromParam = new URLSearchParams(window.location.search).get('from');
+    const _urlParams = new URLSearchParams(window.location.search);
+    const _fromParam = _urlParams.get('from');
+    const _weekParam = _urlParams.get('week');
     if (tg) {
       tg.ready();
       tg.expand();
@@ -418,11 +420,11 @@
         const res = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          body: JSON.stringify(Object.assign({
             action: 'get_plan',
             telegram_user_id: user.id,
             init_data: tg.initData,
-          }),
+          }, _weekParam ? { week_start: _weekParam } : {})),
         });
 
         const result = await res.json();
@@ -672,12 +674,12 @@
         const res = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          body: JSON.stringify(Object.assign({
             action: 'save_plan',
             telegram_user_id: user.id,
             init_data: tg.initData,
             plan_data: collected,
-          }),
+          }, _weekParam ? { week_start: _weekParam } : {})),
         });
 
         const result = await res.json();

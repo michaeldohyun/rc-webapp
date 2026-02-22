@@ -372,6 +372,88 @@
     cursor: pointer;
   }
 
+  /* ── Share modal ── */
+  .share-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+  }
+  .share-modal-overlay.visible { display: flex; }
+  .share-modal {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--card-radius);
+    padding: 24px 20px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+  }
+  .share-modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .share-modal-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .share-modal-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    text-align: center;
+    -webkit-user-select: all;
+    user-select: all;
+    outline: none;
+  }
+  .share-modal-input:focus {
+    border-color: var(--accent);
+  }
+  .share-modal-copy-btn {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 13px;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+  .share-modal-copy-btn:active {
+    transform: scale(0.97);
+    opacity: 0.85;
+  }
+  .share-modal-close-btn {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   /* ── Animations ── */
   @keyframes shimmer {
     0% { transform: translateX(-100%); }
@@ -404,6 +486,15 @@
   </div>
 </div>
 <div class="share-toast" id="shareToast"></div>
+<div class="share-modal-overlay" id="shareModal">
+  <div class="share-modal">
+    <div class="share-modal-title">공유 링크</div>
+    <div class="share-modal-desc">아래 링크를 복사해서 공유하세요</div>
+    <input class="share-modal-input" id="shareModalInput" type="text" readonly>
+    <button class="share-modal-copy-btn" id="shareModalCopyBtn">복사하기</button>
+    <button class="share-modal-close-btn" id="shareModalCloseBtn">닫기</button>
+  </div>
+</div>
 
 <script>
 (function() {
@@ -695,6 +786,82 @@
     '</div>';
   }
 
+  // ── Share modal ──
+  function showShareModal(url) {
+    var overlay = document.getElementById('shareModal');
+    var input = document.getElementById('shareModalInput');
+    if (!overlay || !input) return;
+    input.value = url;
+    overlay.classList.add('visible');
+  }
+
+  function hideShareModal() {
+    var overlay = document.getElementById('shareModal');
+    if (overlay) overlay.classList.remove('visible');
+  }
+
+  function initShareModal() {
+    var overlay = document.getElementById('shareModal');
+    var copyBtn = document.getElementById('shareModalCopyBtn');
+    var closeBtn = document.getElementById('shareModalCloseBtn');
+    var input = document.getElementById('shareModalInput');
+
+    if (overlay) {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) hideShareModal();
+      });
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', hideShareModal);
+    }
+
+    if (copyBtn && input) {
+      copyBtn.addEventListener('click', function() {
+        var url = input.value;
+        if (!url) return;
+
+        // 이 클릭이 새로운 user gesture → 클립보드 접근 가능
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(function() {
+            copyBtn.textContent = '\u2705 \uBCF5\uC0AC \uC644\uB8CC!';
+            setTimeout(function() {
+              copyBtn.textContent = '\uBCF5\uC0AC\uD558\uAE30';
+              hideShareModal();
+            }, 1500);
+          }).catch(function() {
+            // 최종 폴백: input select + execCommand
+            execCopyFallback(input, copyBtn);
+          });
+        } else {
+          execCopyFallback(input, copyBtn);
+        }
+      });
+    }
+  }
+
+  function execCopyFallback(input, copyBtn) {
+    try {
+      input.focus();
+      input.select();
+      input.setSelectionRange(0, input.value.length);
+      var ok = document.execCommand('copy');
+      if (ok) {
+        copyBtn.textContent = '\u2705 \uBCF5\uC0AC \uC644\uB8CC!';
+        setTimeout(function() {
+          copyBtn.textContent = '\uBCF5\uC0AC\uD558\uAE30';
+          hideShareModal();
+        }, 1500);
+      } else {
+        copyBtn.textContent = '\uC9C1\uC811 \uBCF5\uC0AC\uD574\uC8FC\uC138\uC694';
+        setTimeout(function() { copyBtn.textContent = '\uBCF5\uC0AC\uD558\uAE30'; }, 2000);
+      }
+    } catch (e) {
+      copyBtn.textContent = '\uC9C1\uC811 \uBCF5\uC0AC\uD574\uC8FC\uC138\uC694';
+      setTimeout(function() { copyBtn.textContent = '\uBCF5\uC0AC\uD558\uAE30'; }, 2000);
+    }
+  }
+
   // ── Share handler ──
   function handleShare() {
     if (isSharing) return;
@@ -708,32 +875,32 @@
 
     createShareLink().then(function(res) {
       if (res.success && res.share_url) {
-        // textarea fallback으로 클립보드 복사 (Telegram WebApp 호환)
-        var copied = false;
-        try {
-          var ta = document.createElement('textarea');
-          ta.value = res.share_url;
-          ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px';
-          document.body.appendChild(ta);
-          ta.focus();
-          ta.select();
-          copied = document.execCommand('copy');
-          document.body.removeChild(ta);
-        } catch (e) { copied = false; }
+        // 먼저 clipboard API 시도 (async API지만 일부 브라우저에서 동작)
+        var tryClipboard = (navigator.clipboard && navigator.clipboard.writeText)
+          ? navigator.clipboard.writeText(res.share_url).then(function() { return true; }).catch(function() { return false; })
+          : Promise.resolve(false);
 
-        if (copied) {
-          showToast(res.share_url, 4000);
-        } else {
-          showToast(res.share_url, 6000);
-        }
-        if (btn) {
-          btn.textContent = copied ? '\u2705 \uBCF5\uC0AC \uC644\uB8CC!' : '\uD83D\uDD17 \uB9C1\uD06C \uC0DD\uC131 \uC644\uB8CC';
-          setTimeout(function() {
-            btn.disabled = false;
-            btn.textContent = '\uD83D\uDD17 \uACF5\uC720\uD558\uAE30';
+        tryClipboard.then(function(copied) {
+          if (copied) {
+            showToast('\uB9C1\uD06C\uAC00 \uBCF5\uC0AC\uB418\uC5C8\uC5B4\uC694!', 3000);
+            if (btn) {
+              btn.textContent = '\u2705 \uBCF5\uC0AC \uC644\uB8CC!';
+              setTimeout(function() {
+                btn.disabled = false;
+                btn.textContent = '\uD83D\uDD17 \uACF5\uC720\uD558\uAE30';
+                isSharing = false;
+              }, 2000);
+            }
+          } else {
+            // 클립보드 실패 → 모달로 URL 표시 + 복사 버튼
+            showShareModal(res.share_url);
+            if (btn) {
+              btn.disabled = false;
+              btn.textContent = '\uD83D\uDD17 \uACF5\uC720\uD558\uAE30';
+            }
             isSharing = false;
-          }, 2000);
-        }
+          }
+        });
       } else {
         showToast('\uACF5\uC720 \uB9C1\uD06C \uC0DD\uC131\uC5D0 \uC2E4\uD328\uD588\uC5B4\uC694');
         if (btn) {
@@ -786,6 +953,7 @@
       }
 
       bindEvents();
+      initShareModal();
 
     } catch (e) {
       app.innerHTML = renderError(e.message || '\uC54C \uC218 \uC5C6\uB294 \uC624\uB958');

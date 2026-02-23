@@ -302,6 +302,10 @@
       animation: fadeIn 0.3s ease forwards;
     }
 
+    .day-card.today {
+      border-left: 3px solid var(--tg-theme-button-color);
+    }
+
     /* Spinner in button */
     .spinner {
       display: inline-block;
@@ -385,11 +389,7 @@
       { value: 'tempo_run', label: '템포런' },
       { value: 'threshold_run', label: '역치런' },
       { value: 'interval', label: '인터벌' },
-      { value: 'fartlek', label: '파틀렉' },
       { value: 'hill_run', label: '언덕런' },
-      { value: 'race_pace', label: '레이스페이스' },
-      { value: 'cross_training', label: '크로스' },
-      { value: 'walk_run', label: '걷기/달리기' },
     ];
 
     const tg = window.Telegram?.WebApp;
@@ -531,6 +531,18 @@
       });
 
       updateSummary();
+
+      // 오늘 카드 하이라이트 + 스크롤
+      const today = new Date().toISOString().slice(0, 10);
+      planData.days.forEach((day, i) => {
+        if (day.date === today) {
+          const card = document.querySelector(`.day-card[data-index="${i}"]`);
+          if (card) {
+            card.classList.add('today', 'open');
+            setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 400);
+          }
+        }
+      });
     }
 
     function formatShortDate(dateStr) {
@@ -569,9 +581,9 @@
 
       if (isRest) {
         dot.classList.add('intensity-rest');
-      } else if (['easy_run', 'recovery_run', 'walk_run'].includes(value)) {
+      } else if (['easy_run', 'recovery_run'].includes(value)) {
         dot.classList.add('intensity-low');
-      } else if (['long_run', 'tempo_run', 'fartlek', 'cross_training'].includes(value)) {
+      } else if (['long_run', 'tempo_run'].includes(value)) {
         dot.classList.add('intensity-moderate');
       } else {
         dot.classList.add('intensity-high');
@@ -618,8 +630,8 @@
 
         let intensity = 'rest';
         if (!isRest) {
-          if (['easy_run', 'recovery_run', 'walk_run'].includes(typeVal)) intensity = 'low';
-          else if (['long_run', 'tempo_run', 'fartlek', 'cross_training'].includes(typeVal)) intensity = 'moderate';
+          if (['easy_run', 'recovery_run'].includes(typeVal)) intensity = 'low';
+          else if (['long_run', 'tempo_run'].includes(typeVal)) intensity = 'moderate';
           else intensity = 'high';
         }
 

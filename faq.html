@@ -117,13 +117,13 @@ var CATEGORIES = [
 var FAQ = [
   {
     cat: 'start',
-    q: 'MyRunCo는 어떤 서비스인가요?',
-    a: 'intervals.icu 데이터를 기반으로 한 <strong>AI 맞춤 러닝 코칭 텔레그램 봇</strong>입니다. 훈련 계획 생성, 러닝 진단, 훈련법 추천, 자유 질문 등 다양한 코칭 기능을 제공합니다.'
+    q: '마이 러닝 코치는 어떤 서비스인가요?',
+    a: 'Garmin 러닝 데이터를 기반으로 한 <strong>AI 맞춤 러닝 코칭 텔레그램 봇</strong>입니다. 훈련 계획 생성, 러닝 진단, 훈련법 추천, 자유 질문 등 다양한 코칭 기능을 제공합니다.'
   },
   {
     cat: 'start',
-    q: 'intervals.icu 연동은 어떻게 하나요?',
-    a: '<span class="cmd">/start</span>를 입력하면 온보딩이 시작됩니다. intervals.icu의 <strong>설정 &gt; Developer</strong>에서 API Key를 복사한 뒤, 안내에 따라 등록하면 됩니다.'
+    q: 'Garmin 연동은 어떻게 하나요?',
+    a: '<span class="cmd">/start</span>를 입력하면 온보딩이 시작됩니다. Garmin Connect 앱에서 <strong>intervals.icu 자동 동기화를 설정</strong>한 뒤, 안내에 따라 연동하면 됩니다.'
   },
   {
     cat: 'start',
@@ -142,11 +142,6 @@ var FAQ = [
   },
   {
     cat: 'core',
-    q: '훈련법 추천은 어떻게 작동하나요?',
-    a: '<span class="cmd">/rec</span> 명령어를 사용하면 AI가 체력 지수, 주간 거리, 러닝 빈도를 분석하여 <strong>적합한 훈련법을 추천</strong>합니다. 추천된 훈련법은 프로필에 바로 적용할 수 있습니다.'
-  },
-  {
-    cat: 'core',
     q: '자유 질문은 어떻게 하나요?',
     a: '명령어(<span class="cmd">/</span>) 없이 메시지를 보내면 AI가 답변합니다. 예: "지난주 총 거리가 얼마야?", "이번 주 인터벌 어떻게 하면 좋을까?" 등 <strong>러닝 관련 무엇이든</strong> 물어보세요.'
   },
@@ -158,7 +153,7 @@ var FAQ = [
   {
     cat: 'daily',
     q: '어떤 기록을 볼 수 있나요?',
-    a: '<span class="cmd">/history</span>를 입력하면 intervals.icu에서 동기화된 최근 러닝 기록을 확인할 수 있습니다. <strong>거리, 시간, 페이스</strong> 등 주요 지표를 한눈에 볼 수 있습니다.'
+    a: '<span class="cmd">/history</span>를 입력하면 Garmin에서 동기화된 최근 러닝 기록을 확인할 수 있습니다. <strong>거리, 시간, 페이스</strong> 등 주요 지표를 한눈에 볼 수 있습니다.'
   },
   {
     cat: 'daily',
@@ -168,7 +163,7 @@ var FAQ = [
   {
     cat: 'daily',
     q: '러닝 후 자동 분석이 뭔가요?',
-    a: 'intervals.icu에 새 활동이 기록되면 자동으로 데이터를 동기화하고, AI가 <strong>즉시 분석 및 피드백</strong>을 제공합니다. 별도 명령어 없이 자동으로 작동합니다.'
+    a: 'Garmin에 새 러닝이 기록되면 자동으로 데이터를 동기화하고, AI가 <strong>즉시 분석 및 피드백</strong>을 제공합니다. 별도 명령어 없이 자동으로 작동합니다.'
   },
   {
     cat: 'growth',
@@ -188,12 +183,12 @@ var FAQ = [
   {
     cat: 'settings',
     q: 'AI 질문 횟수 제한이 있나요?',
-    a: '자유 질문은 <strong>하루 5회</strong>까지 가능하며, 매일 자정(KST)에 초기화됩니다. <span class="cmd">/plan</span>, <span class="cmd">/rec</span>, <span class="cmd">/status</span> 등 명령어는 별도 제한이 적용됩니다.'
+    a: '자유 질문은 <strong>하루 10회</strong>까지 가능하며, 매일 자정(KST)에 초기화됩니다. <span class="cmd">/plan</span>, <span class="cmd">/status</span> 등 명령어는 별도 제한이 적용됩니다.'
   },
   {
     cat: 'settings',
     q: '데이터가 동기화되지 않아요',
-    a: 'intervals.icu API 키가 유효한지 확인해 주세요. <span class="cmd">/start</span>로 다시 연동할 수 있습니다. 문제가 지속되면 <span class="cmd">/feedback</span>으로 알려주세요.'
+    a: '연동 설정이 올바른지 확인해 주세요. <span class="cmd">/start</span>로 다시 연동할 수 있습니다. 문제가 지속되면 <span class="cmd">/feedback</span>으로 알려주세요.'
   },
   {
     cat: 'settings',

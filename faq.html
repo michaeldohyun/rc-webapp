@@ -1,508 +1,284 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Running Coach - FAQ</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --tg-theme-bg-color: #ffffff;
-      --tg-theme-text-color: #000000;
-      --tg-theme-hint-color: #999999;
-      --tg-theme-link-color: #2678b6;
-      --tg-theme-button-color: #2678b6;
-      --tg-theme-button-text-color: #ffffff;
-      --tg-theme-secondary-bg-color: #f0f0f0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>자주 묻는 질문</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: var(--tg-theme-bg-color, #ffffff);
+    --text: var(--tg-theme-text-color, #000000);
+    --hint: var(--tg-theme-hint-color, #999999);
+    --link: var(--tg-theme-link-color, #2678b6);
+    --btn: var(--tg-theme-button-color, #2678b6);
+    --btn-text: var(--tg-theme-button-text-color, #ffffff);
+    --secondary-bg: var(--tg-theme-secondary-bg-color, #f0f0f0);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--secondary-bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 480px; margin: 0 auto; padding: 16px; }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+  .page-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .page-sub { font-size: 13px; color: var(--hint); margin-bottom: 16px; }
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--tg-theme-secondary-bg-color);
-      color: var(--tg-theme-text-color);
-      min-height: 100vh;
-      padding-bottom: 100px;
-    }
+  /* Category nav pills */
+  .cat-nav { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 12px; -webkit-overflow-scrolling: touch; }
+  .cat-nav::-webkit-scrollbar { display: none; }
+  .nav-pill {
+    flex-shrink: 0; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
+    background: var(--bg); color: var(--hint); border: 1px solid var(--secondary-bg);
+    cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent;
+  }
+  .nav-pill.active { background: var(--btn); color: var(--btn-text); border-color: var(--btn); }
 
-    .container {
-      max-width: 400px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+  /* Accordion card */
+  .faq-card {
+    background: var(--bg); border-radius: 14px; margin-bottom: 8px;
+    overflow: hidden; transition: margin 0.2s;
+  }
+  .faq-q {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+    gap: 12px;
+  }
+  .faq-q-text { font-size: 14px; font-weight: 600; line-height: 1.4; flex: 1; }
+  .faq-arrow {
+    flex-shrink: 0; width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.25s ease;
+  }
+  .faq-arrow svg { width: 14px; height: 14px; fill: none; stroke: var(--hint); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .faq-card.open .faq-arrow { transform: rotate(180deg); }
 
-    /* Back Button */
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      color: var(--tg-theme-link-color);
-      font-size: 14px;
-      font-weight: 500;
-      text-decoration: none;
-      cursor: pointer;
-      padding: 4px 0;
-      margin-bottom: 8px;
-    }
+  .faq-a {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .faq-a-inner {
+    padding: 0 16px 14px;
+    font-size: 13px; line-height: 1.6; color: var(--hint);
+  }
+  .faq-a-inner .cmd {
+    display: inline-block; padding: 1px 6px; border-radius: 4px;
+    background: var(--secondary-bg); font-size: 12px; font-weight: 600; color: var(--text);
+  }
 
-    .back-btn:active {
-      opacity: 0.6;
-    }
+  /* Category label */
+  .cat-label {
+    font-size: 12px; font-weight: 600; color: var(--link);
+    padding: 12px 0 6px; margin-left: 4px;
+  }
 
-    /* Header */
-    .page-header {
-      text-align: center;
-      padding: 16px 0 24px;
-    }
-
-    .page-header h1 {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .page-header .subtitle {
-      color: var(--tg-theme-hint-color);
-      font-size: 14px;
-    }
-
-    /* Category */
-    .category {
-      margin-bottom: 24px;
-    }
-
-    .category-title {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .category-title .icon {
-      font-size: 16px;
-    }
-
-    /* Accordion */
-    .faq-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    details {
-      background: var(--tg-theme-bg-color);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    summary {
-      padding: 14px 16px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      list-style: none;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      -webkit-user-select: none;
-      user-select: none;
-    }
-
-    summary::-webkit-details-marker { display: none; }
-
-    summary::after {
-      content: '+';
-      font-size: 18px;
-      font-weight: 400;
-      color: var(--tg-theme-hint-color);
-      flex-shrink: 0;
-      transition: transform 0.2s;
-    }
-
-    details[open] summary::after {
-      content: '-';
-    }
-
-    .answer {
-      padding: 0 16px 14px;
-      font-size: 13px;
-      line-height: 1.6;
-      color: var(--tg-theme-hint-color);
-    }
-
-    .answer a {
-      color: var(--tg-theme-link-color);
-      text-decoration: none;
-    }
-
-    .answer a:active {
-      opacity: 0.6;
-    }
-
-    .answer p {
-      margin-bottom: 8px;
-    }
-
-    .answer p:last-child {
-      margin-bottom: 0;
-    }
-
-    .answer .step-list {
-      margin: 8px 0;
-      padding-left: 20px;
-    }
-
-    .answer .step-list li {
-      margin-bottom: 4px;
-    }
-
-    .answer .tag-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin: 8px 0;
-    }
-
-    .answer .tag {
-      background: var(--tg-theme-secondary-bg-color);
-      border: 1px solid var(--tg-theme-hint-color);
-      border-radius: 12px;
-      padding: 2px 8px;
-      font-size: 11px;
-      opacity: 0.9;
-    }
-
-    .answer .highlight {
-      color: var(--tg-theme-text-color);
-      font-weight: 600;
-    }
-
-    .answer .inline-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      color: var(--tg-theme-link-color);
-      font-weight: 500;
-    }
-
-    /* CTA */
-    .cta {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--tg-theme-bg-color);
-      padding: 12px 20px;
-      padding-bottom: max(12px, env(safe-area-inset-bottom));
-      border-top: 1px solid rgba(0,0,0,0.06);
-    }
-
-    .cta-inner {
-      max-width: 400px;
-      margin: 0 auto;
-    }
-
-    .btn-cta {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      text-align: center;
-      background: var(--tg-theme-button-color);
-      color: var(--tg-theme-button-text-color);
-      transition: opacity 0.2s, transform 0.1s;
-    }
-
-    .btn-cta:hover {
-      opacity: 0.92;
-    }
-
-    .btn-cta:active {
-      transform: scale(0.98);
-      opacity: 0.85;
-    }
-
-    /* Animation */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .animate {
-      animation: fadeInUp 0.4s ease forwards;
-      opacity: 0;
-    }
-
-    .animate-d1 { animation-delay: 0.1s; }
-    .animate-d2 { animation-delay: 0.2s; }
-    .animate-d3 { animation-delay: 0.3s; }
-    .animate-d4 { animation-delay: 0.4s; }
-    .animate-d5 { animation-delay: 0.5s; }
-    .animate-d6 { animation-delay: 0.6s; }
-  </style>
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .faq-list { animation: fadeIn 0.3s ease; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <!-- Back -->
-    <a class="back-btn animate" onclick="closeFaq()">&larr; 돌아가기</a>
+<div class="container">
+  <div class="page-title">자주 묻는 질문</div>
+  <div class="page-sub">궁금한 점을 찾아보세요</div>
 
-    <!-- Header -->
-    <div class="page-header animate">
-      <h1>자주 묻는 질문</h1>
-      <div class="subtitle">궁금한 점이 있으신가요?</div>
-    </div>
+  <div class="cat-nav" id="cat-nav"></div>
+  <div id="faq-list"></div>
+</div>
 
-    <!-- 1. 시작하기 -->
-    <div class="category animate animate-d1">
-      <div class="category-title"><span class="icon">🏁</span> 시작하기</div>
-      <div class="faq-list">
-        <details>
-          <summary>Running Coach는 무료인가요?</summary>
-          <div class="answer">
-            <p><span class="highlight">네, 완전 무료입니다.</span></p>
-            <p>Running Coach 봇은 무료로 사용할 수 있습니다. 별도 결제나 구독이 필요 없어요.</p>
-          </div>
-        </details>
-        <details>
-          <summary>어떤 워치가 지원되나요?</summary>
-          <div class="answer">
-            <p>현재 <span class="highlight">Garmin 워치만 지원</span>합니다.</p>
-            <div class="tag-list">
-              <span class="tag">Garmin</span>
-            </div>
-            <p>Garmin Connect에 기록되는 모든 러닝 데이터를 intervals.icu를 통해 자동으로 가져옵니다. 향후 다른 기기도 지원할 예정이에요.</p>
-          </div>
-        </details>
-      </div>
-    </div>
+<script>
+var tg = window.Telegram && window.Telegram.WebApp;
+if (tg) {
+  tg.ready();
+  tg.expand();
+  if (tg.BackButton) {
+    tg.BackButton.show();
+    tg.BackButton.onClick(function() {
+      if (window.history.length > 1) { window.history.back(); }
+      else { tg.close(); }
+    });
+  }
+}
 
-    <!-- 2. 데이터 연동 -->
-    <div class="category animate animate-d2">
-      <div class="category-title"><span class="icon">🔗</span> 데이터 연동</div>
-      <div class="faq-list">
-        <details>
-          <summary>왜 intervals.icu를 통해 연동하나요?</summary>
-          <div class="answer">
-            <p>Garmin은 개인용 API를 공식적으로 제공하지 않습니다.</p>
-            <p>그래서 <span class="highlight">전 세계 12만명+</span>이 사용하는 무료 러닝 분석 플랫폼 <a href="https://intervals.icu" target="_blank">intervals.icu</a>를 브릿지로 사용합니다. intervals.icu는 Garmin 데이터를 안전하게 가져올 수 있는 검증된 서비스예요.</p>
-            <p><span class="highlight">처음 한 번만 연동</span>하면 이후 자동으로 데이터가 동기화됩니다. 언제든지 intervals.icu에서 API 키를 재발급하여 연동을 해제할 수 있어요.</p>
-          </div>
-        </details>
-        <details>
-          <summary>Garmin 데이터는 어떻게 연동하나요?</summary>
-          <div class="answer">
-            <p>intervals.icu <span class="highlight">웹사이트</span>에서 직접 연동해야 합니다. (봇에서는 연동 불가)</p>
-            <ol class="step-list">
-              <li><a href="https://intervals.icu/settings" target="_blank">intervals.icu Settings</a> 접속</li>
-              <li>왼쪽 메뉴에서 <span class="highlight">Connections</span> 선택</li>
-              <li>Garmin Connect 클릭</li>
-              <li>Garmin 계정으로 로그인하여 권한 허용</li>
-            </ol>
-            <p>연동 후 과거 데이터도 자동으로 가져옵니다.</p>
-          </div>
-        </details>
-        <details>
-          <summary>API 키는 어디서 찾나요?</summary>
-          <div class="answer">
-            <p>intervals.icu 웹사이트에서 확인할 수 있습니다.</p>
-            <ol class="step-list">
-              <li><a href="https://intervals.icu/settings" target="_blank">intervals.icu Settings</a> 접속</li>
-              <li>왼쪽 메뉴에서 <span class="highlight">Developer Settings</span> 선택</li>
-              <li>API Key 옆의 <span class="highlight">(view)</span> 클릭하여 키 확인</li>
-              <li>키를 복사하여 <a class="inline-link" onclick="window.location.href='connect.html'">연동 페이지</a>에 붙여넣기</li>
-            </ol>
-          </div>
-        </details>
-      </div>
-    </div>
+var CATEGORIES = [
+  { id: 'all', label: '전체' },
+  { id: 'start', label: '시작하기' },
+  { id: 'core', label: '핵심 기능' },
+  { id: 'daily', label: '일상 활용' },
+  { id: 'growth', label: '레벨과 성장' },
+  { id: 'settings', label: '설정' }
+];
 
-    <!-- 3. 명령어 안내 -->
-    <div class="category animate animate-d3">
-      <div class="category-title"><span class="icon">🤖</span> 명령어 안내</div>
-      <div class="faq-list">
-        <details>
-          <summary>어떤 명령어가 있나요?</summary>
-          <div class="answer">
-            <p>9가지 명령어를 사용할 수 있어요.</p>
-            <ol class="step-list">
-              <li><span class="highlight">/home</span> — 마이페이지</li>
-              <li><span class="highlight">/training</span> (/t) — 훈련법 확인</li>
-              <li><span class="highlight">/p</span> — 이번주 계획 확인</li>
-              <li><span class="highlight">/weather</span> (/w) — 날씨·미세먼지 정보</li>
-              <li><span class="highlight">/races</span> (/r) — 마라톤 대회 일정 검색</li>
-              <li><span class="highlight">/q</span> — AI에게 질문하기</li>
-              <li><span class="highlight">/status</span> — 내 러닝 진단 보기</li>
-              <li><span class="highlight">/feedback</span> (/fb) — 피드백 보내기</li>
-              <li><span class="highlight">/help</span> (/h) — 도움말</li>
-            </ol>
-          </div>
-        </details>
-        <details>
-          <summary>훈련법 추천은 어떻게 받나요?</summary>
-          <div class="answer">
-            <p><span class="highlight">/rec</span> 명령어를 입력하면 AI가 분석을 시작합니다.</p>
-            <ol class="step-list">
-              <li>러닝 프로필 (목표, 빈도, 우선순위 등)을 분석</li>
-              <li>최근 러닝 기록 (페이스, 심박수, 거리 등)을 분석</li>
-              <li>맞춤 훈련법을 추천하고 이유를 설명</li>
-            </ol>
-            <p><span class="highlight">8개 훈련법</span> 중에서 추천됩니다.</p>
-            <div class="tag-list">
-              <span class="tag">80/20 러닝</span>
-              <span class="tag">잭 다니엘스</span>
-              <span class="tag">MAF 저심박</span>
-              <span class="tag">피치진저</span>
-              <span class="tag">한슨</span>
-              <span class="tag">갤러웨이</span>
-              <span class="tag">할 히든</span>
-              <span class="tag">리디어드</span>
-            </div>
-            <p>추천 결과에 "프로필에 반영하기" 버튼이 나타나면, 탭하여 바로 적용할 수 있어요. 훈련법을 꾸준히 수행하면 다음 단계로 진급합니다.</p>
-          </div>
-        </details>
-        <details>
-          <summary>훈련 계획은 어떻게 만드나요?</summary>
-          <div class="answer">
-            <p><span class="highlight">/plan</span> 명령어를 입력하면 AI가 이번 주 7일 훈련 계획을 만들어줍니다.</p>
-            <ol class="step-list">
-              <li>프로필(목표, 빈도, 훈련법)과 최근 러닝 기록을 분석</li>
-              <li>요일별 훈련 종류, 거리, 페이스, 심박존을 자동 설정</li>
-              <li>"수정하기" 버튼으로 세부 사항을 직접 편집 가능</li>
-              <li>"새로 추천받기"로 새 계획을 다시 받을 수도 있어요</li>
-            </ol>
-            <p>지난주 계획이 있으면 그대로 복사하는 옵션도 제공됩니다.</p>
-          </div>
-        </details>
-        <details>
-          <summary>날씨·미세먼지 정보는 어떻게 보나요?</summary>
-          <div class="answer">
-            <p><span class="highlight">/weather</span> (또는 <span class="highlight">/w</span>)를 입력하면 러닝에 필요한 날씨 정보를 알려드려요.</p>
-            <ol class="step-list">
-              <li><span class="highlight">7일 예보</span> — 기온, 강수 확률, 풍속</li>
-              <li><span class="highlight">미세먼지</span> — PM2.5, PM10 농도 및 등급</li>
-              <li><span class="highlight">러닝 적합도</span> — 오늘 야외 러닝이 괜찮은지 판단</li>
-              <li><span class="highlight">복장 팁</span> — 기온별 추천 러닝 복장</li>
-              <li><span class="highlight">지역 검색</span> — <span class="highlight">/w 부산</span>, <span class="highlight">/w 도쿄</span>처럼 다른 지역도 확인 가능</li>
-            </ol>
-            <p>훈련 계획의 러닝 요일에 맞춰 하이라이트 표시됩니다. AI 사용 횟수에 포함되지 않아 자유롭게 확인할 수 있어요.</p>
-          </div>
-        </details>
-        <details>
-          <summary>대회 일정은 어떻게 검색하나요?</summary>
-          <div class="answer">
-            <p><span class="highlight">/races</span>를 입력하면 다가오는 국내 마라톤 대회를 확인할 수 있어요.</p>
-            <ol class="step-list">
-              <li><span class="highlight">/races</span> — 이번 달 전체 대회</li>
-              <li><span class="highlight">/races 서울</span> — 지역별 검색</li>
-              <li><span class="highlight">/races 하프</span> — 종목별 검색</li>
-              <li><span class="highlight">/races 경기 10km</span> — 지역 + 종목 조합</li>
-            </ol>
-            <p>접수 상태(접수중/마감)도 함께 표시됩니다. AI 사용 횟수에 포함되지 않아요.</p>
-          </div>
-        </details>
-        <details>
-          <summary>어떤 질문을 할 수 있나요?</summary>
-          <div class="answer">
-            <p>자유 형식으로 무엇이든 물어보세요! 예를 들면:</p>
-            <ol class="step-list">
-              <li>"지난주 총 거리가 얼마야?"</li>
-              <li>"최근 페이스 변화 추이 알려줘"</li>
-              <li>"다음 하프마라톤 대비 훈련 계획 짜줘"</li>
-              <li>"심박수가 너무 높은데 괜찮아?"</li>
-            </ol>
-            <p>러닝에 관한 질문이면 무엇이든 답변해드려요.</p>
-          </div>
-        </details>
-      </div>
-    </div>
-    <!-- 4. 미니앱 -->
-    <div class="category animate animate-d4">
-      <div class="category-title"><span class="icon">📱</span> 미니앱</div>
-      <div class="faq-list">
-        <details>
-          <summary>미니앱은 어떻게 여나요?</summary>
-          <div class="answer">
-            <p><span class="highlight">/home</span> 명령어를 입력하면 미니앱이 열립니다.</p>
-            <p><span class="highlight">4개 탭</span>으로 구성되어 있어요.</p>
-            <div class="tag-list">
-              <span class="tag">홈</span>
-              <span class="tag">퀘스트</span>
-              <span class="tag">기록</span>
-              <span class="tag">설정</span>
-            </div>
-            <p>텔레그램 내에서 바로 열리며, 별도 앱 설치가 필요 없습니다.</p>
-          </div>
-        </details>
-        <details>
-          <summary>기록 탭에서 뭘 볼 수 있나요?</summary>
-          <div class="answer">
-            <p>러닝 기록을 한눈에 확인할 수 있습니다.</p>
-            <ol class="step-list">
-              <li><span class="highlight">주간 통계</span> — 이번 주 거리, 시간, 횟수</li>
-              <li><span class="highlight">월간 통계</span> — 이번 달 누적 기록</li>
-              <li><span class="highlight">전체 통계</span> — 총 누적 거리, 러닝 횟수</li>
-              <li><span class="highlight">개인 최고 기록</span> — 최장 거리, 최고 페이스 등</li>
-            </ol>
-          </div>
-        </details>
-      </div>
-    </div>
+var FAQ = [
+  {
+    cat: 'start',
+    q: 'MyRunCo는 어떤 서비스인가요?',
+    a: 'intervals.icu 데이터를 기반으로 한 <strong>AI 맞춤 러닝 코칭 텔레그램 봇</strong>입니다. 훈련 계획 생성, 러닝 진단, 훈련법 추천, 자유 질문 등 다양한 코칭 기능을 제공합니다.'
+  },
+  {
+    cat: 'start',
+    q: 'intervals.icu 연동은 어떻게 하나요?',
+    a: '<span class="cmd">/start</span>를 입력하면 온보딩이 시작됩니다. intervals.icu의 <strong>설정 &gt; Developer</strong>에서 API Key를 복사한 뒤, 안내에 따라 등록하면 됩니다.'
+  },
+  {
+    cat: 'start',
+    q: '프로필 설문은 꼭 해야 하나요?',
+    a: '설문을 작성하면 AI가 더 정확한 맞춤 코칭을 제공합니다. 건너뛰어도 기본 기능은 사용할 수 있지만, <strong>코칭 품질이 크게 향상</strong>되므로 권장합니다.'
+  },
+  {
+    cat: 'core',
+    q: '훈련 계획은 어떻게 생성되나요?',
+    a: '<span class="cmd">/plan</span> 명령어를 사용하면 AI가 최근 러닝 데이터, 프로필, 훈련법을 종합 분석하여 <strong>7일 맞춤 훈련 계획</strong>을 생성합니다. 생성된 계획은 수정 요청도 가능합니다.'
+  },
+  {
+    cat: 'core',
+    q: '러닝 진단은 무엇인가요?',
+    a: '<span class="cmd">/status</span>를 입력하면 현재 훈련 단계, 주간 볼륨 추이, 핵심 지표, 전환 신호 체크리스트 등을 <strong>종합 분석</strong>하여 보여줍니다.'
+  },
+  {
+    cat: 'core',
+    q: '훈련법 추천은 어떻게 작동하나요?',
+    a: '<span class="cmd">/rec</span> 명령어를 사용하면 AI가 체력 지수, 주간 거리, 러닝 빈도를 분석하여 <strong>적합한 훈련법을 추천</strong>합니다. 추천된 훈련법은 프로필에 바로 적용할 수 있습니다.'
+  },
+  {
+    cat: 'core',
+    q: '자유 질문은 어떻게 하나요?',
+    a: '명령어(<span class="cmd">/</span>) 없이 메시지를 보내면 AI가 답변합니다. 예: "지난주 총 거리가 얼마야?", "이번 주 인터벌 어떻게 하면 좋을까?" 등 <strong>러닝 관련 무엇이든</strong> 물어보세요.'
+  },
+  {
+    cat: 'daily',
+    q: '날씨 정보는 어디 기준인가요?',
+    a: '<span class="cmd">/weather</span>는 프로필에 설정된 지역 기준으로 날씨를 안내합니다. <span class="cmd">/profile</span>에서 지역을 변경할 수 있습니다.'
+  },
+  {
+    cat: 'daily',
+    q: '어떤 기록을 볼 수 있나요?',
+    a: '<span class="cmd">/history</span>를 입력하면 intervals.icu에서 동기화된 최근 러닝 기록을 확인할 수 있습니다. <strong>거리, 시간, 페이스</strong> 등 주요 지표를 한눈에 볼 수 있습니다.'
+  },
+  {
+    cat: 'daily',
+    q: '대회 정보는 어떻게 확인하나요?',
+    a: '<span class="cmd">/races</span>를 입력하면 국내 마라톤 대회 일정을 확인할 수 있습니다. <strong>지역별, 거리별 필터</strong>도 지원합니다.'
+  },
+  {
+    cat: 'daily',
+    q: '러닝 후 자동 분석이 뭔가요?',
+    a: 'intervals.icu에 새 활동이 기록되면 자동으로 데이터를 동기화하고, AI가 <strong>즉시 분석 및 피드백</strong>을 제공합니다. 별도 명령어 없이 자동으로 작동합니다.'
+  },
+  {
+    cat: 'growth',
+    q: '레벨 시스템은 어떻게 되나요?',
+    a: '최근 8주 데이터를 기반으로 <strong>5개 지표</strong>(볼륨, 지구력, 꾸준함, 속도, 체력)를 평가하여 초급/중급/고급 레벨을 산정합니다.'
+  },
+  {
+    cat: 'growth',
+    q: '마일스톤은 무엇인가요?',
+    a: '누적 달성 업적으로, 약 <strong>20개의 마일스톤</strong>이 있습니다. 볼륨, 지구력, 꾸준함, 속도, 체력 카테고리별로 달성 조건이 다릅니다.'
+  },
+  {
+    cat: 'growth',
+    q: '퀘스트는 무엇인가요?',
+    a: '<span class="cmd">/plan</span> 생성 시 자동으로 <strong>3개의 퀘스트</strong>가 만들어집니다: 코어(횟수 달성), 훈련법(원칙 준수), 스트레치(거리 도전).'
+  },
+  {
+    cat: 'settings',
+    q: 'AI 질문 횟수 제한이 있나요?',
+    a: '자유 질문은 <strong>하루 5회</strong>까지 가능하며, 매일 자정(KST)에 초기화됩니다. <span class="cmd">/plan</span>, <span class="cmd">/rec</span>, <span class="cmd">/status</span> 등 명령어는 별도 제한이 적용됩니다.'
+  },
+  {
+    cat: 'settings',
+    q: '데이터가 동기화되지 않아요',
+    a: 'intervals.icu API 키가 유효한지 확인해 주세요. <span class="cmd">/start</span>로 다시 연동할 수 있습니다. 문제가 지속되면 <span class="cmd">/feedback</span>으로 알려주세요.'
+  },
+  {
+    cat: 'settings',
+    q: '피드백은 어떻게 보내나요?',
+    a: '<span class="cmd">/feedback</span> 명령어로 개발자에게 직접 전달할 수 있습니다. 건의사항, 버그 신고, 기능 요청 등 무엇이든 보내주세요.'
+  }
+];
 
-    <!-- 5. 기타 -->
-    <div class="category animate animate-d5">
-      <div class="category-title"><span class="icon">💡</span> 기타</div>
-      <div class="faq-list">
-        <details>
-          <summary>AI 사용 제한이 있나요?</summary>
-          <div class="answer">
-            <p>AI 기능은 <span class="highlight">하루 5회</span>까지 사용할 수 있습니다.</p>
-            <ol class="step-list">
-              <li>AI 차감 대상: <span class="highlight">/rec</span>, <span class="highlight">/plan</span>, 자유 질문(Q&A)</li>
-              <li>AI 미차감: <span class="highlight">/weather</span>, <span class="highlight">/home</span>, <span class="highlight">/quest</span>, <span class="highlight">/profile</span>, <span class="highlight">/help</span></li>
-            </ol>
-            <p>매일 <span class="highlight">자정(KST)</span>에 횟수가 초기화됩니다.</p>
-          </div>
-        </details>
-        <details>
-          <summary>데이터는 안전한가요?</summary>
-          <div class="answer">
-            <p><span class="highlight">네, 안전합니다.</span></p>
-            <p>Running Coach는 12만명이 사용하는 intervals.icu의 API 키만 저장하며, 러닝 데이터는 분석 시에만 조회합니다. 데이터를 수정하거나 제3자에게 공유하지 않습니다.</p>
-            <p>API 키는 언제든지 intervals.icu에서 재발급하여 기존 키를 무효화할 수 있습니다.</p>
-          </div>
-        </details>
-      </div>
-    </div>
-  </div>
+var currentCat = 'all';
 
-  <!-- Fixed CTA -->
-  <div class="cta animate animate-d5">
-    <div class="cta-inner">
-      <button class="btn-cta" onclick="closeFaq()">닫기</button>
-    </div>
-  </div>
+function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
-  <script>
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.ready();
-      tg.expand();
+function renderNav() {
+  var nav = document.getElementById('cat-nav');
+  var html = '';
+  for (var i = 0; i < CATEGORIES.length; i++) {
+    var c = CATEGORIES[i];
+    html += '<div class="nav-pill' + (c.id === 'all' ? ' active' : '') + '" data-cat="' + c.id + '">' + esc(c.label) + '</div>';
+  }
+  nav.innerHTML = html;
+  nav.addEventListener('click', function(e) {
+    var pill = e.target.closest('.nav-pill');
+    if (!pill) return;
+    var cat = pill.dataset.cat;
+    currentCat = cat;
+    renderFAQ();
+    nav.querySelectorAll('.nav-pill').forEach(function(p) { p.classList.remove('active'); });
+    pill.classList.add('active');
+    pill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  });
+}
+
+function getCatLabel(catId) {
+  for (var i = 0; i < CATEGORIES.length; i++) {
+    if (CATEGORIES[i].id === catId) return CATEGORIES[i].label;
+  }
+  return '';
+}
+
+function renderFAQ() {
+  var list = document.getElementById('faq-list');
+  var filtered = currentCat === 'all' ? FAQ : FAQ.filter(function(f) { return f.cat === currentCat; });
+  var html = '<div class="faq-list">';
+
+  var lastCat = '';
+  for (var i = 0; i < filtered.length; i++) {
+    var f = filtered[i];
+    if (currentCat === 'all' && f.cat !== lastCat) {
+      html += '<div class="cat-label">' + esc(getCatLabel(f.cat)) + '</div>';
+      lastCat = f.cat;
     }
+    html += '<div class="faq-card" data-idx="' + i + '">' +
+      '<div class="faq-q" onclick="toggleFAQ(this)">' +
+        '<div class="faq-q-text">' + esc(f.q) + '</div>' +
+        '<div class="faq-arrow"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>' +
+      '</div>' +
+      '<div class="faq-a"><div class="faq-a-inner">' + f.a + '</div></div>' +
+    '</div>';
+  }
 
-    function closeFaq() {
-      window.history.back();
-    }
-  </script>
+  html += '</div>';
+  list.innerHTML = html;
+}
+
+function toggleFAQ(el) {
+  var card = el.closest('.faq-card');
+  var answer = card.querySelector('.faq-a');
+  var inner = card.querySelector('.faq-a-inner');
+
+  if (card.classList.contains('open')) {
+    card.classList.remove('open');
+    answer.style.maxHeight = '0';
+  } else {
+    // Close other open cards
+    document.querySelectorAll('.faq-card.open').forEach(function(c) {
+      c.classList.remove('open');
+      c.querySelector('.faq-a').style.maxHeight = '0';
+    });
+    card.classList.add('open');
+    answer.style.maxHeight = inner.scrollHeight + 'px';
+  }
+}
+
+renderNav();
+renderFAQ();
+</script>
 </body>
 </html>

@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Running Coach 연동</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --tg-theme-bg-color: #ffffff;
@@ -18,7 +20,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: var(--tg-theme-bg-color);
       color: var(--tg-theme-text-color);
       padding: 20px;
@@ -146,7 +148,7 @@
       cursor: not-allowed;
     }
 
-    /* Demo phone animation */
+    /* Demo phone animation (Step 3: API key copy) */
     .demo-phone {
       width: 280px;
       height: 380px;
@@ -284,7 +286,6 @@
       color: var(--tg-theme-text-color);
     }
 
-    /* Scroll: 0-1s stay, 1-4s scroll down, 4-10s stay, 10-11s fade, 11-12s reset */
     @keyframes demoScroll {
       0%, 8% { transform: translateY(0); opacity: 1; }
       33% { transform: translateY(-260px); opacity: 1; }
@@ -294,7 +295,6 @@
       100% { transform: translateY(0); opacity: 1; }
     }
 
-    /* Highlight (view): blink at 4-5.5s = 33%-46% */
     @keyframes demoHighlight {
       0%, 33% { background: transparent; color: var(--tg-theme-link-color); }
       35% { background: #fff3cd; color: #856404; }
@@ -306,7 +306,6 @@
       100% { background: transparent; color: var(--tg-theme-link-color); }
     }
 
-    /* Popup overlay: appear at 5.5s=46%, hide at 10s=83% */
     @keyframes demoPopup {
       0%, 45% { opacity: 0; pointer-events: none; }
       48% { opacity: 1; }
@@ -315,7 +314,6 @@
       100% { opacity: 0; pointer-events: none; }
     }
 
-    /* Popup slide in */
     @keyframes demoPopupSlide {
       0%, 45% { transform: translateY(20px); }
       48% { transform: translateY(0); }
@@ -324,7 +322,6 @@
       100% { transform: translateY(20px); }
     }
 
-    /* Key pulse: at 6.5-8s = 54%-67% */
     @keyframes demoKeyPulse {
       0%, 53% { border-color: var(--tg-theme-link-color); transform: scale(1); }
       56% { border-color: #ff9800; transform: scale(1.05); }
@@ -334,7 +331,6 @@
       100% { border-color: var(--tg-theme-link-color); transform: scale(1); }
     }
 
-    /* Toast: show at 8s=67%, hide at 10s=83% */
     @keyframes demoToast {
       0%, 65% { opacity: 0; transform: translateY(10px); }
       68% { opacity: 1; transform: translateY(0); }
@@ -443,7 +439,6 @@
       margin-bottom: 16px;
     }
 
-    /* Pre-button reminder */
     .pre-button-reminder {
       background: #fff8e1;
       border: 1px solid #ffe082;
@@ -455,11 +450,223 @@
       margin-bottom: 10px;
       line-height: 1.5;
     }
+
+    /* === Step 2: Garmin Connection Mockup === */
+    .garmin-mockup {
+      background: #fff;
+      border: 2px solid #d0d0d0;
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 0 auto 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .mockup-tabs {
+      display: flex;
+      background: #f5f5f5;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .mockup-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 8px;
+      color: #999;
+    }
+
+    .mockup-tab.active {
+      color: var(--tg-theme-link-color);
+      border-bottom: 2px solid var(--tg-theme-link-color);
+      background: #fff;
+    }
+
+    .mockup-body {
+      padding: 14px;
+    }
+
+    .mockup-garmin-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .mockup-garmin-logo {
+      width: 20px;
+      height: 20px;
+      background: #000;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .mockup-check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 0;
+      font-size: 12px;
+      color: #555;
+      line-height: 1.4;
+    }
+
+    .mockup-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      background: var(--tg-theme-button-color);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .mockup-check-label {
+      flex: 1;
+    }
+
+    .mockup-check-label b {
+      color: #333;
+    }
+
+    .mockup-old-data-btn {
+      display: inline-block;
+      background: var(--tg-theme-button-color);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-left: 4px;
+      position: relative;
+    }
+
+    .mockup-highlight-ring {
+      position: relative;
+      display: inline-block;
+    }
+
+    .mockup-highlight-ring::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border: 2px solid #ff5722;
+      border-radius: 8px;
+      animation: highlightPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes highlightPulse {
+      0%, 100% { opacity: 1; border-color: #ff5722; }
+      50% { opacity: 0.4; border-color: #ff9800; }
+    }
+
+    .mockup-arrow {
+      color: #ff5722;
+      font-size: 12px;
+      font-weight: 700;
+      margin-left: 6px;
+      animation: arrowBounce 1.5s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    @keyframes arrowBounce {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(4px); }
+    }
+
+    .mockup-import-link {
+      display: block;
+      text-align: center;
+      font-size: 11px;
+      color: var(--tg-theme-link-color);
+      padding: 8px 0 4px;
+      text-decoration: underline;
+    }
+
+    .mockup-success-banner {
+      background: #e8f5e9;
+      border: 1px solid #a5d6a7;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #2e7d32;
+      text-align: center;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    /* Garmin substeps */
+    .garmin-substeps {
+      margin-bottom: 20px;
+    }
+
+    .garmin-substep {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .garmin-substep-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+      color: var(--tg-theme-text-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .garmin-substep-text {
+      flex: 1;
+      color: var(--tg-theme-text-color);
+    }
+
+    .garmin-substep-text b {
+      color: var(--tg-theme-link-color);
+    }
+
+    .garmin-substep-text .important {
+      color: #ff5722;
+      font-weight: 600;
+    }
+
+    .garmin-substep-note {
+      font-size: 12px;
+      color: var(--tg-theme-hint-color);
+      display: block;
+      margin-top: 2px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <a href="index.html" class="back-link">← 소개 페이지로</a>
+    <a href="index.html" class="back-link">&larr; 소개 페이지로</a>
     <div class="header">
       <h1>Running Coach</h1>
       <p>Garmin 데이터 연동</p>
@@ -469,6 +676,7 @@
       <div class="step-dot active" id="dot-1"></div>
       <div class="step-dot" id="dot-2"></div>
       <div class="step-dot" id="dot-3"></div>
+      <div class="step-dot" id="dot-4"></div>
     </div>
 
     <!-- Step 1: intervals.icu 가입 -->
@@ -492,9 +700,119 @@
       </div>
     </div>
 
-    <!-- Step 2: API 키 복사 (CSS 애니메이션 가이드) -->
+    <!-- Step 2: Garmin 연동 (NEW) -->
     <div class="step" id="step-2">
-      <div class="step-title">2. API 키 복사</div>
+      <div class="step-title">2. Garmin 연동</div>
+      <div class="step-desc">
+        intervals.icu에서 Garmin 계정을 연결하면<br>러닝 데이터가 자동으로 동기화됩니다.
+      </div>
+
+      <div class="garmin-substeps">
+        <div class="garmin-substep">
+          <div class="garmin-substep-num">1</div>
+          <div class="garmin-substep-text">
+            intervals.icu에 로그인
+          </div>
+        </div>
+        <div class="garmin-substep">
+          <div class="garmin-substep-num">2</div>
+          <div class="garmin-substep-text">
+            우측 상단 <b>톱니바퀴</b> &rarr; Settings
+          </div>
+        </div>
+        <div class="garmin-substep">
+          <div class="garmin-substep-num">3</div>
+          <div class="garmin-substep-text">
+            상단 탭에서 <b>CONNECTIONS</b> 클릭
+          </div>
+        </div>
+        <div class="garmin-substep">
+          <div class="garmin-substep-num">4</div>
+          <div class="garmin-substep-text">
+            Garmin 계정 연결 (authorize)
+            <span class="garmin-substep-note">Garmin 로그인 화면이 나타나요</span>
+          </div>
+        </div>
+        <div class="garmin-substep">
+          <div class="garmin-substep-num">5</div>
+          <div class="garmin-substep-text">
+            Download activities / wellness data 체크 확인
+          </div>
+        </div>
+        <div class="garmin-substep">
+          <div class="garmin-substep-num">6</div>
+          <div class="garmin-substep-text">
+            <span class="important">"DOWNLOAD OLD DATA" 클릭</span>
+            <span class="garmin-substep-note">과거 기록을 가져와야 AI 진단이 가능해요 (필수!)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CSS Mockup: intervals.icu Connections 화면 -->
+      <div class="garmin-mockup">
+        <div class="mockup-tabs">
+          <div class="mockup-tab">Settings</div>
+          <div class="mockup-tab active">Connections</div>
+          <div class="mockup-tab">Apps</div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-garmin-header">
+            <div class="mockup-garmin-logo">G</div>
+            Connect (powered by Garmin)
+          </div>
+
+          <div class="mockup-check-item">
+            <div class="mockup-check">&#10003;</div>
+            <div class="mockup-check-label">
+              <b>Download activities</b> &mdash; All activities
+              <span class="mockup-highlight-ring">
+                <span class="mockup-old-data-btn">DOWNLOAD OLD DATA</span>
+              </span>
+              <span class="mockup-arrow">&larr; 필수!</span>
+            </div>
+          </div>
+
+          <div class="mockup-check-item">
+            <div class="mockup-check">&#10003;</div>
+            <div class="mockup-check-label">
+              <b>Download wellness data</b><br>
+              Weight, Body Fat, HR, Sleep, VO2 Max...
+            </div>
+          </div>
+
+          <div class="mockup-check-item">
+            <div class="mockup-check">&#10003;</div>
+            <div class="mockup-check-label">
+              <b>Upload planned workouts</b>
+            </div>
+          </div>
+
+          <div class="mockup-import-link">IMPORT ALL GARMIN DATA</div>
+        </div>
+      </div>
+
+      <div class="mockup-success-banner">
+        이런 화면이 보이면 연동 완료!
+      </div>
+
+      <div style="margin-top: 16px;"></div>
+      <button class="btn btn-primary" onclick="openConnections()">
+        Settings &gt; Connections 열기
+      </button>
+      <button class="btn btn-secondary" onclick="goToStep(3)">
+        연결 완료! 다음으로
+      </button>
+      <button class="btn btn-ghost" onclick="goToStep(1)">
+        &larr; 이전 단계
+      </button>
+      <button class="btn btn-ghost" onclick="closeLater()">
+        나중에 이어서 할게요
+      </button>
+    </div>
+
+    <!-- Step 3: API 키 복사 (CSS 애니메이션 가이드) -->
+    <div class="step" id="step-3">
+      <div class="step-title">3. API 키 복사</div>
       <div class="step-desc">
         아래 데모처럼 Settings에서 API 키를 복사하세요.
       </div>
@@ -540,20 +858,20 @@
       <button class="btn btn-primary" onclick="openSettings()">
         Settings 페이지 열기
       </button>
-      <button class="btn btn-secondary" onclick="goToStep(3)">
+      <button class="btn btn-secondary" onclick="goToStep(4)">
         복사 완료! 다음으로
       </button>
-      <button class="btn btn-ghost" onclick="goToStep(1)">
-        ← 이전 단계
+      <button class="btn btn-ghost" onclick="goToStep(2)">
+        &larr; 이전 단계
       </button>
       <button class="btn btn-ghost" onclick="closeLater()">
         나중에 이어서 할게요
       </button>
     </div>
 
-    <!-- Step 3: API 키 입력 -->
-    <div class="step" id="step-3">
-      <div class="step-title">3. API 키 연동</div>
+    <!-- Step 4: API 키 입력 -->
+    <div class="step" id="step-4">
+      <div class="step-title">4. API 키 연동</div>
       <div class="step-desc">
         아래 입력란을 길게 눌러 <b>붙여넣기</b> 해주세요.
       </div>
@@ -565,8 +883,8 @@
         연동하기
       </button>
       <div class="error-text" id="error-msg" style="display:none"></div>
-      <button class="btn btn-ghost" onclick="goToStep(2)">
-        ← 이전 단계
+      <button class="btn btn-ghost" onclick="goToStep(3)">
+        &larr; 이전 단계
       </button>
       <button class="btn btn-ghost" onclick="closeLater()">
         나중에 이어서 할게요
@@ -628,6 +946,15 @@
       goToStep(2);
     }
 
+    function openConnections() {
+      const url = 'https://intervals.icu/settings#connections';
+      if (tg?.openLink) {
+        tg.openLink(url);
+      } else {
+        window.open(url, '_blank');
+      }
+    }
+
     function openSettings() {
       const url = 'https://intervals.icu/settings#:~:text=Developer%20Settings';
       if (tg?.openLink) {
@@ -635,7 +962,7 @@
       } else {
         window.open(url, '_blank');
       }
-      goToStep(3);
+      goToStep(4);
     }
 
     function closeLater() {

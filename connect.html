@@ -547,6 +547,16 @@
       color: #333;
     }
 
+    .mockup-check-empty {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 2px solid #ccc;
+      background: #fff;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
     .mockup-old-data-btn {
       display: inline-block;
       background: var(--tg-theme-button-color);
@@ -778,6 +788,17 @@
             <div class="mockup-check-label">
               <b>Download wellness data</b><br>
               Weight, Body Fat, HR, Sleep, VO2 Max...
+              <span class="mockup-highlight-ring">
+                <span class="mockup-old-data-btn">DOWNLOAD OLD DATA</span>
+              </span>
+              <span class="mockup-arrow">&larr; 필수!</span>
+            </div>
+          </div>
+
+          <div class="mockup-check-item">
+            <div class="mockup-check-empty"></div>
+            <div class="mockup-check-label">
+              <b>Upload planned workouts</b>
             </div>
           </div>
 

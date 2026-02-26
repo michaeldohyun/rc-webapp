@@ -426,12 +426,26 @@ async function apiCall(action, extra = {}) {
 }
 
 /* ─── Metrics ─── */
-async function loadMetrics() {
+let selectedDate = ''; // empty = today
+
+function changeDate(delta) {
+  const picker = document.getElementById('datePicker');
+  const current = picker ? picker.value : '';
+  if (!current) return;
+  const d = new Date(current + 'T12:00:00');
+  d.setDate(d.getDate() + delta);
+  const newDate = d.toISOString().split('T')[0];
+  loadMetrics(newDate);
+}
+
+async function loadMetrics(date) {
+  if (date !== undefined) selectedDate = date;
   showView('metricsView');
   document.getElementById('metricsContent').innerHTML = '';
   document.getElementById('metricsLoading').style.display = 'block';
   try {
-    const res = await apiCall('get_service_metrics');
+    const extra = selectedDate ? { date: selectedDate } : {};
+    const res = await apiCall('get_service_metrics', extra);
     if (res.error === '인증 실패') { logout(); return; }
     if (res.metrics) {
       metricsCache = res.metrics;
@@ -448,12 +462,18 @@ async function loadMetrics() {
 function renderMetrics(m) {
   let html = '';
   const today = m.today || {};
-  const now = new Date();
-  const dateStr = (now.getMonth() + 1) + '/' + now.getDate();
+  const dateStr = today.date ? today.date.slice(5).replace('-', '/') : '';
+
+  // Date navigator
+  html += `<div class="card" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px">
+    <button onclick="changeDate(-1)" style="background:none;border:none;font-size:20px;color:var(--text);cursor:pointer;padding:4px 8px">‹</button>
+    <input type="date" id="datePicker" value="${today.date || ''}" onchange="loadMetrics(this.value)" style="background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:14px">
+    <button onclick="changeDate(1)" style="background:none;border:none;font-size:20px;color:var(--text);cursor:pointer;padding:4px 8px">›</button>
+  </div>`;
 
   // Today stats hero
   html += `<div class="card">
-    <div class="card-title">📊 오늘 (${esc(dateStr)})</div>
+    <div class="card-title">📊 ${esc(dateStr)} 현황</div>
     <div class="stat-hero">
       <div class="stat-item">
         <div class="stat-value">${today.events ?? 0}</div>
@@ -470,29 +490,23 @@ function renderMetrics(m) {
     </div>
   </div>`;
 
-  // Onboarding funnel
-  const funnel = m.funnel || {};
-  const funnelSteps = [
-    { key: 'signed_up', label: '가입', color: '#9ca3af' },
-    { key: 'connected', label: '연동', color: '#3b82f6' },
-    { key: 'surveyed', label: '설문', color: '#eab308' },
-    { key: 'diagnosed', label: '진단', color: '#f97316' },
-    { key: 'completed', label: '완료', color: '#22c55e' },
-  ];
-  const funnelMax = Math.max(...funnelSteps.map(s => funnel[s.key] ?? 0), 1);
+  // Onboarding funnel (array from API)
+  const funnelArr = m.funnel || [];
+  const funnelColors = ['#9ca3af', '#3b82f6', '#f97316', '#a855f7', '#eab308', '#06b6d4', '#22c55e'];
+  const funnelMax = funnelArr.length > 0 ? Math.max(...funnelArr.map(s => s.count ?? 0), 1) : 1;
 
   html += `<div class="card"><div class="card-title">📈 온보딩 퍼널</div>`;
-  for (const step of funnelSteps) {
-    const count = funnel[step.key] ?? 0;
-    const pct = Math.round(count / funnelMax * 100);
+  funnelArr.forEach((step, i) => {
+    const pct = Math.round((step.count ?? 0) / funnelMax * 100);
+    const color = funnelColors[i % funnelColors.length];
     html += `<div class="funnel-row">
-      <div class="funnel-label">${step.label}</div>
+      <div class="funnel-label" style="width:70px">${esc(step.label)}</div>
       <div class="funnel-bar-bg">
-        <div class="funnel-bar-fill" style="width:${pct}%;background:${step.color}"></div>
+        <div class="funnel-bar-fill" style="width:${pct}%;background:${color}"></div>
       </div>
-      <div class="funnel-count">${count}</div>
+      <div class="funnel-count">${step.count ?? 0}</div>
     </div>`;
-  }
+  });
   html += '</div>';
 
   // Daily trends (14 days)
@@ -545,11 +559,11 @@ function renderMetrics(m) {
   if (stale.length > 0) {
     html += `<div class="card"><div class="card-title">⚠️ 이탈 유저 (미완료) · ${stale.length}명</div>`;
     for (const u of stale) {
-      const stepClass = 'step-' + (u.onboarding_step || 'signed_up');
-      const stepLabel = u.onboarding_step || 'signed_up';
-      const dateStr = fmtDate(u.last_activity_at || u.created_at);
+      const stepClass = 'step-' + (u.step || 'signed_up');
+      const stepLabel = u.step || 'signed_up';
+      const dateStr = fmtDate(u.last_active);
       html += `<div class="stale-item">
-        <div class="stale-name">${esc(u.first_name || '알 수 없음')}</div>
+        <div class="stale-name">${esc(u.name || '알 수 없음')}</div>
         <span class="step-badge ${stepClass}">${esc(stepLabel)}</span>
         <div class="stale-date">${dateStr}</div>
       </div>`;

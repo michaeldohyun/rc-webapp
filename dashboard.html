@@ -10,6 +10,7 @@
   --border: #e0e0e0; --accent: #2563eb; --bar: #3b82f6;
   --green: #22c55e; --yellow: #eab308; --red: #ef4444;
   --skeleton: #e5e5e5; --skeleton-shine: #f0f0f0;
+  --tab-bg: #fff; --tab-border: #e0e0e0;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -17,31 +18,127 @@
     --border: #333; --accent: #60a5fa; --bar: #3b82f6;
     --green: #4ade80; --yellow: #facc15; --red: #f87171;
     --skeleton: #2a2a2a; --skeleton-shine: #333;
+    --tab-bg: #1a1a1a; --tab-border: #333;
   }
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); max-width: 480px; margin: 0 auto; min-height: 100vh; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg); color: var(--text);
+  max-width: 480px; margin: 0 auto; min-height: 100vh;
+  padding-bottom: 60px;
+}
 .view { display: none; }
 .view.active { display: block; }
 
 /* Header */
-.header { padding: 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); background: var(--card); position: sticky; top: 0; z-index: 10; }
+.header {
+  padding: 16px; display: flex; align-items: center; gap: 12px;
+  border-bottom: 1px solid var(--border); background: var(--card);
+  position: sticky; top: 0; z-index: 10;
+}
 .header h1 { font-size: 18px; flex: 1; }
-.back-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text); padding: 4px 8px; }
+.back-btn {
+  background: none; border: none; font-size: 20px;
+  cursor: pointer; color: var(--text); padding: 4px 8px;
+}
+.logout-btn {
+  padding: 4px 12px; background: none; border: 1px solid var(--border);
+  border-radius: 6px; color: var(--sub); font-size: 12px; cursor: pointer;
+}
 
 /* Auth */
 .auth-box { padding: 24px 16px; text-align: center; }
 .auth-box h2 { font-size: 16px; margin-bottom: 16px; }
-.auth-box input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; background: var(--card); color: var(--text); margin-bottom: 12px; }
-.auth-box button { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
+.auth-box input {
+  width: 100%; padding: 12px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: 16px; background: var(--card); color: var(--text);
+  margin-bottom: 12px;
+}
+.auth-box button {
+  width: 100%; padding: 12px; background: var(--accent); color: #fff;
+  border: none; border-radius: 8px; font-size: 16px; cursor: pointer;
+}
 .auth-error { color: var(--red); font-size: 14px; margin-top: 8px; }
 
 /* Cards */
-.card { background: var(--card); margin: 8px 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); }
-.card-title { font-size: 13px; color: var(--sub); margin-bottom: 8px; font-weight: 600; }
+.card {
+  background: var(--card); margin: 8px 12px; padding: 14px 16px;
+  border-radius: 12px; border: 1px solid var(--border);
+}
+.card-title { font-size: 13px; color: var(--sub); margin-bottom: 10px; font-weight: 600; }
+
+/* Bottom tabs */
+.bottom-tabs {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 480px; display: flex;
+  background: var(--tab-bg); border-top: 1px solid var(--tab-border);
+  z-index: 20;
+}
+.bottom-tab {
+  flex: 1; padding: 10px 0; text-align: center; font-size: 13px;
+  color: var(--sub); background: none; border: none; cursor: pointer;
+  font-weight: 500; transition: color 0.15s;
+}
+.bottom-tab.active { color: var(--accent); font-weight: 700; }
+.bottom-tab-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+
+/* Funnel bar */
+.funnel-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.funnel-label { font-size: 13px; width: 44px; text-align: right; flex-shrink: 0; }
+.funnel-bar-bg { flex: 1; height: 20px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.funnel-bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.funnel-count { font-size: 13px; width: 30px; text-align: right; flex-shrink: 0; font-weight: 600; }
+
+/* Command bar */
+.cmd-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.cmd-label { font-size: 13px; width: 64px; text-align: right; flex-shrink: 0; font-family: monospace; }
+.cmd-bar-bg { flex: 1; height: 16px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.cmd-bar-fill { height: 100%; background: var(--bar); border-radius: 3px; transition: width 0.4s ease; }
+.cmd-count { font-size: 12px; width: 28px; text-align: right; flex-shrink: 0; color: var(--sub); }
+
+/* Daily trend chart */
+.trend-chart { margin: 8px 0; }
+.trend-bars { display: flex; align-items: flex-end; gap: 3px; height: 80px; }
+.trend-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
+.trend-bar { width: 100%; background: var(--bar); border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.3s ease; }
+.trend-label { font-size: 9px; color: var(--sub); margin-top: 3px; white-space: nowrap; }
+.trend-value { font-size: 9px; color: var(--sub); margin-bottom: 2px; }
+.trend-dau-row { display: flex; gap: 3px; margin-top: 6px; }
+.trend-dau-col { flex: 1; text-align: center; }
+.trend-dau-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.trend-dau-val { font-size: 9px; color: var(--accent); }
+
+/* Stat hero */
+.stat-hero { display: flex; gap: 12px; text-align: center; }
+.stat-item { flex: 1; padding: 10px 4px; background: var(--bg); border-radius: 10px; }
+.stat-value { font-size: 22px; font-weight: 700; }
+.stat-label { font-size: 11px; color: var(--sub); margin-top: 2px; }
+
+/* Stale user */
+.stale-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.stale-item:last-child { border-bottom: none; }
+.stale-name { font-size: 14px; font-weight: 500; flex: 1; }
+.stale-date { font-size: 12px; color: var(--sub); }
+.step-badge {
+  font-size: 11px; padding: 2px 8px; border-radius: 10px;
+  font-weight: 500; white-space: nowrap;
+}
+.step-signed_up { background: #9ca3af33; color: #9ca3af; }
+.step-connected { background: #3b82f633; color: #3b82f6; }
+.step-surveyed { background: #eab30833; color: #eab308; }
+.step-diagnosed { background: #f9731633; color: #f97316; }
+.step-completed { background: #22c55e33; color: #22c55e; }
 
 /* User list */
-.user-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.user-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; cursor: pointer;
+  border-bottom: 1px solid var(--border); transition: background 0.15s;
+}
 .user-item:active { background: var(--border); }
 .user-icon { font-size: 28px; width: 40px; text-align: center; }
 .user-info { flex: 1; }
@@ -50,30 +147,42 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .user-arrow { color: var(--sub); font-size: 18px; }
 .user-count { padding: 12px 16px; font-size: 13px; color: var(--sub); }
 
+/* Detail header */
+.detail-header { padding: 16px; text-align: center; }
+.detail-name { font-size: 20px; font-weight: 700; }
+.detail-level { font-size: 14px; color: var(--sub); margin-top: 4px; }
+.detail-streak { font-size: 13px; color: var(--accent); margin-top: 6px; }
+
 /* XP bar */
 .xp-bar-wrap { margin: 8px 0; }
 .xp-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
 .xp-bar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.4s ease; }
 .xp-label { font-size: 12px; color: var(--sub); margin-top: 4px; text-align: right; }
 
-/* User detail header */
-.detail-header { padding: 16px; text-align: center; }
-.detail-name { font-size: 20px; font-weight: 700; }
-.detail-level { font-size: 14px; color: var(--sub); margin-top: 4px; }
-.detail-streak { font-size: 13px; color: var(--accent); margin-top: 6px; }
+/* Sub-tabs */
+.sub-tabs {
+  display: flex; margin: 0 12px; background: var(--card);
+  border-radius: 10px; border: 1px solid var(--border); overflow: hidden;
+}
+.sub-tab {
+  flex: 1; padding: 10px 0; text-align: center; font-size: 13px;
+  background: none; border: none; cursor: pointer;
+  color: var(--sub); font-weight: 500; transition: all 0.15s;
+}
+.sub-tab.active { background: var(--accent); color: #fff; font-weight: 600; }
+.sub-panel { display: none; }
+.sub-panel.active { display: block; }
 
-/* Today plan */
+/* Plan & week */
 .plan-title { font-size: 16px; font-weight: 600; }
 .plan-detail { font-size: 13px; color: var(--sub); margin-top: 4px; }
-
-/* Week summary */
 .week-progress { margin: 8px 0; }
 .progress-bg { height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
 .progress-fill { height: 100%; background: var(--green); border-radius: 5px; transition: width 0.4s ease; }
 .progress-label { font-size: 13px; margin-top: 4px; }
 .week-stats { font-size: 13px; color: var(--sub); margin-top: 6px; }
 
-/* Bar chart */
+/* Bar chart (weekly volume) */
 .bar-chart { display: flex; align-items: flex-end; gap: 4px; height: 80px; margin: 8px 0; }
 .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
 .bar { width: 100%; background: var(--bar); border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.3s ease; }
@@ -97,18 +206,46 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .run-date { font-size: 12px; color: var(--sub); }
 .run-stats { font-size: 12px; color: var(--sub); margin-top: 4px; }
 
+/* Conversations */
+.conv-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.conv-item:last-child { border-bottom: none; }
+.conv-time { font-size: 11px; color: var(--sub); margin-bottom: 6px; }
+.conv-q { font-size: 13px; margin-bottom: 4px; line-height: 1.4; }
+.conv-q::before { content: 'Q: '; font-weight: 700; color: var(--accent); }
+.conv-a { font-size: 13px; color: var(--sub); line-height: 1.4; }
+.conv-a::before { content: 'A: '; font-weight: 700; }
+.conv-more {
+  background: none; border: none; color: var(--accent);
+  font-size: 12px; cursor: pointer; padding: 0; margin-top: 2px;
+}
+
+/* Diagnostic */
+.diag-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.diag-row:last-child { border-bottom: none; }
+.diag-label { color: var(--sub); }
+.diag-value { font-weight: 600; }
+
+/* Timeline */
+.timeline-item { display: flex; gap: 10px; padding: 6px 0; font-size: 12px; }
+.timeline-time { color: var(--sub); width: 80px; flex-shrink: 0; }
+.timeline-type {
+  padding: 1px 6px; border-radius: 4px; font-size: 11px;
+  background: var(--border); white-space: nowrap;
+}
+
 /* Empty state */
 .empty { text-align: center; padding: 24px; color: var(--sub); font-size: 14px; }
 
 /* Skeleton */
-.skeleton { background: linear-gradient(90deg, var(--skeleton) 25%, var(--skeleton-shine) 50%, var(--skeleton) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; }
+.skeleton {
+  background: linear-gradient(90deg, var(--skeleton) 25%, var(--skeleton-shine) 50%, var(--skeleton) 75%);
+  background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px;
+}
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 .sk-line { height: 14px; margin: 8px 0; }
 .sk-bar { height: 80px; margin: 12px 0; }
 .sk-card { height: 60px; margin: 8px 12px; border-radius: 12px; }
-
-/* Logout */
-.logout-btn { display: block; margin: 16px auto 32px; padding: 10px 24px; background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--sub); font-size: 13px; cursor: pointer; }
+.sk-hero { height: 72px; margin: 8px 12px; border-radius: 12px; }
 </style>
 </head>
 <body>
@@ -124,15 +261,31 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   </div>
 </div>
 
-<!-- User List View -->
-<div id="listView" class="view">
+<!-- Metrics View -->
+<div id="metricsView" class="view">
   <div class="header">
     <h1>🏃 Running Coach Admin</h1>
-    <button class="logout-btn" style="margin:0;padding:4px 12px;font-size:12px" onclick="logout()">로그아웃</button>
+    <button class="logout-btn" onclick="logout()">로그아웃</button>
+  </div>
+  <div id="metricsContent"></div>
+  <div id="metricsLoading">
+    <div class="skeleton sk-hero"></div>
+    <div class="skeleton sk-card"></div>
+    <div class="skeleton sk-card" style="height:100px"></div>
+    <div class="skeleton sk-card"></div>
+    <div class="skeleton sk-card"></div>
+  </div>
+</div>
+
+<!-- Users View -->
+<div id="usersView" class="view">
+  <div class="header">
+    <h1>🏃 Running Coach Admin</h1>
+    <button class="logout-btn" onclick="logout()">로그아웃</button>
   </div>
   <div id="userCount" class="user-count"></div>
   <div id="userList"></div>
-  <div id="listLoading">
+  <div id="usersLoading">
     <div class="skeleton sk-card"></div>
     <div class="skeleton sk-card"></div>
     <div class="skeleton sk-card"></div>
@@ -142,7 +295,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 <!-- Detail View -->
 <div id="detailView" class="view">
   <div class="header">
-    <button class="back-btn" onclick="showList()">←</button>
+    <button class="back-btn" onclick="goBackFromDetail()">←</button>
     <h1 id="detailTitle">유저</h1>
   </div>
   <div id="detailContent"></div>
@@ -155,25 +308,80 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   </div>
 </div>
 
+<!-- Bottom Tabs -->
+<div id="bottomTabs" class="bottom-tabs" style="display:none">
+  <button class="bottom-tab active" id="tabMetrics" onclick="switchTab('metrics')">
+    <span class="bottom-tab-icon">📊</span>지표
+  </button>
+  <button class="bottom-tab" id="tabUsers" onclick="switchTab('users')">
+    <span class="bottom-tab-icon">👥</span>유저
+  </button>
+</div>
+
 <script>
 const API_URL = 'https://dotsosqsftympgdescvz.supabase.co/functions/v1/rc-onboarding';
 let adminKey = localStorage.getItem('rc_admin_key') || '';
 let usersCache = [];
+let metricsCache = null;
+let currentTab = 'metrics';
+let detailSubTab = 'activity';
 
-function init() {
-  if (adminKey) {
-    showList();
-    loadUsers();
-  } else {
-    show('authView');
-  }
+/* ─── Utility ─── */
+function esc(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
 }
 
-function show(id) {
+function fmtDate(s) {
+  if (!s) return '';
+  const d = new Date(s);
+  return (d.getMonth() + 1) + '/' + d.getDate();
+}
+
+function fmtDateTime(s) {
+  if (!s) return '';
+  const d = new Date(s);
+  return (d.getMonth() + 1) + '/' + d.getDate() + ' ' +
+    String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+}
+
+/* ─── Views ─── */
+function showView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
+function showTabs(visible) {
+  document.getElementById('bottomTabs').style.display = visible ? 'flex' : 'none';
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tabMetrics').classList.toggle('active', tab === 'metrics');
+  document.getElementById('tabUsers').classList.toggle('active', tab === 'users');
+  if (tab === 'metrics') {
+    showView('metricsView');
+    if (!metricsCache) loadMetrics();
+  } else {
+    showView('usersView');
+    if (usersCache.length === 0) loadUsers();
+  }
+}
+
+/* ─── Init ─── */
+function init() {
+  if (adminKey) {
+    showTabs(true);
+    switchTab('metrics');
+    loadMetrics();
+  } else {
+    showView('authView');
+  }
+}
+
+/* ─── Auth ─── */
 async function submitAdminKey() {
   const input = document.getElementById('adminKeyInput');
   const err = document.getElementById('authError');
@@ -182,11 +390,12 @@ async function submitAdminKey() {
   err.textContent = '';
   try {
     const res = await apiCall('get_dashboard_users');
-    if (res.success) {
+    if (res.success !== false && res.users) {
       localStorage.setItem('rc_admin_key', adminKey);
       usersCache = res.users;
-      showList();
-      renderUsers(res.users);
+      showTabs(true);
+      switchTab('metrics');
+      loadMetrics();
     } else {
       err.textContent = res.error || '인증 실패';
       adminKey = '';
@@ -199,10 +408,14 @@ async function submitAdminKey() {
 
 function logout() {
   adminKey = '';
+  metricsCache = null;
+  usersCache = [];
   localStorage.removeItem('rc_admin_key');
-  show('authView');
+  showTabs(false);
+  showView('authView');
 }
 
+/* ─── API ─── */
 async function apiCall(action, extra = {}) {
   const res = await fetch(API_URL, {
     method: 'POST',
@@ -212,10 +425,149 @@ async function apiCall(action, extra = {}) {
   return res.json();
 }
 
+/* ─── Metrics ─── */
+async function loadMetrics() {
+  showView('metricsView');
+  document.getElementById('metricsContent').innerHTML = '';
+  document.getElementById('metricsLoading').style.display = 'block';
+  try {
+    const res = await apiCall('get_service_metrics');
+    if (res.error === '인증 실패') { logout(); return; }
+    if (res.metrics) {
+      metricsCache = res.metrics;
+      renderMetrics(res.metrics);
+    } else {
+      document.getElementById('metricsContent').innerHTML = '<div class="empty">지표 로딩 실패</div>';
+    }
+  } catch (e) {
+    document.getElementById('metricsContent').innerHTML = '<div class="empty">서버 연결 실패</div>';
+  }
+  document.getElementById('metricsLoading').style.display = 'none';
+}
+
+function renderMetrics(m) {
+  let html = '';
+  const today = m.today || {};
+  const now = new Date();
+  const dateStr = (now.getMonth() + 1) + '/' + now.getDate();
+
+  // Today stats hero
+  html += `<div class="card">
+    <div class="card-title">📊 오늘 (${esc(dateStr)})</div>
+    <div class="stat-hero">
+      <div class="stat-item">
+        <div class="stat-value">${today.events ?? 0}</div>
+        <div class="stat-label">이벤트</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">${today.active_users ?? 0}</div>
+        <div class="stat-label">활성</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">${today.new_users ?? 0}</div>
+        <div class="stat-label">신규</div>
+      </div>
+    </div>
+  </div>`;
+
+  // Onboarding funnel
+  const funnel = m.funnel || {};
+  const funnelSteps = [
+    { key: 'signed_up', label: '가입', color: '#9ca3af' },
+    { key: 'connected', label: '연동', color: '#3b82f6' },
+    { key: 'surveyed', label: '설문', color: '#eab308' },
+    { key: 'diagnosed', label: '진단', color: '#f97316' },
+    { key: 'completed', label: '완료', color: '#22c55e' },
+  ];
+  const funnelMax = Math.max(...funnelSteps.map(s => funnel[s.key] ?? 0), 1);
+
+  html += `<div class="card"><div class="card-title">📈 온보딩 퍼널</div>`;
+  for (const step of funnelSteps) {
+    const count = funnel[step.key] ?? 0;
+    const pct = Math.round(count / funnelMax * 100);
+    html += `<div class="funnel-row">
+      <div class="funnel-label">${step.label}</div>
+      <div class="funnel-bar-bg">
+        <div class="funnel-bar-fill" style="width:${pct}%;background:${step.color}"></div>
+      </div>
+      <div class="funnel-count">${count}</div>
+    </div>`;
+  }
+  html += '</div>';
+
+  // Daily trends (14 days)
+  const trends = m.daily_trends || [];
+  if (trends.length > 0) {
+    const maxEvents = Math.max(...trends.map(t => t.events ?? 0), 1);
+    html += `<div class="card"><div class="card-title">📊 일별 트렌드 (${trends.length}일)</div>`;
+    html += '<div class="trend-chart"><div class="trend-bars">';
+    for (const t of trends) {
+      const h = Math.max(2, Math.round((t.events ?? 0) / maxEvents * 70));
+      const label = (t.date || '').slice(5);
+      html += `<div class="trend-col">
+        <div class="trend-value">${(t.events ?? 0) > 0 ? t.events : ''}</div>
+        <div class="trend-bar" style="height:${h}px"></div>
+        <div class="trend-label">${label}</div>
+      </div>`;
+    }
+    html += '</div>';
+    // DAU line
+    html += '<div class="trend-dau-row">';
+    for (const t of trends) {
+      const dau = t.dau ?? 0;
+      html += `<div class="trend-dau-col">
+        <div class="trend-dau-val">${dau > 0 ? dau : ''}</div>
+      </div>`;
+    }
+    html += '</div></div></div>';
+  }
+
+  // Command usage
+  const commands = m.command_usage || [];
+  if (commands.length > 0) {
+    const maxCmd = Math.max(...commands.map(c => c.count ?? 0), 1);
+    html += `<div class="card"><div class="card-title">🔧 명령어 사용</div>`;
+    for (const c of commands) {
+      const pct = Math.round((c.count ?? 0) / maxCmd * 100);
+      html += `<div class="cmd-row">
+        <div class="cmd-label">${esc(c.command)}</div>
+        <div class="cmd-bar-bg">
+          <div class="cmd-bar-fill" style="width:${pct}%"></div>
+        </div>
+        <div class="cmd-count">${c.count ?? 0}</div>
+      </div>`;
+    }
+    html += '</div>';
+  }
+
+  // Stale users
+  const stale = m.stale_users || [];
+  if (stale.length > 0) {
+    html += `<div class="card"><div class="card-title">⚠️ 이탈 유저 (미완료) · ${stale.length}명</div>`;
+    for (const u of stale) {
+      const stepClass = 'step-' + (u.onboarding_step || 'signed_up');
+      const stepLabel = u.onboarding_step || 'signed_up';
+      const dateStr = fmtDate(u.last_activity_at || u.created_at);
+      html += `<div class="stale-item">
+        <div class="stale-name">${esc(u.first_name || '알 수 없음')}</div>
+        <span class="step-badge ${stepClass}">${esc(stepLabel)}</span>
+        <div class="stale-date">${dateStr}</div>
+      </div>`;
+    }
+    html += '</div>';
+  } else {
+    html += `<div class="card"><div class="card-title">⚠️ 이탈 유저 (미완료)</div><div class="empty">없음</div></div>`;
+  }
+
+  html += '<div style="height:16px"></div>';
+  document.getElementById('metricsContent').innerHTML = html;
+}
+
+/* ─── Users ─── */
 async function loadUsers() {
-  show('listView');
+  showView('usersView');
   document.getElementById('userList').innerHTML = '';
-  document.getElementById('listLoading').style.display = 'block';
+  document.getElementById('usersLoading').style.display = 'block';
   document.getElementById('userCount').textContent = '';
   try {
     const res = await apiCall('get_dashboard_users');
@@ -225,28 +577,41 @@ async function loadUsers() {
   } catch (e) {
     document.getElementById('userList').innerHTML = '<div class="empty">로딩 실패</div>';
   }
-  document.getElementById('listLoading').style.display = 'none';
+  document.getElementById('usersLoading').style.display = 'none';
 }
 
 function renderUsers(users) {
-  document.getElementById('listLoading').style.display = 'none';
+  document.getElementById('usersLoading').style.display = 'none';
   const active = users.filter(u => u.onboarding_completed);
-  document.getElementById('userCount').textContent = `📋 ${active.length}명 활성 / 총 ${users.length}명`;
-  const html = users.map(u => `
-    <div class="user-item" onclick="openUser('${u.id}')">
-      <div class="user-icon">${u.level_icon}</div>
+  document.getElementById('userCount').textContent =
+    '📋 ' + active.length + '명 활성 / 총 ' + users.length + '명';
+
+  if (users.length === 0) {
+    document.getElementById('userList').innerHTML = '<div class="empty">등록된 유저 없음</div>';
+    return;
+  }
+
+  const html = users.map(u => {
+    const stepClass = u.onboarding_completed ? 'step-completed' : 'step-' + (u.onboarding_step || 'signed_up');
+    const stepLabel = u.onboarding_completed ? 'completed' : (u.onboarding_step || 'signed_up');
+    const lastDate = u.last_activity_at ? ' · 최근 ' + fmtDate(u.last_activity_at) : '';
+    return `<div class="user-item" onclick="openUser('${esc(u.id)}')">
+      <div class="user-icon">${u.level_icon || '🏃'}</div>
       <div class="user-info">
-        <div class="user-name">${esc(u.first_name)}  Lv.${u.level}</div>
-        <div class="user-meta">🔥${u.current_streak_weeks}주${u.last_activity_at ? ' · 최근 ' + u.last_activity_at.slice(5) : ''}${!u.onboarding_completed ? ' · 미완료' : ''}</div>
+        <div class="user-name">${esc(u.first_name)}  Lv.${u.level ?? 1}</div>
+        <div class="user-meta">🔥${u.current_streak_weeks ?? 0}주${lastDate}</div>
+        <div class="user-meta"><span class="step-badge ${stepClass}">${esc(stepLabel)}</span></div>
       </div>
       <div class="user-arrow">›</div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
   document.getElementById('userList').innerHTML = html;
 }
 
+/* ─── User Detail ─── */
 async function openUser(userId) {
-  show('detailView');
+  showView('detailView');
+  showTabs(false);
   const user = usersCache.find(u => u.id === userId);
   document.getElementById('detailTitle').textContent = user ? user.first_name : '유저';
   document.getElementById('detailContent').innerHTML = '';
@@ -255,7 +620,7 @@ async function openUser(userId) {
   try {
     const res = await apiCall('get_dashboard', { user_id: userId });
     if (res.error) {
-      document.getElementById('detailContent').innerHTML = `<div class="empty">${esc(res.error)}</div>`;
+      document.getElementById('detailContent').innerHTML = '<div class="empty">' + esc(res.error) + '</div>';
       document.getElementById('detailLoading').style.display = 'none';
       return;
     }
@@ -266,28 +631,65 @@ async function openUser(userId) {
   document.getElementById('detailLoading').style.display = 'none';
 }
 
-function showList() {
-  show('listView');
-  if (usersCache.length === 0) loadUsers();
+function goBackFromDetail() {
+  showTabs(true);
+  switchTab(currentTab);
 }
 
 function renderDetail(d) {
   const u = d.user;
-  const lvl = u.level;
-  const xpPct = lvl.next_level_xp > 0 ? Math.min(100, Math.round(lvl.current_xp / lvl.next_level_xp * 100)) : 100;
+  const lvl = u.level || {};
+  const streak = u.streak || {};
+  const xpPct = lvl.next_level_xp > 0 ? Math.min(100, Math.round((lvl.current_xp || 0) / lvl.next_level_xp * 100)) : 100;
 
   let html = '';
 
   // User header
   html += `<div class="detail-header">
-    <div class="detail-name">${lvl.icon} ${esc(u.name)}</div>
-    <div class="detail-level">Lv.${lvl.level} ${esc(lvl.title)}</div>
+    <div class="detail-name">${esc(lvl.icon)} Lv.${lvl.level ?? 1} ${esc(lvl.title)}</div>
     <div class="xp-bar-wrap">
       <div class="xp-bar-bg"><div class="xp-bar-fill" style="width:${xpPct}%"></div></div>
-      <div class="xp-label">${lvl.current_xp} / ${lvl.next_level_xp} XP</div>
+      <div class="xp-label">${lvl.current_xp ?? 0} / ${lvl.next_level_xp ?? 0} XP</div>
     </div>
-    <div class="detail-streak">🔥 ${u.streak.current_weeks}주 연속</div>
+    <div class="detail-streak">🔥 ${streak.current_weeks ?? 0}주 연속</div>
   </div>`;
+
+  // Sub-tabs
+  html += `<div class="sub-tabs">
+    <button class="sub-tab active" onclick="switchSubTab('activity',this)">활동</button>
+    <button class="sub-tab" onclick="switchSubTab('conversations',this)">대화</button>
+    <button class="sub-tab" onclick="switchSubTab('diagnostic',this)">진단</button>
+  </div>`;
+
+  // Activity panel
+  html += '<div id="panel-activity" class="sub-panel active">';
+  html += renderActivityPanel(d);
+  html += '</div>';
+
+  // Conversations panel
+  html += '<div id="panel-conversations" class="sub-panel">';
+  html += renderConversationsPanel(d);
+  html += '</div>';
+
+  // Diagnostic panel
+  html += '<div id="panel-diagnostic" class="sub-panel">';
+  html += renderDiagnosticPanel(d);
+  html += '</div>';
+
+  html += '<div style="height:16px"></div>';
+  document.getElementById('detailContent').innerHTML = html;
+}
+
+function switchSubTab(tab, btn) {
+  document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+/* ─── Activity Panel ─── */
+function renderActivityPanel(d) {
+  let html = '';
 
   // Today plan
   if (d.today_plan) {
@@ -298,38 +700,35 @@ function renderDetail(d) {
       <div class="plan-detail">${[tp.target_pace ? '목표: ' + tp.target_pace : '', tp.target_hr_zone || '', tp.notes || ''].filter(Boolean).join(' · ')}</div>
     </div>`;
   } else {
-    html += `<div class="card"><div class="card-title">📋 오늘 계획</div><div class="empty">오늘은 계획 없음 (휴식일)</div></div>`;
+    html += '<div class="card"><div class="card-title">📋 오늘 계획</div><div class="empty">오늘은 계획 없음 (휴식일)</div></div>';
   }
 
   // This week
-  const tw = d.this_week;
-  const twPct = tw.plan_total_km > 0 ? Math.min(100, Math.round(tw.distance_km / tw.plan_total_km * 100)) : 0;
+  const tw = d.this_week || {};
+  const twPct = tw.plan_total_km > 0 ? Math.min(100, Math.round((tw.distance_km || 0) / tw.plan_total_km * 100)) : 0;
   html += `<div class="card">
     <div class="card-title">📊 이번 주</div>
     <div class="week-progress">
       <div class="progress-bg"><div class="progress-fill" style="width:${twPct}%"></div></div>
-      <div class="progress-label">${tw.distance_km}${tw.plan_total_km > 0 ? ' / ' + tw.plan_total_km : ''} km</div>
+      <div class="progress-label">${tw.distance_km ?? 0}${tw.plan_total_km > 0 ? ' / ' + tw.plan_total_km : ''} km</div>
     </div>
-    <div class="week-stats">${tw.sessions}회 · ${tw.time_min}분 · ${tw.avg_pace}${tw.avg_hr ? ' · HR ' + tw.avg_hr : ''}</div>
+    <div class="week-stats">${tw.sessions ?? 0}회 · ${tw.time_min ?? 0}분 · ${tw.avg_pace || '-'}${tw.avg_hr ? ' · HR ' + tw.avg_hr : ''}</div>
   </div>`;
 
   // Weekly volumes (8 weeks)
   const vols = d.weekly_volumes || [];
   if (vols.length > 0) {
     const maxVol = Math.max(...vols.map(v => v.distance_km), 1);
-    html += `<div class="card">
-      <div class="card-title">📈 주간 볼륨 (8주)</div>
-      <div class="bar-chart">
-        ${vols.map(v => {
-          const h = Math.max(2, Math.round(v.distance_km / maxVol * 70));
-          return `<div class="bar-col">
-            <div class="bar-value">${v.distance_km > 0 ? v.distance_km : ''}</div>
-            <div class="bar" style="height:${h}px"></div>
-            <div class="bar-label">${v.label}</div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`;
+    html += `<div class="card"><div class="card-title">📈 주간 볼륨 (8주)</div><div class="bar-chart">`;
+    for (const v of vols) {
+      const h = Math.max(2, Math.round(v.distance_km / maxVol * 70));
+      html += `<div class="bar-col">
+        <div class="bar-value">${v.distance_km > 0 ? v.distance_km : ''}</div>
+        <div class="bar" style="height:${h}px"></div>
+        <div class="bar-label">${esc(v.label)}</div>
+      </div>`;
+    }
+    html += '</div></div>';
   }
 
   // Fitness
@@ -348,28 +747,114 @@ function renderDetail(d) {
   }
 
   // Recent runs
-  if (d.recent_runs && d.recent_runs.length > 0) {
-    html += `<div class="card"><div class="card-title">🏃 최근 러닝</div>`;
-    for (const r of d.recent_runs) {
+  const runs = d.recent_runs || [];
+  if (runs.length > 0) {
+    html += '<div class="card"><div class="card-title">🏃 최근 러닝</div>';
+    for (const r of runs) {
       html += `<div class="run-item">
         <div class="run-top">
           <div class="run-name">${esc(r.name)}</div>
-          <div class="run-date">${r.date.slice(5)}</div>
+          <div class="run-date">${(r.date || '').slice(5)}</div>
         </div>
-        <div class="run-stats">${r.distance_km}km · ${r.duration_min}분 · ${r.avg_pace}${r.avg_hr ? ' · HR ' + r.avg_hr : ''}</div>
+        <div class="run-stats">${r.distance_km}km · ${r.duration_min}분 · ${r.avg_pace || '-'}${r.avg_hr ? ' · HR ' + r.avg_hr : ''}</div>
       </div>`;
     }
     html += '</div>';
   } else {
-    html += `<div class="card"><div class="card-title">🏃 최근 러닝</div><div class="empty">러닝 기록 없음</div></div>`;
+    html += '<div class="card"><div class="card-title">🏃 최근 러닝</div><div class="empty">러닝 기록 없음</div></div>';
   }
 
-  html += '<div style="height:32px"></div>';
-  document.getElementById('detailContent').innerHTML = html;
+  return html;
 }
 
-function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+/* ─── Conversations Panel ─── */
+function renderConversationsPanel(d) {
+  const convs = d.conversations || [];
+  if (convs.length === 0) {
+    return '<div class="card"><div class="empty">대화 기록 없음</div></div>';
+  }
 
+  let html = '<div class="card">';
+  convs.forEach(function(c, idx) {
+    const answer = c.answer || '';
+    const truncated = answer.length > 200;
+    const shortAnswer = truncated ? answer.slice(0, 200) + '...' : answer;
+
+    html += `<div class="conv-item">
+      <div class="conv-time">${fmtDateTime(c.timestamp || c.created_at)}</div>
+      <div class="conv-q">${esc(c.question)}</div>
+      <div class="conv-a">
+        <span id="conv-short-${idx}">${esc(shortAnswer)}</span>
+        <span id="conv-full-${idx}" style="display:none">${esc(answer)}</span>
+      </div>
+      ${truncated ? `<button class="conv-more" id="conv-btn-${idx}" onclick="toggleConv(${idx})">더보기</button>` : ''}
+    </div>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+function toggleConv(idx) {
+  const shortEl = document.getElementById('conv-short-' + idx);
+  const fullEl = document.getElementById('conv-full-' + idx);
+  const btn = document.getElementById('conv-btn-' + idx);
+  if (fullEl.style.display === 'none') {
+    shortEl.style.display = 'none';
+    fullEl.style.display = 'inline';
+    btn.textContent = '접기';
+  } else {
+    shortEl.style.display = 'inline';
+    fullEl.style.display = 'none';
+    btn.textContent = '더보기';
+  }
+}
+
+/* ─── Diagnostic Panel ─── */
+function renderDiagnosticPanel(d) {
+  let html = '';
+
+  // Diagnostic profile
+  const diag = d.diagnostic;
+  if (diag) {
+    html += '<div class="card"><div class="card-title">🔬 진단 프로필</div>';
+    const diagRows = [
+      ['진단일', fmtDate(diag.created_at || diag.diagnosed_at)],
+      ['단계', diag.phase || '-'],
+      ['CTL', diag.ctl ?? '-'],
+      ['주간 볼륨', diag.weekly_volume_km ? diag.weekly_volume_km + 'km' : '-'],
+      ['주간 횟수', diag.weekly_frequency ? diag.weekly_frequency + '회' : '-'],
+      ['일관성', diag.consistency_weeks ? diag.consistency_weeks + '주' : '-'],
+    ];
+    for (const [label, value] of diagRows) {
+      html += `<div class="diag-row">
+        <div class="diag-label">${label}</div>
+        <div class="diag-value">${esc(String(value))}</div>
+      </div>`;
+    }
+    html += '</div>';
+  } else {
+    html += '<div class="card"><div class="card-title">🔬 진단 프로필</div><div class="empty">진단 기록 없음</div></div>';
+  }
+
+  // Event timeline
+  const timeline = d.timeline || [];
+  if (timeline.length > 0) {
+    html += '<div class="card"><div class="card-title">📜 이벤트 타임라인</div>';
+    for (const ev of timeline) {
+      html += `<div class="timeline-item">
+        <div class="timeline-time">${fmtDateTime(ev.timestamp || ev.created_at)}</div>
+        <span class="timeline-type">${esc(ev.event_type || ev.type)}</span>
+      </div>`;
+    }
+    html += '</div>';
+  } else {
+    html += '<div class="card"><div class="card-title">📜 이벤트 타임라인</div><div class="empty">이벤트 없음</div></div>';
+  }
+
+  return html;
+}
+
+/* ─── Start ─── */
 init();
 </script>
 </body>

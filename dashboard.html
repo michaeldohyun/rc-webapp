@@ -490,7 +490,6 @@ function init() {
   if (adminKey) {
     showTabs(true);
     switchTab('metrics');
-    loadMetrics();
   } else {
     showView('authView');
   }
@@ -501,22 +500,34 @@ async function submitAdminKey() {
   const input = document.getElementById('adminKeyInput');
   const err = document.getElementById('authError');
   adminKey = input.value.trim();
-  if (!adminKey) { err.textContent = 'Key를 입력해주세요'; return; }
+  if (!adminKey) { err.textContent = 'Key를 입력해야 해요'; return; }
   err.textContent = '';
   try {
-    const res = await apiCall('get_dashboard_users');
-    if (res.success !== false && res.users) {
+    // 유저 목록 + 서비스 지표 병렬 요청
+    const [usersRes, metricsRes] = await Promise.all([
+      apiCall('get_dashboard_users'),
+      apiCall('get_service_metrics'),
+    ]);
+    if (usersRes.success !== false && usersRes.users) {
       localStorage.setItem('rc_admin_key', adminKey);
-      usersCache = res.users;
+      usersCache = usersRes.users;
+      if (metricsRes.metrics) metricsCache = metricsRes.metrics;
       showTabs(true);
-      switchTab('metrics');
-      loadMetrics();
+      showView('metricsView');
+      currentTab = 'metrics';
+      document.getElementById('tabMetrics').classList.add('active');
+      if (metricsCache) {
+        renderMetrics(metricsCache);
+        document.getElementById('metricsLoading').style.display = 'none';
+      } else {
+        loadMetrics();
+      }
     } else {
-      err.textContent = res.error || '인증 실패';
+      err.textContent = usersRes.error || '인증 실패';
       adminKey = '';
     }
   } catch (e) {
-    err.textContent = '서버 연결 실패';
+    err.textContent = '서버에 연결할 수 없어요';
     adminKey = '';
   }
 }
@@ -569,7 +580,7 @@ async function loadMetrics(date) {
       document.getElementById('metricsContent').innerHTML = '<div class="empty">지표 로딩 실패</div>';
     }
   } catch (e) {
-    document.getElementById('metricsContent').innerHTML = '<div class="empty">서버 연결 실패</div>';
+    document.getElementById('metricsContent').innerHTML = '<div class="empty">서버에 연결할 수 없어요</div>';
   }
   document.getElementById('metricsLoading').style.display = 'none';
 }
@@ -1073,13 +1084,13 @@ async function sendAdminMessage() {
     });
 
     if (res.success) {
-      showToast('메시지가 발송되었습니다', 'success');
+      showToast('메시지를 발송했어요', 'success');
       document.getElementById('msgModal').classList.remove('open');
     } else {
       showToast(res.error || '발송 실패', 'error');
     }
   } catch (e) {
-    showToast('서버 연결 실패', 'error');
+    showToast('서버에 연결할 수 없어요', 'error');
   }
 
   btn.disabled = false;

@@ -566,11 +566,11 @@
     <div class="step" id="step-bumper">
       <div class="bumper-content">
         <div class="bumper-icon">📋</div>
-        <h2>맞춤 훈련법을 추천해드릴게요</h2>
-        <p>간단한 프로필을 입력해주시면,<br>당신에게 딱 맞는 훈련법을 찾아드려요.</p>
+        <h2>나만의 훈련 계획을 만들어드릴게요</h2>
+        <p>간단한 프로필을 입력하면,<br>코치가 맞춤 계획을 세워드려요.</p>
         <ul class="bumper-list">
           <li>러닝 목표와 현재 상태 파악</li>
-          <li>AI가 최적 훈련법 분석</li>
+          <li>AI가 최적의 훈련 방식 분석</li>
           <li>개인 맞춤 주간 계획 생성</li>
         </ul>
         <p class="bumper-time">약 1~2분이면 충분해요</p>
@@ -1127,7 +1127,7 @@
       if (descEl) {
         const val = el.classList.contains('selected') ? el.dataset.value : null;
         if (val === 'coach_recommend') {
-          descEl.textContent = '프로필 완성 후 코치가 맞춤 훈련법을 추천해드려요.';
+          descEl.textContent = '프로필 완성 후 코치가 맞춤 훈련 계획을 세워드려요.';
         } else {
           descEl.textContent = val ? METHOD_DESCS[val] || '' : '';
         }

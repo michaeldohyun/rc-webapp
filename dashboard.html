@@ -271,6 +271,22 @@ body {
 }
 .template-chip.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
 
+/* Preset Q chips */
+.q-cat-label {
+  font-size: 11px; font-weight: 600; color: var(--sub);
+  margin: 6px 0 4px; display: block;
+}
+.q-cat-label:first-child { margin-top: 0; }
+.q-chip {
+  display: inline-block; padding: 4px 10px; border-radius: 14px; font-size: 12px;
+  border: 1px solid var(--border); background: var(--bg);
+  cursor: pointer; color: var(--text); transition: all 0.15s;
+  margin: 0 4px 4px 0; max-width: 100%; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.q-chip:hover { border-color: var(--accent); }
+.q-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
 /* Message textarea & send */
 .msg-textarea {
   width: 100%; min-height: 100px; padding: 12px; border: 1px solid var(--border);
@@ -405,10 +421,11 @@ body {
     <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <span style="font-size:13px;font-weight:600">추천 질문 (Reply Keyboard)</span>
-        <button style="font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer" onclick="addSuggestedQ()">+ 추가</button>
+        <button style="font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer" onclick="addSuggestedQ()">+ 직접 입력</button>
       </div>
+      <div id="presetQChips" style="margin-bottom:8px"></div>
       <div id="suggestedQList"></div>
-      <div style="font-size:11px;color:var(--sub);margin-top:4px">유저가 버튼을 탭하면 해당 텍스트가 Q&A로 전송돼요.</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">유저가 버튼을 탭하면 해당 텍스트가 Q&A로 전송돼요. (최대 10개)</div>
     </div>
     <button class="send-btn" id="sendMsgBtn" onclick="sendAdminMessage()">발송</button>
   </div>
@@ -447,6 +464,30 @@ const MSG_TEMPLATES = [
   { id: 'nudge_plan', step: 'survey_saved', label: '계획 생성',
     text: '프로필 입력 완료! \u{1F4CB}\n/plan 명령어로 주간 훈련 계획을 생성해보세요!' },
   { id: 'custom', step: null, label: '직접 입력', text: '' },
+];
+
+// 추천 질문 프리셋 (Reply Keyboard용)
+const Q_PRESETS = [
+  { cat: '계획', items: [
+    '지금 내 컨디션에 맞게 다음주 훈련 계획을 생성해 줘',
+    '이번 주 계획에서 수요일을 쉬는 날로 바꿔줘',
+    '이번 주 훈련 강도를 좀 낮춰줘',
+  ]},
+  { cat: '분석', items: [
+    '최근 내 러닝 데이터를 분석해줘',
+    '지난달 대비 실력이 어떻게 변했어?',
+    '내 페이스 트렌드를 알려줘',
+  ]},
+  { cat: '코칭', items: [
+    '10k 대회 준비는 어떻게 하면 좋을까?',
+    '러닝 후 회복을 잘 하려면?',
+    '장거리 러닝 시 페이스 전략을 알려줘',
+  ]},
+  { cat: '기타', items: [
+    '오늘 러닝하기 좋은 날씨야?',
+    '이번 달 가까운 대회가 있어?',
+    '내 현재 레벨이 어떻게 돼?',
+  ]},
 ];
 
 /* ─── Utility ─── */
@@ -1179,6 +1220,7 @@ function openMsgModal(userId, userName, step) {
   selectedTemplateId = '';
   suggestedQuestions = [];
   renderSuggestedQList();
+  renderPresetChips();
 
   document.getElementById('msgModalUser').textContent = userName + (step ? ' \u00b7 ' + step : '');
   document.getElementById('msgTextarea').value = '';
@@ -1241,22 +1283,51 @@ function renderSuggestedQList() {
   const el = document.getElementById('suggestedQList');
   if (suggestedQuestions.length === 0) { el.innerHTML = ''; return; }
   el.innerHTML = suggestedQuestions.map((q, i) => `<div style="display:flex;gap:6px;margin-bottom:6px;align-items:center">
-    <input type="text" value="${esc(q)}" style="flex:1;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--card);color:var(--text)" onchange="suggestedQuestions[${i}]=this.value" placeholder="추천 질문 입력">
+    <input type="text" value="${esc(q)}" style="flex:1;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--card);color:var(--text)" onchange="suggestedQuestions[${i}]=this.value;renderPresetChips()" placeholder="추천 질문 입력">
     <button style="background:none;border:none;color:var(--red);font-size:16px;cursor:pointer;padding:4px" onclick="removeSuggestedQ(${i})">&times;</button>
   </div>`).join('');
 }
 
-function addSuggestedQ() {
-  suggestedQuestions.push('');
+function addSuggestedQ(text) {
+  if (suggestedQuestions.length >= 10) return;
+  suggestedQuestions.push(text || '');
   renderSuggestedQList();
-  // 마지막 input에 포커스
-  const inputs = document.querySelectorAll('#suggestedQList input');
-  if (inputs.length) inputs[inputs.length - 1].focus();
+  renderPresetChips();
+  if (!text) {
+    const inputs = document.querySelectorAll('#suggestedQList input');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  }
 }
 
 function removeSuggestedQ(idx) {
   suggestedQuestions.splice(idx, 1);
   renderSuggestedQList();
+  renderPresetChips();
+}
+
+function togglePresetQ(text) {
+  const idx = suggestedQuestions.indexOf(text);
+  if (idx >= 0) {
+    suggestedQuestions.splice(idx, 1);
+  } else {
+    if (suggestedQuestions.length >= 10) return;
+    suggestedQuestions.push(text);
+  }
+  renderSuggestedQList();
+  renderPresetChips();
+}
+
+function renderPresetChips() {
+  const el = document.getElementById('presetQChips');
+  let html = '';
+  for (const cat of Q_PRESETS) {
+    html += `<span class="q-cat-label">${esc(cat.cat)}</span>`;
+    for (const q of cat.items) {
+      const isActive = suggestedQuestions.includes(q);
+      html += `<button class="q-chip${isActive ? ' active' : ''}" onclick="togglePresetQ(${JSON.stringify(q)})" title="${esc(q)}">${esc(q.length > 28 ? q.slice(0, 26) + '...' : q)}</button>`;
+    }
+  }
+  el.innerHTML = html;
 }
 
 async function sendAdminMessage() {

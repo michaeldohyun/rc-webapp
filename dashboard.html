@@ -486,12 +486,41 @@ function switchTab(tab) {
 }
 
 /* ─── Init ─── */
-function init() {
+// URL params: ?user=<telegram_id>&tab=<activity|conversations|profile|diagnostic|messages>
+const urlParams = new URLSearchParams(window.location.search);
+const paramUser = urlParams.get('user');
+const paramTab = urlParams.get('tab');
+
+async function init() {
   if (adminKey) {
     showTabs(true);
-    switchTab('metrics');
+    if (paramUser) {
+      await initWithUserParam();
+    } else {
+      switchTab('metrics');
+    }
   } else {
     showView('authView');
+  }
+}
+
+async function initWithUserParam() {
+  // 유저 목록 로드 후 telegram_user_id로 매칭
+  try {
+    const res = await apiCall('get_dashboard_users');
+    if (res.success !== false && res.users) {
+      usersCache = res.users;
+      const target = usersCache.find(u => String(u.telegram_user_id) === paramUser);
+      if (target) {
+        await openUser(target.id, paramTab);
+      } else {
+        switchTab('metrics');
+      }
+    } else {
+      switchTab('metrics');
+    }
+  } catch (e) {
+    switchTab('metrics');
   }
 }
 
@@ -750,7 +779,7 @@ function renderUsers(users) {
 }
 
 /* ─── User Detail ─── */
-async function openUser(userId) {
+async function openUser(userId, subTab) {
   showView('detailView');
   showTabs(false);
   const user = usersCache.find(u => u.id === userId);
@@ -772,6 +801,15 @@ async function openUser(userId) {
     }
     currentDashboardData = res.dashboard;
     renderDetail(res.dashboard);
+
+    // URL param으로 서브탭 지정 시 자동 전환
+    if (subTab) {
+      const validTabs = ['activity', 'conversations', 'profile', 'diagnostic', 'messages'];
+      if (validTabs.includes(subTab)) {
+        const btn = document.querySelector(`.sub-tab[onclick*="'${subTab}'"]`);
+        if (btn) switchSubTab(subTab, btn);
+      }
+    }
   } catch (e) {
     document.getElementById('detailContent').innerHTML = '<div class="empty">로딩 실패</div>';
   }

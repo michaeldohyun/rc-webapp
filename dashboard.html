@@ -805,6 +805,7 @@ function renderDetail(d) {
   html += `<div class="sub-tabs">
     <button class="sub-tab active" onclick="switchSubTab('activity',this)">활동</button>
     <button class="sub-tab" onclick="switchSubTab('conversations',this)">대화</button>
+    <button class="sub-tab" onclick="switchSubTab('profile',this)">프로필</button>
     <button class="sub-tab" onclick="switchSubTab('diagnostic',this)">진단</button>
     <button class="sub-tab" onclick="switchSubTab('messages',this)">메시지</button>
   </div>`;
@@ -817,6 +818,11 @@ function renderDetail(d) {
   // Conversations panel
   html += '<div id="panel-conversations" class="sub-panel">';
   html += renderConversationsPanel(d);
+  html += '</div>';
+
+  // Profile panel (runner profile + memories)
+  html += '<div id="panel-profile" class="sub-panel">';
+  html += renderProfilePanel(d);
   html += '</div>';
 
   // Diagnostic panel
@@ -960,6 +966,56 @@ function toggleConv(idx) {
     fullEl.style.display = 'none';
     btn.textContent = '더보기';
   }
+}
+
+/* ─── Profile Panel (Runner Profile + Memories) ─── */
+function renderProfilePanel(d) {
+  let html = '';
+
+  // Runner Profile
+  const profile = d.runner_profile;
+  if (profile && profile.text) {
+    const updatedAt = profile.updated_at ? fmtDateTime(profile.updated_at) : '';
+    html += '<div class="card"><div class="card-title">🏃 러너 프로필' + (updatedAt ? ' <span style="font-weight:normal;font-size:12px;color:var(--sub)">' + updatedAt + '</span>' : '') + '</div>';
+    // 프로필 텍스트를 섹션별로 파싱
+    const sections = profile.text.split(/\n(?=\[)/);
+    for (const section of sections) {
+      const headerMatch = section.match(/^\[(.+?)\]\n?([\s\S]*)/);
+      if (headerMatch) {
+        html += '<div style="margin-bottom:12px">';
+        html += '<div style="font-weight:600;font-size:13px;color:var(--accent);margin-bottom:4px">' + esc(headerMatch[1]) + '</div>';
+        html += '<div style="font-size:13px;line-height:1.6;color:var(--text);white-space:pre-wrap">' + esc(headerMatch[2].trim()) + '</div>';
+        html += '</div>';
+      } else if (section.trim()) {
+        html += '<div style="font-size:13px;line-height:1.6;color:var(--text);white-space:pre-wrap;margin-bottom:12px">' + esc(section.trim()) + '</div>';
+      }
+    }
+    html += '</div>';
+  } else {
+    html += '<div class="card"><div class="card-title">🏃 러너 프로필</div><div class="empty">프로필 미생성</div></div>';
+  }
+
+  // Memories
+  const memories = d.memories || [];
+  if (memories.length > 0) {
+    html += '<div class="card"><div class="card-title">🧠 메모리 (' + memories.length + ')</div>';
+    for (const m of memories) {
+      const importanceStars = '★'.repeat(Math.min(m.importance || 1, 5));
+      html += '<div style="padding:8px 0;border-bottom:1px solid var(--border)">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
+      html += '<span style="font-size:11px;background:var(--accent);color:#fff;padding:1px 6px;border-radius:4px">' + esc(m.category || '-') + '</span>';
+      html += '<span style="font-size:11px;color:var(--yellow)">' + importanceStars + '</span>';
+      html += '</div>';
+      html += '<div style="font-size:13px;line-height:1.5">' + esc(m.content) + '</div>';
+      html += '<div style="font-size:11px;color:var(--sub);margin-top:2px">' + esc(m.source || '') + ' · ' + fmtDateTime(m.updated_at || m.created_at) + '</div>';
+      html += '</div>';
+    }
+    html += '</div>';
+  } else {
+    html += '<div class="card"><div class="card-title">🧠 메모리</div><div class="empty">저장된 메모리 없음</div></div>';
+  }
+
+  return html;
 }
 
 /* ─── Diagnostic Panel ─── */

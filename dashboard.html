@@ -1319,15 +1319,21 @@ function togglePresetQ(text) {
 
 function renderPresetChips() {
   const el = document.getElementById('presetQChips');
-  let html = '';
+  el.innerHTML = '';
   for (const cat of Q_PRESETS) {
-    html += `<span class="q-cat-label">${esc(cat.cat)}</span>`;
+    const label = document.createElement('span');
+    label.className = 'q-cat-label';
+    label.textContent = cat.cat;
+    el.appendChild(label);
     for (const q of cat.items) {
-      const isActive = suggestedQuestions.includes(q);
-      html += `<button class="q-chip${isActive ? ' active' : ''}" onclick="togglePresetQ(${JSON.stringify(q)})" title="${esc(q)}">${esc(q.length > 28 ? q.slice(0, 26) + '...' : q)}</button>`;
+      const btn = document.createElement('button');
+      btn.className = 'q-chip' + (suggestedQuestions.includes(q) ? ' active' : '');
+      btn.title = q;
+      btn.textContent = q.length > 28 ? q.slice(0, 26) + '...' : q;
+      btn.addEventListener('click', () => togglePresetQ(q));
+      el.appendChild(btn);
     }
   }
-  el.innerHTML = html;
 }
 
 async function sendAdminMessage() {

@@ -491,6 +491,16 @@ const urlParams = new URLSearchParams(window.location.search);
 const paramUser = urlParams.get('user');
 const paramTab = urlParams.get('tab');
 
+function updateUrl(params) {
+  const u = new URLSearchParams(window.location.search);
+  for (const [k, v] of Object.entries(params)) {
+    if (v === null) u.delete(k);
+    else u.set(k, v);
+  }
+  const qs = u.toString();
+  history.replaceState(null, '', qs ? '?' + qs : window.location.pathname);
+}
+
 async function init() {
   if (adminKey) {
     showTabs(true);
@@ -783,6 +793,7 @@ async function openUser(userId, subTab) {
   showView('detailView');
   showTabs(false);
   const user = usersCache.find(u => u.id === userId);
+  updateUrl({ user: user ? String(user.telegram_user_id) : userId, tab: subTab || null });
   document.getElementById('detailTitle').textContent = user ? user.first_name : '유저';
   document.getElementById('detailContent').innerHTML = '';
   document.getElementById('detailLoading').style.display = 'block';
@@ -819,6 +830,7 @@ async function openUser(userId, subTab) {
 function goBackFromDetail() {
   showTabs(true);
   switchTab(currentTab);
+  updateUrl({ user: null, tab: null });
 }
 
 function renderDetail(d) {
@@ -882,6 +894,7 @@ function switchSubTab(tab, btn) {
   btn.classList.add('active');
   document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + tab).classList.add('active');
+  updateUrl({ tab: tab === 'activity' ? null : tab });
 }
 
 /* ─── Activity Panel ─── */

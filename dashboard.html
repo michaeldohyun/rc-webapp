@@ -968,9 +968,55 @@ function toggleConv(idx) {
   }
 }
 
-/* ─── Profile Panel (Runner Profile + Memories) ─── */
+/* ─── Profile Panel (Onboarding Progress + Runner Profile + Memories) ─── */
 function renderProfilePanel(d) {
   let html = '';
+
+  // Onboarding progress checklist
+  const onbSteps = [
+    { id: 'signed_up', label: '가입', event: 'user_signup' },
+    { id: 'connected', label: 'intervals.icu 연동', event: 'intervals_connected' },
+    { id: 'diagnosed', label: '러닝 진단', event: 'onboarding_diagnosed' },
+    { id: 'coaching_started', label: '코칭 시작', event: 'method_auto_applied' },
+    { id: 'goal_set', label: '목표 설정', event: 'onboarding_goal_set' },
+    { id: 'days_selected', label: '요일 선택', event: 'onboarding_days_selected' },
+    { id: 'plan_generated', label: '주간 계획 생성', event: 'plan_generated' },
+    { id: 'completed', label: '온보딩 완료', event: 'onboarding_complete' },
+  ];
+  const stepOrder = onbSteps.map(s => s.id);
+  const currentStep = d.user.onboarding_step || 'signed_up';
+  const currentIdx = stepOrder.indexOf(currentStep);
+  const timeline = d.timeline || [];
+
+  // 이벤트에서 각 단계 완료 시간 매핑 (가장 최근 것)
+  const eventTimeMap = {};
+  for (const ev of [...timeline].reverse()) {
+    for (const step of onbSteps) {
+      if ((ev.event || '').includes(step.event)) {
+        eventTimeMap[step.id] = ev.date;
+      }
+    }
+  }
+  // signed_up은 항상 완료
+  if (!eventTimeMap['signed_up'] && timeline.length > 0) {
+    const signup = [...timeline].reverse().find(e => (e.event || '').includes('signup'));
+    if (signup) eventTimeMap['signed_up'] = signup.date;
+  }
+
+  html += '<div class="card"><div class="card-title">📋 온보딩 진행</div>';
+  for (let i = 0; i < onbSteps.length; i++) {
+    const step = onbSteps[i];
+    const done = i <= currentIdx || !!eventTimeMap[step.id];
+    const isCurrent = step.id === currentStep && !done;
+    const time = eventTimeMap[step.id] || '';
+    const icon = done ? '✅' : (i === currentIdx + 1 ? '👉' : '⬜');
+    html += '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;' + (i < onbSteps.length - 1 ? 'border-bottom:1px solid var(--border);' : '') + '">';
+    html += '<span style="font-size:16px;width:24px;text-align:center">' + icon + '</span>';
+    html += '<span style="flex:1;font-size:13px;' + (done ? 'color:var(--text)' : 'color:var(--sub)') + '">' + esc(step.label) + '</span>';
+    if (time) html += '<span style="font-size:11px;color:var(--sub)">' + esc(time) + '</span>';
+    html += '</div>';
+  }
+  html += '</div>';
 
   // Runner Profile
   const profile = d.runner_profile;

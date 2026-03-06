@@ -402,6 +402,14 @@ body {
     <div class="template-chips" id="templateChips"></div>
     <textarea class="msg-textarea" id="msgTextarea" placeholder="메시지를 입력하세요..." oninput="updateCharCount()"></textarea>
     <div class="msg-char-count"><span id="charCount">0</span> / 2000</div>
+    <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:13px;font-weight:600">추천 질문 (Reply Keyboard)</span>
+        <button style="font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer" onclick="addSuggestedQ()">+ 추가</button>
+      </div>
+      <div id="suggestedQList"></div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">유저가 버튼을 탭하면 해당 텍스트가 Q&A로 전송돼요.</div>
+    </div>
     <button class="send-btn" id="sendMsgBtn" onclick="sendAdminMessage()">발송</button>
   </div>
 </div>
@@ -1169,6 +1177,8 @@ function openMsgModal(userId, userName, step) {
   msgModalUserName = userName;
   msgModalUserStep = step;
   selectedTemplateId = '';
+  suggestedQuestions = [];
+  renderSuggestedQList();
 
   document.getElementById('msgModalUser').textContent = userName + (step ? ' \u00b7 ' + step : '');
   document.getElementById('msgTextarea').value = '';
@@ -1224,6 +1234,31 @@ function updateCharCount() {
   document.getElementById('sendMsgBtn').disabled = len === 0 || len > 2000;
 }
 
+/* ─── Suggested Questions ─── */
+let suggestedQuestions = [];
+
+function renderSuggestedQList() {
+  const el = document.getElementById('suggestedQList');
+  if (suggestedQuestions.length === 0) { el.innerHTML = ''; return; }
+  el.innerHTML = suggestedQuestions.map((q, i) => `<div style="display:flex;gap:6px;margin-bottom:6px;align-items:center">
+    <input type="text" value="${esc(q)}" style="flex:1;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--card);color:var(--text)" onchange="suggestedQuestions[${i}]=this.value" placeholder="추천 질문 입력">
+    <button style="background:none;border:none;color:var(--red);font-size:16px;cursor:pointer;padding:4px" onclick="removeSuggestedQ(${i})">&times;</button>
+  </div>`).join('');
+}
+
+function addSuggestedQ() {
+  suggestedQuestions.push('');
+  renderSuggestedQList();
+  // 마지막 input에 포커스
+  const inputs = document.querySelectorAll('#suggestedQList input');
+  if (inputs.length) inputs[inputs.length - 1].focus();
+}
+
+function removeSuggestedQ(idx) {
+  suggestedQuestions.splice(idx, 1);
+  renderSuggestedQList();
+}
+
 async function sendAdminMessage() {
   const message = document.getElementById('msgTextarea').value.trim();
   if (!message) return;
@@ -1233,10 +1268,12 @@ async function sendAdminMessage() {
   btn.textContent = '발송 중...';
 
   try {
+    const validQuestions = suggestedQuestions.filter(q => q.trim());
     const res = await apiCall('send_admin_message', {
       user_id: msgModalUserId,
       message,
       template_id: selectedTemplateId || null,
+      suggested_questions: validQuestions.length > 0 ? validQuestions : undefined,
     });
 
     if (res.success) {

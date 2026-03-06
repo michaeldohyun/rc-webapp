@@ -850,6 +850,9 @@ function switchSubTab(tab, btn) {
 function renderActivityPanel(d) {
   let html = '';
 
+  // Onboarding progress checklist
+  html += renderOnboardingProgress(d);
+
   // Today plan
   if (d.today_plan) {
     const tp = d.today_plan;
@@ -968,11 +971,8 @@ function toggleConv(idx) {
   }
 }
 
-/* ─── Profile Panel (Onboarding Progress + Runner Profile + Memories) ─── */
-function renderProfilePanel(d) {
-  let html = '';
-
-  // Onboarding progress checklist
+/* ─── Onboarding Progress (reusable) ─── */
+function renderOnboardingProgress(d) {
   const onbSteps = [
     { id: 'signed_up', label: '가입', event: 'user_signup' },
     { id: 'connected', label: 'intervals.icu 연동', event: 'intervals_connected' },
@@ -988,7 +988,6 @@ function renderProfilePanel(d) {
   const currentIdx = stepOrder.indexOf(currentStep);
   const timeline = d.timeline || [];
 
-  // 이벤트에서 각 단계 완료 시간 매핑 (가장 최근 것)
   const eventTimeMap = {};
   for (const ev of [...timeline].reverse()) {
     for (const step of onbSteps) {
@@ -997,17 +996,15 @@ function renderProfilePanel(d) {
       }
     }
   }
-  // signed_up은 항상 완료
   if (!eventTimeMap['signed_up'] && timeline.length > 0) {
     const signup = [...timeline].reverse().find(e => (e.event || '').includes('signup'));
     if (signup) eventTimeMap['signed_up'] = signup.date;
   }
 
-  html += '<div class="card"><div class="card-title">📋 온보딩 진행</div>';
+  let html = '<div class="card"><div class="card-title">📋 온보딩 진행</div>';
   for (let i = 0; i < onbSteps.length; i++) {
     const step = onbSteps[i];
     const done = i <= currentIdx || !!eventTimeMap[step.id];
-    const isCurrent = step.id === currentStep && !done;
     const time = eventTimeMap[step.id] || '';
     const icon = done ? '✅' : (i === currentIdx + 1 ? '👉' : '⬜');
     html += '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;' + (i < onbSteps.length - 1 ? 'border-bottom:1px solid var(--border);' : '') + '">';
@@ -1017,6 +1014,12 @@ function renderProfilePanel(d) {
     html += '</div>';
   }
   html += '</div>';
+  return html;
+}
+
+/* ─── Profile Panel (Runner Profile + Memories) ─── */
+function renderProfilePanel(d) {
+  let html = '';
 
   // Runner Profile
   const profile = d.runner_profile;
